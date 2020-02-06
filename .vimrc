@@ -15,6 +15,8 @@ call minpac#add('Chiel92/vim-autoformat')
 call minpac#add('kana/vim-textobj-user')
 " call minpac#add('martin-brennan/vim-textobj-rubyblock')
 call minpac#add('dewyze/vim-ruby-block-helpers')
+call minpac#add('joukevandermaas/vim-ember-hbs')
+call minpac#add('prettier/vim-prettier')
 
 call minpac#add('dracula/vim', {'name': 'dracula'})
 packadd! dracula
@@ -29,8 +31,8 @@ command! PackStatus call minpac#status()
 
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
 let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
@@ -52,7 +54,8 @@ let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|adminjs\|tmp\|jsapp'
 let g:ctrlp_max_files = 0
 
 " custom keyboard mappings
-nmap <leader>f :Ag<cr>
+nmap <leader>b :Buffers<cr>
+nmap <leader>f :Ag
 nmap <leader>s :! bundle exec rspec %<cr>
 nmap <leader>l :execute ":! bundle exec rspec %:" . line(".")<cr>
 nmap <leader>vr :so $MYVIMRC<cr>
@@ -69,6 +72,7 @@ nmap <leader>[ :bprevious<CR>
 nmap <leader>] :bnext<CR>
 
 " set tabs/spaces and line numbering
+set expandtab
 set number
 set relativenumber
 set ttyfast
