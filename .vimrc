@@ -13,7 +13,7 @@ call minpac#add('SirVer/ultisnips')
 call minpac#add('honza/vim-snippets')
 call minpac#add('Chiel92/vim-autoformat')
 call minpac#add('kana/vim-textobj-user')
-" call minpac#add('martin-brennan/vim-textobj-rubyblock')
+call minpac#add('mhinz/vim-signify')
 call minpac#add('dewyze/vim-ruby-block-helpers')
 call minpac#add('joukevandermaas/vim-ember-hbs')
 call minpac#add('prettier/vim-prettier')
@@ -63,6 +63,10 @@ nmap <leader>vc :e $MYVIMRC<cr>
 
 " F3 to format file
 noremap <F3> :Autoformat<CR>
+augroup formatting
+  autocmd!
+  autocmd FileType javascript noremap <buffer> <F3> :Prettier<CR>
+augroup END
 
 " convinient save shortcut
 map SS :w<CR>
@@ -70,6 +74,9 @@ map SS :w<CR>
 " switch between buffers
 nmap <leader>[ :bprevious<CR>
 nmap <leader>] :bnext<CR>
+
+" quicker update time, used by gitgutter mainly
+set updatetime=100
 
 " set tabs/spaces and line numbering
 set expandtab
