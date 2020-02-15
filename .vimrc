@@ -9,6 +9,7 @@ call minpac#add('junegunn/fzf', { 'dir': '~/.fzf', 'do': './install -all' })
 call minpac#add('junegunn/fzf.vim')
 call minpac#add('vim-airline/vim-airline')
 call minpac#add('pangloss/vim-javascript')
+call minpac#add('morhetz/gruvbox')
 call minpac#add('SirVer/ultisnips')
 call minpac#add('honza/vim-snippets')
 call minpac#add('Chiel92/vim-autoformat')
@@ -17,10 +18,13 @@ call minpac#add('mhinz/vim-signify')
 call minpac#add('dewyze/vim-ruby-block-helpers')
 call minpac#add('joukevandermaas/vim-ember-hbs')
 call minpac#add('prettier/vim-prettier')
+call minpac#add('vim-scripts/taglist.vim')
 
 call minpac#add('dracula/vim', {'name': 'dracula'})
 packadd! dracula
-colorscheme dracula
+" colorscheme dracula
+colorscheme gruvbox
+set background=dark
 
 packloadall
 
@@ -48,16 +52,30 @@ runtime macros/matchit.vim
 nmap <leader>h <plug>(fzf-maps-n)
 xmap <leader>h <plug>(fzf-maps-x)
 nmap <C-p> :Files<cr>
+nmap <leader>a :BTags<cr>
 let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|adminjs\|tmp\|jsapp'
 
 " otherwise not all files show up...this should be the default
 let g:ctrlp_max_files = 0
 
 " custom keyboard mappings
+" navigate between git changes
+nmap <leader>gj <plug>(signify-next-hunk)
+nmap <leader>gk <plug>(signify-prev-hunk)
+
+" i have ctrl+v mapped to paste so this
+" lets me use visual block mode
+nnoremap <c-v> <c-s-v>
+
 nmap <leader>b :Buffers<cr>
-nmap <leader>f :Ag
+nmap <leader>f :Ag 
+nmap ? :Ag 
+
+" ghetto rspec commands without vim-rails
 nmap <leader>s :! bundle exec rspec %<cr>
 nmap <leader>l :execute ":! bundle exec rspec %:" . line(".")<cr>
+
+" easy vimrc editing
 nmap <leader>vr :so $MYVIMRC<cr>
 nmap <leader>vc :e $MYVIMRC<cr>
 
