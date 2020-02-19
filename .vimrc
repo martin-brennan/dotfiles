@@ -7,6 +7,7 @@ call minpac#add('kien/ctrlp.vim')
 " use fzf for ctrl+p
 call minpac#add('junegunn/fzf', { 'dir': '~/.fzf', 'do': './install -all' })
 call minpac#add('junegunn/fzf.vim')
+call minpac#add('tpope/vim-commentary')
 call minpac#add('vim-airline/vim-airline')
 call minpac#add('pangloss/vim-javascript')
 call minpac#add('morhetz/gruvbox')
