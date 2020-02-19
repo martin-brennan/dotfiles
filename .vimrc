@@ -26,6 +26,7 @@ packadd! dracula
 " colorscheme dracula
 colorscheme gruvbox
 set background=dark
+set t_Co=256
 
 packloadall
 
