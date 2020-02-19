@@ -104,9 +104,16 @@ set number
 set relativenumber
 set ttyfast
 set re=1
+set nocompatible
 set tabstop=2
 set softtabstop=2
 set shiftwidth=2
+
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+
+" make sure switching buffers doesn't make us lose undo history!!!
+set hidden
 filetype plugin indent on
 
 " fix cursor disappearing on lines which have warnings e.g.
