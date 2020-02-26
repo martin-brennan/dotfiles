@@ -7,6 +7,8 @@ call minpac#add('kien/ctrlp.vim')
 " use fzf for ctrl+p
 call minpac#add('junegunn/fzf', { 'dir': '~/.fzf', 'do': './install -all' })
 call minpac#add('junegunn/fzf.vim')
+call minpac#add('tpope/vim-fugitive')
+call minpac#add('mattn/emmet-vim')
 call minpac#add('tpope/vim-commentary')
 call minpac#add('vim-airline/vim-airline')
 call minpac#add('pangloss/vim-javascript')
@@ -60,7 +62,15 @@ let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|adminjs\|tmp\|jsapp'
 " otherwise not all files show up...this should be the default
 let g:ctrlp_max_files = 0
 
-" custom keyboard mappings
+" *---------------------------------------------------*
+" |               CUSTOM KEYBOARD MAPPINGS            |
+" ----------------------------------------------------
+
+" leader + d deletes without copying to clipboard
+nnoremap <leader>d "_d
+xnoremap <leader>d "_d
+xnoremap <leader>p "_dP
+
 " navigate between git changes
 nmap <leader>gj <plug>(signify-next-hunk)
 nmap <leader>gk <plug>(signify-prev-hunk)
@@ -69,7 +79,10 @@ nmap <leader>gk <plug>(signify-prev-hunk)
 " lets me use visual block mode
 nnoremap <c-v> <c-s-v>
 
+" list all buffers with fzf for easier switching
 nmap <leader>b :Buffers<cr>
+
+" search entire project using ag
 nmap <leader>f :Ag 
 nmap ? :Ag 
 
@@ -94,6 +107,10 @@ map SS :w<CR>
 " switch between buffers
 nmap <leader>[ :bprevious<CR>
 nmap <leader>] :bnext<CR>
+
+" *--------------------------------------------*
+" |       END CUSTOM KEYBOARD MAPPINGS         |
+" *--------------------------------------------*
 
 " quicker update time, used by gitgutter mainly
 set updatetime=100
@@ -140,3 +157,33 @@ set redrawtime=10000
 " or checking them in by mistake when forcing an add
 set directory=$HOME/.vim/swapfiles/
 set backupdir=$HOME/.vim/backupdir/
+
+" stolen from sam saffron...
+"
+" map <leader>g in visual mode to provide a stable link to GitHub source
+" allows us to easily select some text in vim and talk about it
+function! s:GithubLink(line1, line2)
+  let path = resolve(expand('%:p'))
+  let dir = shellescape(fnamemodify(path, ':h'))
+  let repoN = system("cd " . dir .  " && git remote -v | awk '{ tmp = match($2, /github/); if (tmp) { split($2,a,/github.com[:\.]/); c = a[2]; split(c,b,/[.]/); print b[1]; exit; }}'")
+
+  let repo = substitute(repoN, '\r\?\n\+$', '', '')
+  let root = system("cd " . dir . "  && git rev-parse --show-toplevel")
+  let relative = strpart(path, strlen(root) - 1, strlen(path) - strlen(root) + 1)
+
+
+  let repoShaN = system("cd " . dir . " && git rev-parse HEAD")
+  let repoSha = substitute(repoShaN, '\r\?\n\+$', '', '')
+
+  let link = "https://github.com/". repo . "/blob/" . repoSha . relative . "#L". a:line1 . "-L" . a:line2
+
+  let @+ = link
+  let @* = link
+
+  echo link
+endfunction
+
+command! -bar -bang -range -nargs=* GithubLink
+  \ keepjumps call <sid>GithubLink(<line1>, <line2>)
+
+vmap <leader>g :GithubLink<cr>
