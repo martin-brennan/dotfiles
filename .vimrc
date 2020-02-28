@@ -57,16 +57,20 @@ nmap <leader>h <plug>(fzf-maps-n)
 xmap <leader>h <plug>(fzf-maps-x)
 nmap <C-p> :Files<cr>
 nmap <leader>a :BTags<cr>
-let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|adminjs\|tmp\|jsapp'
+nmap <leader>t :BTags<cr>
 
 " otherwise not all files show up...this should be the default
-let g:ctrlp_max_files = 0
+" let g:ctrlp_max_files = 0
 
 " *---------------------------------------------------*
 " |               CUSTOM KEYBOARD MAPPINGS            |
 " ----------------------------------------------------
 
-" leader + d deletes without copying to clipboard
+" quick split and switch to new split window
+nnoremap <leader>vs :vsplit<cr><ESC>:wincmd l<cr>
+nnoremap <leader>hs :split<cr><ESC>:wincmd j<cr>
+
+" leader + d deletes without copying t" C-w lo clipboard
 nnoremap <leader>d "_d
 xnoremap <leader>d "_d
 xnoremap <leader>p "_dP
