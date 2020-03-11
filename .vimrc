@@ -22,6 +22,7 @@ call minpac#add('dewyze/vim-ruby-block-helpers')
 call minpac#add('joukevandermaas/vim-ember-hbs')
 call minpac#add('prettier/vim-prettier')
 call minpac#add('vim-scripts/taglist.vim')
+call minpac#add('Einenlum/yaml-revealer')
 
 call minpac#add('dracula/vim', {'name': 'dracula'})
 packadd! dracula
@@ -69,6 +70,9 @@ nmap <leader>t :BTags<cr>
 " quick split and switch to new split window
 nnoremap <leader>vs :vsplit<cr><ESC>:wincmd l<cr>
 nnoremap <leader>hs :split<cr><ESC>:wincmd j<cr>
+
+" quick select ruby block/method
+nmap <leader>vb ^]sv]e
 
 " leader + d deletes without copying t" C-w lo clipboard
 nnoremap <leader>d "_d
@@ -162,24 +166,32 @@ set redrawtime=10000
 set directory=$HOME/.vim/swapfiles/
 set backupdir=$HOME/.vim/backupdir/
 
-" stolen from sam saffron...
+" stolen from sam saffron...modified to always use origin remote
 "
 " map <leader>g in visual mode to provide a stable link to GitHub source
 " allows us to easily select some text in vim and talk about it
-function! s:GithubLink(line1, line2)
+  " let repoN = system("cd  . dir .  && git remote -v | awk '{ tmp = match($2, /github/); if (tmp) { split($2,a,/github.com[:\.]/); c = a[2]; split(c,b,/[.]/); print b[1]; exit; }}'")
+function! s:GithubLink(line1, line2, optionalSha)
   let path = resolve(expand('%:p'))
   let dir = shellescape(fnamemodify(path, ':h'))
-  let repoN = system("cd " . dir .  " && git remote -v | awk '{ tmp = match($2, /github/); if (tmp) { split($2,a,/github.com[:\.]/); c = a[2]; split(c,b,/[.]/); print b[1]; exit; }}'")
+  let originRepo = system('cd ' . dir . ' && git config --get remote.origin.url')
+  let repoN = substitute(split(originRepo, ':')[1], '.git', '', '')
 
   let repo = substitute(repoN, '\r\?\n\+$', '', '')
-  let root = system("cd " . dir . "  && git rev-parse --show-toplevel")
+  let root = system('cd ' . dir . '  && git rev-parse --show-toplevel')
   let relative = strpart(path, strlen(root) - 1, strlen(path) - strlen(root) + 1)
 
+  let repoShaN = system('cd ' . dir . ' && git rev-parse HEAD')
+  if a:optionalSha == 'master' || a:optionalSha == 'masterfile'
+    let repoSha = 'master'
+  else
+    let repoSha = substitute(repoShaN, '\r\?\n\+$', '', '')
+  endif
 
-  let repoShaN = system("cd " . dir . " && git rev-parse HEAD")
-  let repoSha = substitute(repoShaN, '\r\?\n\+$', '', '')
-
-  let link = "https://github.com/". repo . "/blob/" . repoSha . relative . "#L". a:line1 . "-L" . a:line2
+  let link = 'https://github.com/'. repo . '/blob/' . repoSha . relative
+  if a:optionalSha != 'file' && a:optionalSha != 'masterfile'
+    let link = link . '#L'. a:line1 . '-L' . a:line2
+  endif
 
   let @+ = link
   let @* = link
@@ -188,6 +200,13 @@ function! s:GithubLink(line1, line2)
 endfunction
 
 command! -bar -bang -range -nargs=* GithubLink
-  \ keepjumps call <sid>GithubLink(<line1>, <line2>)
+  \ keepjumps call <sid>GithubLink(<line1>, <line2>, 'auto')
+command! -bar -bang -range -nargs=* GithubLinkMaster
+  \ keepjumps call <sid>GithubLink(<line1>, <line2>, 'master')
+command! -bar -bang -range -nargs=* GithubLinkFile
+  \ keepjumps call <sid>GithubLink(<line1>, <line2>, 'file')
+command! -bar -bang -range -nargs=* GithubLinkMasterFile
+  \ keepjumps call <sid>GithubLink(<line1>, <line2>, 'masterfile')
 
-vmap <leader>g :GithubLink<cr>
+vmap <leader>gh :GithubLink<cr>
+nmap <leader>ghf :GithubLinkMasterFile<cr>
