@@ -31,6 +31,12 @@ colorscheme gruvbox
 set background=dark
 set t_Co=256
 
+" ignore swap file already exists error
+set shortmess+=A
+
+set colorcolumn=80
+highlight ColorColumn ctermbg=234
+
 packloadall
 
 command! PackInstall call minpac#update()
@@ -59,6 +65,8 @@ xmap <leader>h <plug>(fzf-maps-x)
 nmap <C-p> :Files<cr>
 nmap <leader>a :BTags<cr>
 nmap <leader>t :BTags<cr>
+nmap <leader><leader> :BTags<cr>
+nmap <leader>gs :GFiles?<cr>
 
 " otherwise not all files show up...this should be the default
 " let g:ctrlp_max_files = 0
@@ -66,6 +74,16 @@ nmap <leader>t :BTags<cr>
 " *---------------------------------------------------*
 " |               CUSTOM KEYBOARD MAPPINGS            |
 " ----------------------------------------------------
+
+" file name and path copying
+nmap <leader>fn :let @+=expand("%")<CR>
+nmap <leader>fp :let @+=expand("%:p")<CR>
+
+" quick select all
+nnoremap <leader>sa ggVG
+
+" quick reinden
+nnoremap <leader>== ggVG=
 
 " quick split and switch to new split window
 nnoremap <leader>vs :vsplit<cr><ESC>:wincmd l<cr>
@@ -87,12 +105,16 @@ nmap <leader>gk <plug>(signify-prev-hunk)
 " lets me use visual block mode
 nnoremap <c-v> <c-s-v>
 
+" i use ? for global project search so remap "
+" to reverse-search
+nnoremap " ?
+
 " list all buffers with fzf for easier switching
 nmap <leader>b :Buffers<cr>
 
 " search entire project using ag
-nmap <leader>f :Ag 
-nmap ? :Ag 
+nmap <leader>f :Rg 
+nmap ? :Rg 
 
 " ghetto rspec commands without vim-rails
 nmap <leader>s :! bundle exec rspec %<cr>
@@ -107,6 +129,7 @@ noremap <F3> :Autoformat<CR>
 augroup formatting
   autocmd!
   autocmd FileType javascript noremap <buffer> <F3> :Prettier<CR>
+  autocmd FileType scss noremap <buffer> <F3> :Prettier<CR>
 augroup END
 
 " convinient save shortcut
