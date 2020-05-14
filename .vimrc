@@ -1,4 +1,4 @@
-
+set shell=zsh
 packadd minpac
 call minpac#init()
 
@@ -7,6 +7,7 @@ call minpac#add('kien/ctrlp.vim')
 " use fzf for ctrl+p
 call minpac#add('junegunn/fzf', { 'dir': '~/.fzf', 'do': './install -all' })
 call minpac#add('junegunn/fzf.vim')
+call minpac#add('tpope/vim-rails')
 call minpac#add('tpope/vim-fugitive')
 call minpac#add('mattn/emmet-vim')
 call minpac#add('tpope/vim-commentary')
@@ -233,3 +234,4 @@ command! -bar -bang -range -nargs=* GithubLinkMasterFile
 
 vmap <leader>gh :GithubLink<cr>
 nmap <leader>ghf :GithubLinkMasterFile<cr>
+inoremap <C-d><C-d> <C-r>=substitute(system('date +"%Y-%M-%dT%H:%M"'), '\n\+', '', '')<CR>
