@@ -4,26 +4,70 @@ call minpac#init()
 
 call minpac#add('kien/ctrlp.vim')
 
-" use fzf for ctrl+p
+" use fzf for ctrl+p project-wide file search
 call minpac#add('junegunn/fzf', { 'dir': '~/.fzf', 'do': './install -all' })
 call minpac#add('junegunn/fzf.vim')
+
+" rails tooling
 call minpac#add('tpope/vim-rails')
+
+" git tooling
 call minpac#add('tpope/vim-fugitive')
+
+" emmet HTML expansion
 call minpac#add('mattn/emmet-vim')
+
+" allows easy block commenting
 call minpac#add('tpope/vim-commentary')
+
+" fancy status bar
 call minpac#add('vim-airline/vim-airline')
+
+" js formatting and snippets
 call minpac#add('pangloss/vim-javascript')
+
+" color theme
 call minpac#add('morhetz/gruvbox')
+
+" snippets
 call minpac#add('SirVer/ultisnips')
 call minpac#add('honza/vim-snippets')
+
+" allows calling Autoformat which hooks into e.g. rubocop
 call minpac#add('Chiel92/vim-autoformat')
+
+" needed for vim-ruby-block-helpers
 call minpac#add('kana/vim-textobj-user')
+
+" shows diffs in gutter
 call minpac#add('mhinz/vim-signify')
+
+" navigation for ruby blocks e.g. start/end/parent, works with V
 call minpac#add('dewyze/vim-ruby-block-helpers')
+
+" ember syntax
 call minpac#add('joukevandermaas/vim-ember-hbs')
+
+" run :Prettier to format JS
 call minpac#add('prettier/vim-prettier')
+
+" generates tags for jumping to definitions in source
 call minpac#add('vim-scripts/taglist.vim')
+
+" shows yaml structure in status bar
 call minpac#add('Einenlum/yaml-revealer')
+
+" find and replace multiple variants of a word (Subvert)
+" e.g. Address/address/addresses replace with Location/location/locations
+call minpac#add('tpope/vim-abolish')
+
+" puppet file syntax
+call minpac#add('rodjek/vim-puppet')
+
+" saves vim session state and can be restored by tmux-ressurect
+call minpac#add('tpope/vim-obsession')
+
+call minpac#add('ngmy/vim-rubocop')
 
 call minpac#add('dracula/vim', {'name': 'dracula'})
 packadd! dracula
@@ -45,10 +89,20 @@ command! PackUpdate call minpac#update()
 command! PackClean call minpac#clean()
 command! PackStatus call minpac#status()
 
+" airline status bar customization
+let g:airline_section_b = ""
+let g:airline_section_y = ""
+let g:airline_section_x = ""
+let g:airline#extensions#tabline#formatter = 'unique_tail'
+
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+
+" change Autoformat behaviour for rubocop
+let g:formatdef_my_custom_rubocop = "'rubocop -A -o /dev/null -s '.bufname('%').' \| sed -n 2,\\$p'"
+let g:formatters_ruby = ['my_custom_rubocop']
 
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
@@ -59,6 +113,10 @@ let mapleader = "\<Space>"
 " enable matching blocks using visual mode
 runtime macros/matchit.vim
 
+" replace currently selected text with default register
+" without yanking it
+vnoremap p "_dP
+
 " I am used to CTRL-p so use it, additionally allow for some extra
 " help in normal/visual mode
 nmap <leader>h <plug>(fzf-maps-n)
@@ -66,6 +124,7 @@ xmap <leader>h <plug>(fzf-maps-x)
 nmap <C-p> :Files<cr>
 nmap <leader>a :BTags<cr>
 nmap <leader>t :BTags<cr>
+nmap <leader>h :History<cr>
 nmap <leader><leader> :BTags<cr>
 nmap <leader>gs :GFiles?<cr>
 
@@ -106,6 +165,9 @@ nmap <leader>gk <plug>(signify-prev-hunk)
 " lets me use visual block mode
 nnoremap <c-v> <c-s-v>
 
+vnoremap J :s/\s*$//<cr>gvJgv:s/ \./\./g<cr>
+" vmap <leader>J gJ<cr>kV:s/\s*$//<cr>
+
 " i use ? for global project search so remap "
 " to reverse-search
 nnoremap " ?
@@ -131,6 +193,7 @@ augroup formatting
   autocmd!
   autocmd FileType javascript noremap <buffer> <F3> :Prettier<CR>
   autocmd FileType scss noremap <buffer> <F3> :Prettier<CR>
+  autocmd FileType ruby noremap <buffer> <F3> :Autoformat<CR>
 augroup END
 
 " convinient save shortcut
@@ -190,6 +253,13 @@ set redrawtime=10000
 set directory=$HOME/.vim/swapfiles/
 set backupdir=$HOME/.vim/backupdir/
 
+" only enable emmet for file types that make sense
+let g:user_emmet_install_global = 0
+autocmd FileType html,css,erb EmmetInstall
+
+" expand emmet vim abbreviations on tab
+imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
+
 " stolen from sam saffron...modified to always use origin remote
 "
 " map <leader>g in visual mode to provide a stable link to GitHub source
@@ -223,6 +293,30 @@ function! s:GithubLink(line1, line2, optionalSha)
   echo link
 endfunction
 
+" function! s:CommitLink()
+"   " Why is this not a built-in Vim script function?!
+"       let [line_start, column_start] = getpos("'<")[1:2]
+"           let [line_end, column_end] = getpos("'>")[1:2]
+"               let lines = getline(line_start, line_end)
+"                   if len(lines) == 0
+"                             return ''
+"                                 endif
+"                                     let lines[-1] = lines[-1][: column_end -
+"                                     (&selection == 'inclusive' ? 1 : 2)]
+"                                         let lines[0] = lines[0][column_start -
+"                                         1:]
+"                                             let sel = join(lines, "\n")
+
+"   let path = resolve(expand('%:p'))
+"   let dir = shellescape(fnamemodify(path, ':h'))
+"   let originRepo = system('cd ' . dir . ' && git config --get remote.origin.url')
+"   let repoN = substitute(split(originRepo, ':')[1], '.git', '', '')
+
+"   let repo = substitute(repoN, '\r\?\n\+$', '', '')
+"   let link = 'https://github.com/' . repo . '/commit/' . sel
+"   echo link
+" endfunction
+
 command! -bar -bang -range -nargs=* GithubLink
   \ keepjumps call <sid>GithubLink(<line1>, <line2>, 'auto')
 command! -bar -bang -range -nargs=* GithubLinkMaster
@@ -231,6 +325,9 @@ command! -bar -bang -range -nargs=* GithubLinkFile
   \ keepjumps call <sid>GithubLink(<line1>, <line2>, 'file')
 command! -bar -bang -range -nargs=* GithubLinkMasterFile
   \ keepjumps call <sid>GithubLink(<line1>, <line2>, 'masterfile')
+
+command! -bar -bang -range -nargs=* CommitLink
+  \ keepjumps call <sid>CommitLink()
 
 vmap <leader>gh :GithubLink<cr>
 nmap <leader>ghf :GithubLinkMasterFile<cr>
