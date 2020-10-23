@@ -3,6 +3,7 @@ packadd minpac
 call minpac#init()
 
 call minpac#add('kien/ctrlp.vim')
+call minpac#add('fatih/vim-hclfmt')
 
 " use fzf for ctrl+p project-wide file search
 call minpac#add('junegunn/fzf', { 'dir': '~/.fzf', 'do': './install -all' })
@@ -14,11 +15,23 @@ call minpac#add('tpope/vim-rails')
 " git tooling
 call minpac#add('tpope/vim-fugitive')
 
+" allows fugitive to browse with github
+call minpac#add('tpope/vim-rhubarb')
+
 " emmet HTML expansion
 call minpac#add('mattn/emmet-vim')
 
+" word motions for moving through camel case and underscores
+call minpac#add('vim-scripts/camelcasemotion')
+
+" hashicorp HCL syntax
+call minpac#add('jvirtanen/vim-hcl')
+
 " allows easy block commenting
 call minpac#add('tpope/vim-commentary')
+
+" allows surrounding with quotes and toggling quotes
+call minpac#add('tpope/vim-surround')
 
 " fancy status bar
 call minpac#add('vim-airline/vim-airline')
@@ -69,6 +82,8 @@ call minpac#add('tpope/vim-obsession')
 
 call minpac#add('ngmy/vim-rubocop')
 
+call minpac#add('AndrewRadev/splitjoin.vim')
+
 call minpac#add('dracula/vim', {'name': 'dracula'})
 packadd! dracula
 " colorscheme dracula
@@ -91,8 +106,7 @@ command! PackStatus call minpac#status()
 
 " airline status bar customization
 let g:airline_section_b = ""
-let g:airline_section_y = ""
-let g:airline_section_x = ""
+
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
@@ -109,6 +123,9 @@ let g:UltiSnipsEditSplit="vertical"
 
 " set spacebar to leader
 let mapleader = "\<Space>"
+
+" more sensible remap to get into terminal normal mode
+tnoremap <ESC><ESC> <C-\><C-n>
 
 " enable matching blocks using visual mode
 runtime macros/matchit.vim
@@ -127,6 +144,8 @@ nmap <leader>t :BTags<cr>
 nmap <leader>h :History<cr>
 nmap <leader><leader> :BTags<cr>
 nmap <leader>gs :GFiles?<cr>
+nmap <leader>Fb ]sv]e=<cr>
+nmap <leader><Tab> ?<Up><cr>
 
 " otherwise not all files show up...this should be the default
 " let g:ctrlp_max_files = 0
@@ -148,9 +167,14 @@ nnoremap <leader>== ggVG=
 " quick split and switch to new split window
 nnoremap <leader>vs :vsplit<cr><ESC>:wincmd l<cr>
 nnoremap <leader>hs :split<cr><ESC>:wincmd j<cr>
+nnoremap <leader>w :wincmd w<cr>
 
 " quick select ruby block/method
 nmap <leader>vb ^]sv]e
+nmap <leader>vib ^]sjv]ek
+nmap <leader>Rs ^]s
+nmap <leader>Re ^]e
+nmap <leader>Rp ^]p
 
 " leader + d deletes without copying t" C-w lo clipboard
 nnoremap <leader>d "_d
@@ -180,12 +204,21 @@ nmap <leader>f :Rg
 nmap ? :Rg 
 
 " ghetto rspec commands without vim-rails
-nmap <leader>s :! bundle exec rspec %<cr>
-nmap <leader>l :execute ":! bundle exec rspec %:" . line(".")<cr>
+nmap <leader>s :! clear && bundle exec rspec --fail-fast=1 %<cr>
+nmap <leader>l :execute ":! clear && bundle exec rspec %:" . line(".")<cr>
 
 " easy vimrc editing
 nmap <leader>vr :so $MYVIMRC<cr>
 nmap <leader>vc :e $MYVIMRC<cr>
+
+autocmd BufNewFile,BufRead *.hcl set filetype=hcl
+autocmd BufNewFile,BufRead *.hcl.erb set filetype=hcl
+autocmd BufNewFile,BufRead *.hcl set syntax=hcl
+autocmd BufNewFile,BufRead *.hcl.erb set syntax=hcl
+autocmd BufNewFile,BufRead *.nomad set filetype=hcl
+autocmd BufNewFile,BufRead *.nomad.erb set filetype=hcl
+autocmd BufNewFile,BufRead *.nomad set syntax=hcl
+autocmd BufNewFile,BufRead *.nomad.erb set syntax=hcl
 
 " F3 to format file
 noremap <F3> :Autoformat<CR>
@@ -194,6 +227,19 @@ augroup formatting
   autocmd FileType javascript noremap <buffer> <F3> :Prettier<CR>
   autocmd FileType scss noremap <buffer> <F3> :Prettier<CR>
   autocmd FileType ruby noremap <buffer> <F3> :Autoformat<CR>
+  autocmd FileType hcl noremap <buffer> <F3> :HclFmt<CR>
+augroup END
+
+" only enable emmet for file types that make sense
+let g:user_emmet_install_global = 0
+autocmd FileType html,css,erb EmmetInstall
+
+" expand emmet vim abbreviations on tab
+augroup emmet
+  autocmd!
+  autocmd FileType html imap <expr> <tab>emmet#expandAbbrIntelligent("\<tab>")
+  autocmd FileType css imap <expr> <tab>emmet#expandAbbrIntelligent("\<tab>")
+  autocmd FileType irb imap <expr> <tab>emmet#expandAbbrIntelligent("\<tab>")
 augroup END
 
 " convinient save shortcut
@@ -253,12 +299,6 @@ set redrawtime=10000
 set directory=$HOME/.vim/swapfiles/
 set backupdir=$HOME/.vim/backupdir/
 
-" only enable emmet for file types that make sense
-let g:user_emmet_install_global = 0
-autocmd FileType html,css,erb EmmetInstall
-
-" expand emmet vim abbreviations on tab
-imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
 
 " stolen from sam saffron...modified to always use origin remote
 "
@@ -331,4 +371,5 @@ command! -bar -bang -range -nargs=* CommitLink
 
 vmap <leader>gh :GithubLink<cr>
 nmap <leader>ghf :GithubLinkMasterFile<cr>
+nmap <leader>fip :%s/\(\d\{1,3\}[.]\)\{3\}\(\d\{1,3\}\)/9.9.9.9/g <cr>
 inoremap <C-d><C-d> <C-r>=substitute(system('date +"%Y-%M-%dT%H:%M"'), '\n\+', '', '')<CR>
