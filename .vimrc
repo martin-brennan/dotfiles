@@ -1,9 +1,13 @@
 set shell=zsh
+syntax on
 packadd minpac
-call minpac#init()
+call minpac#init({ 'verbose': 2 })
+
+let g:fzf_layout = { 'down': '40%' }
 
 call minpac#add('kien/ctrlp.vim')
 call minpac#add('fatih/vim-hclfmt')
+call minpac#add('arcticicestudio/nord-vim')
 
 " use fzf for ctrl+p project-wide file search
 call minpac#add('junegunn/fzf', { 'dir': '~/.fzf', 'do': './install -all' })
@@ -139,13 +143,14 @@ vnoremap p "_dP
 nmap <leader>h <plug>(fzf-maps-n)
 xmap <leader>h <plug>(fzf-maps-x)
 nmap <C-p> :Files<cr>
-nmap <leader>a :BTags<cr>
-nmap <leader>t :BTags<cr>
 nmap <leader>h :History<cr>
 nmap <leader><leader> :BTags<cr>
 nmap <leader>gs :GFiles?<cr>
 nmap <leader>Fb ]sv]e=<cr>
 nmap <leader><Tab> ?<Up><cr>
+nmap <leader>t :Tags<cr>
+
+inoremap <expr> <C-x><C-f> fzf#vim#complete#path("git ls-files")
 
 " otherwise not all files show up...this should be the default
 " let g:ctrlp_max_files = 0
@@ -194,7 +199,7 @@ vnoremap J :s/\s*$//<cr>gvJgv:s/ \./\./g<cr>
 
 " i use ? for global project search so remap "
 " to reverse-search
-nnoremap " ?
+nnoremap ` ?
 
 " list all buffers with fzf for easier switching
 nmap <leader>b :Buffers<cr>
@@ -228,6 +233,10 @@ augroup formatting
   autocmd FileType scss noremap <buffer> <F3> :Prettier<CR>
   autocmd FileType ruby noremap <buffer> <F3> :Autoformat<CR>
   autocmd FileType hcl noremap <buffer> <F3> :HclFmt<CR>
+augroup END
+
+augroup tabs
+  autocmd Filetype go setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
 augroup END
 
 " only enable emmet for file types that make sense
