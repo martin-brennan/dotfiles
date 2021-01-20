@@ -96,7 +96,7 @@ set background=dark
 set t_Co=256
 
 " ignore swap file already exists error
-set shortmess+=A
+set noswapfile
 
 set colorcolumn=80
 highlight ColorColumn ctermbg=234
@@ -149,6 +149,8 @@ nmap <leader>gs :GFiles?<cr>
 nmap <leader>Fb ]sv]e=<cr>
 nmap <leader><Tab> ?<Up><cr>
 nmap <leader>t :Tags<cr>
+nmap <leader>cn :cn<cr>
+nmap <leader>cp :cp<cr>
 
 inoremap <expr> <C-x><C-f> fzf#vim#complete#path("git ls-files")
 
@@ -180,9 +182,12 @@ nmap <leader>vib ^]sjv]ek
 nmap <leader>Rs ^]s
 nmap <leader>Re ^]e
 nmap <leader>Rp ^]p
+vmap <leader>Rs ^]s
+vmap <leader>Re ^]e
+vmap <leader>Rp ^]p
 
 " leader + d deletes without copying t" C-w lo clipboard
-nnoremap <leader>d "_d
+nnoremap <!-- <leader> -->d "_d
 xnoremap <leader>d "_d
 xnoremap <leader>p "_dP
 
@@ -208,9 +213,10 @@ nmap <leader>b :Buffers<cr>
 nmap <leader>f :Rg 
 nmap ? :Rg 
 
-" ghetto rspec commands without vim-rails
-nmap <leader>s :! clear && bundle exec rspec --fail-fast=1 %<cr>
-nmap <leader>l :execute ":! clear && bundle exec rspec %:" . line(".")<cr>
+" vim-test bindings
+nmap <leader>s :TestFile<cr>
+nmap <leader>l :TestNearest<cr>
+nmap <leader>. :TestLast<cr>
 
 " easy vimrc editing
 nmap <leader>vr :so $MYVIMRC<cr>
@@ -247,6 +253,8 @@ autocmd FileType html,css,erb EmmetInstall
 augroup emmet
   autocmd!
   autocmd FileType html imap <expr> <tab>emmet#expandAbbrIntelligent("\<tab>")
+  autocmd FileType handlebars imap <expr> <tab>emmet#expandAbbrIntelligent("\<tab>")
+  autocmd FileType erb imap <expr> <tab>emmet#expandAbbrIntelligent("\<tab>")
   autocmd FileType css imap <expr> <tab>emmet#expandAbbrIntelligent("\<tab>")
   autocmd FileType irb imap <expr> <tab>emmet#expandAbbrIntelligent("\<tab>")
 augroup END
@@ -342,6 +350,24 @@ function! s:GithubLink(line1, line2, optionalSha)
   echo link
 endfunction
 
+function! s:GithubBlame()
+  let path = resolve(expand('%:p'))
+  let dir = shellescape(fnamemodify(path, ':h'))
+  let originRepo = system('cd ' . dir . ' && git config --get remote.origin.url')
+  let repoN = substitute(split(originRepo, ':')[1], '.git', '', '')
+
+  let repo = substitute(repoN, '\r\?\n\+$', '', '')
+  let root = system('cd ' . dir . '  && git rev-parse --show-toplevel')
+  let relative = strpart(path, strlen(root) - 1, strlen(path) - strlen(root) + 1)
+
+  let link = 'https://github.com/'. repo . '/blame/master' . relative
+
+  let @+ = link
+  let @* = link
+
+  echo link
+endfunction
+
 " function! s:CommitLink()
 "   " Why is this not a built-in Vim script function?!
 "       let [line_start, column_start] = getpos("'<")[1:2]
@@ -377,6 +403,8 @@ command! -bar -bang -range -nargs=* GithubLinkMasterFile
 
 command! -bar -bang -range -nargs=* CommitLink
   \ keepjumps call <sid>CommitLink()
+command! -bar -bang -range -nargs=* GithubBlame
+  \ keepjumps call <sid>GithubBlame()
 
 vmap <leader>gh :GithubLink<cr>
 nmap <leader>ghf :GithubLinkMasterFile<cr>
