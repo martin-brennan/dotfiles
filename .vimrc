@@ -19,6 +19,9 @@ call minpac#add('tpope/vim-rails')
 " git tooling
 call minpac#add('tpope/vim-fugitive')
 
+" auto pairing of symbols
+call minpac#add('jiangmiao/auto-pairs')
+
 " allows fugitive to browse with github
 call minpac#add('tpope/vim-rhubarb')
 
@@ -212,6 +215,7 @@ nmap <leader>b :Buffers<cr>
 " search entire project using ag
 nmap <leader>f :Rg 
 nmap ? :Rg 
+nnoremap <silent> & :Rg <C-R><C-W><CR>
 
 " vim-test bindings
 nmap <leader>s :TestFile<cr>
@@ -410,3 +414,8 @@ vmap <leader>gh :GithubLink<cr>
 nmap <leader>ghf :GithubLinkMasterFile<cr>
 nmap <leader>fip :%s/\(\d\{1,3\}[.]\)\{3\}\(\d\{1,3\}\)/9.9.9.9/g <cr>
 inoremap <C-d><C-d> <C-r>=substitute(system('date +"%Y-%M-%dT%H:%M"'), '\n\+', '', '')<CR>
+
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(), <bang>0)
