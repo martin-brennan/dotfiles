@@ -1,0 +1,11 @@
+#!/bin/sh
+
+SPOTIFY_PID="$(pidof -s spotify || pidof -s .spotify-wrapped)"
+
+if [[ -z "$SPOTIFY_PID" ]]; then
+  echo "-"
+else
+  title=$(sp metadata | grep -E "(title)" | sed 's/title|//g' )
+  artist=$(sp metadata | grep -E "(artist)" | sed 's/artist|//g' )
+  echo "💿 $title - $artist"
+fi

@@ -1,0 +1,37 @@
+#!/bin/bash
+
+repo_cache_path="${HOME}/.github_repo_cache"
+
+if ! [[ -e $repo_cache_path ]]; then
+  touch $repo_cache_path
+fi
+
+last_update="$(stat -c %Y $repo_cache_path)"
+now="$(date +%s)"
+diff="${now}-${last_update}"
+
+if [[ $diff -gt 432000 ]] || [[ -z $(cat $repo_cache_path)  ]] || [[ $BUST_GITHUB_REPO_CACHE == "1" ]]; then
+  echo "Updating GitHub repo cache..."
+
+  if [[ -e $repo_cache_path ]]; then
+    rm $repo_cache_path
+  fi
+
+  touch $repo_cache_path
+
+  personal=$(GH_PAGER="cat" gh repo list --source --limit 100)
+  core=$(GH_PAGER="cat" gh repo list --source discourse --limit 500)
+  org=$(GH_PAGER="cat" gh repo list --source discourse-org --limit 500)
+  com=$(GH_PAGER="cat" gh repo list --source discourse-com --limit 500)
+
+  cat > $repo_cache_path <<END
+${personal}
+${org}
+${core}
+${com}
+END
+  echo "GitHub repo cache updated."
+else
+  echo "Skipping GitHub repo cache reload."
+fi
+

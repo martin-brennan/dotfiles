@@ -1,0 +1,44 @@
+#!/bin/sh
+
+hash json || npm i -g json
+CACHE="$HOME/.my-github-repos"
+
+if [ ! -f "$CACHE" ] || [[ $* == *--refresh* ]] || [[ $* == *-r* ]]; then
+  url="https://api.github.com/user/repos"
+  auth="Authorization: token $GITHUB_TOKEN"
+  pages=$(curl -sI -H "$auth" "$url?page=1&per_page=100" | sed -nr 's/^Link:.*page=([0-9]+)&per_page=100>; rel="last".*/\1/p')
+  seq "$pages" | parallel "curl -s -H \"$auth\" \"$url?page={1}&per_page=100\" | json -c 'this.archived==false' -a full_name" > "$CACHE"
+fi
+
+remote=$((cat "$CACHE" | awk '{print "git@github.com:" $1}' ; cat "$HOME/.my-git-repos") | fzf)
+if [ -z "$remote" ]; then
+  exit 1
+fi
+
+slug=$(echo -n "$remote" | cut -f 2 -d ':')
+base=$(basename "$slug")
+clone="$HOME/$base"
+
+if [ -d "$clone" ]; then
+  echo "$clone already exists."
+  exit 1
+fi
+
+cached="$HOME/.git-cache/$slug"
+if [ -d "$cached" ]; then
+  echo "Updating cache."
+  (
+    cd "$cached"
+    git fetch -q origin
+    git merge -q --ff-only origin
+  )
+  echo "Copying from cache."
+  cp -r "$cached" "$clone"
+else
+  git clone "$remote" "$clone"
+fi
+
+(
+  cd "$clone"
+  git submodule update --init --recursive
+)

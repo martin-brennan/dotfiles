@@ -1,0 +1,3 @@
+#!/bin/bash
+repo_cache_path="${HOME}/.github_repo_cache"
+awk '{print sprintf("https://github.com/%s", $1)}' $repo_cache_path | dmenu -l 20 -c | xargs chromium
