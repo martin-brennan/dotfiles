@@ -9,6 +9,8 @@ call minpac#add('kien/ctrlp.vim')
 call minpac#add('fatih/vim-hclfmt')
 call minpac#add('arcticicestudio/nord-vim')
 
+call minpac#add('triglav/vim-visual-increment')
+
 " use fzf for ctrl+p project-wide file search
 call minpac#add('junegunn/fzf', { 'dir': '~/.fzf', 'do': './install -all' })
 call minpac#add('junegunn/fzf.vim')
@@ -19,11 +21,19 @@ call minpac#add('tpope/vim-rails')
 " git tooling
 call minpac#add('tpope/vim-fugitive')
 
-" auto pairing of symbols
-call minpac#add('jiangmiao/auto-pairs')
-
 " allows fugitive to browse with github
 call minpac#add('tpope/vim-rhubarb')
+
+" call minpac#add('dracula/vim', {'name': 'dracula'})
+" packadd! dracula
+
+call minpac#add('shapeoflambda/dark-purple.vim')
+
+" run rspec from vim
+call minpac#add('vim-test/vim-test')
+
+" auto pairing of symbols
+call minpac#add('jiangmiao/auto-pairs')
 
 " emmet HTML expansion
 call minpac#add('mattn/emmet-vim')
@@ -155,6 +165,9 @@ nmap <leader>t :Tags<cr>
 nmap <leader>cn :cn<cr>
 nmap <leader>cp :cp<cr>
 
+" delete all binding.pry instances
+nmap <leader>ddd :g/binding.pry/d<cr>
+
 inoremap <expr> <C-x><C-f> fzf#vim#complete#path("git ls-files")
 
 " otherwise not all files show up...this should be the default
@@ -185,9 +198,14 @@ nmap <leader>vib ^]sjv]ek
 nmap <leader>Rs ^]s
 nmap <leader>Re ^]e
 nmap <leader>Rp ^]p
-vmap <leader>Rs ^]s
-vmap <leader>Re ^]e
-vmap <leader>Rp ^]p
+vmap rs ^]s
+vmap re ^]e
+vmap rp ^]p
+nmap rs ^]s
+nmap re ^]e
+nmap rp ^]p
+nmap rn ]m
+nmap rm [m
 
 " leader + d deletes without copying t" C-w lo clipboard
 nnoremap <!-- <leader> -->d "_d
@@ -218,9 +236,10 @@ nmap ? :Rg
 nnoremap <silent> & :Rg <C-R><C-W><CR>
 
 " vim-test bindings
-nmap <leader>s :TestFile<cr>
-nmap <leader>l :TestNearest<cr>
-nmap <leader>. :TestLast<cr>
+nmap <leader>s :! clear && smarttest.sh %:p<cr>
+nmap <leader>l :execute ":! clear && smarttest.sh " . "%:p" . "\\:" . line(".")<cr>
+
+nmap <leader>ro :g/describe\|scenario\|context\|it/#<cr>
 
 " easy vimrc editing
 nmap <leader>vr :so $MYVIMRC<cr>
@@ -235,14 +254,16 @@ autocmd BufNewFile,BufRead *.nomad.erb set filetype=hcl
 autocmd BufNewFile,BufRead *.nomad set syntax=hcl
 autocmd BufNewFile,BufRead *.nomad.erb set syntax=hcl
 
-" F3 to format file
-noremap <F3> :Autoformat<CR>
+autocmd BufWritePost ~/forge/dwmblocks/config.h !cd ~/forge/dwmblocks/; sudo make install && { killall -q dwmblocks;setsid dwmblocks & }
+
+" F9 to format file
+noremap <F9> :Autoformat<CR>
 augroup formatting
   autocmd!
-  autocmd FileType javascript noremap <buffer> <F3> :Prettier<CR>
-  autocmd FileType scss noremap <buffer> <F3> :Prettier<CR>
-  autocmd FileType ruby noremap <buffer> <F3> :Autoformat<CR>
-  autocmd FileType hcl noremap <buffer> <F3> :HclFmt<CR>
+  autocmd FileType javascript noremap <buffer> <F9> :Prettier<CR>
+  autocmd FileType scss noremap <buffer> <F9> :Prettier<CR>
+  autocmd FileType ruby noremap <buffer> <F9> :Autoformat<CR>
+  autocmd FileType hcl noremap <buffer> <F9> :HclFmt<CR>
 augroup END
 
 augroup tabs
@@ -419,3 +440,18 @@ command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
   \   'rg --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
   \   fzf#vim#with_preview(), <bang>0)
+
+function! s:notify_file_change_discourse()
+  let notify = getcwd() . "/bin/notify_file_change"
+  if ! executable(notify)
+    let root = rails#app().path()
+    notify = root . "/bin/notify_file_change"
+  end
+  if executable(notify)
+    if executable('socat')
+      execute "!" . notify . ' ' . expand("%:p") . " " . line(".")
+    end
+  end
+endfunction
+
+autocmd BufWritePost * silent! call s:notify_file_change()
