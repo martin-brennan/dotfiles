@@ -3,7 +3,27 @@ syntax on
 packadd minpac
 call minpac#init({ 'verbose': 2 })
 
+nnoremap q: <nop>
+nnoremap Q <nop>
+
+nnoremap <leader>0 vi["my<Left>dt(dt<Space><Left>"mp`[v`]
+
 let g:fzf_layout = { 'down': '40%' }
+
+call minpac#add('rhysd/git-messenger.vim')
+let g:git_messenger_close_on_cursor_moved = v:false
+let g:git_messenger_always_into_popup = v:true
+let g:git_messenger_always_into_popup = v:true
+let g:git_messenger_include_diff = "current"
+let g:git_messenger_preview_mods = "botright"
+
+" slow typescript highlighting fixes
+call minpac#add('leafgarland/typescript-vim')
+call minpac#add('peitalin/vim-jsx-typescript')
+call minpac#add('othree/yajs.vim')
+au BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.typescriptreact
+
+call minpac#add('junegunn/fzf.vim')
 
 call minpac#add('kien/ctrlp.vim')
 call minpac#add('fatih/vim-hclfmt')
@@ -12,8 +32,6 @@ call minpac#add('arcticicestudio/nord-vim')
 call minpac#add('triglav/vim-visual-increment')
 
 " use fzf for ctrl+p project-wide file search
-call minpac#add('junegunn/fzf', { 'dir': '~/.fzf', 'do': './install -all' })
-call minpac#add('junegunn/fzf.vim')
 
 " rails tooling
 call minpac#add('tpope/vim-rails')
@@ -101,12 +119,28 @@ call minpac#add('ngmy/vim-rubocop')
 
 call minpac#add('AndrewRadev/splitjoin.vim')
 
-call minpac#add('dracula/vim', {'name': 'dracula'})
-packadd! dracula
+call minpac#add('JamshedVesuna/vim-markdown-preview')
+let vim_markdown_preview_hotkey='<C-m>'
+
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+" let g:dracula_italic = 0
+" let g:dracula_colorterm = 0
 " colorscheme dracula
+let g:gruvbox_transparent_bg=1
 colorscheme gruvbox
+" colorscheme dark_purple
+" colorscheme nord
+" highlight Normal     ctermbg=NONE
+" highlight LineNr     ctermbg=NONE guibg=NONE
+" highlight SignColumn ctermbg=NONE guibg=NONE
 set background=dark
 set t_Co=256
+" set termguicolors
+
+" spell check for markdown files
+autocmd BufRead,BufNewFile *.md setlocal spell
+hi SpellBad    ctermfg=167      ctermbg=016     cterm=underline      guifg=#FFFFFF   guibg=#000000   gui=none
 
 " ignore swap file already exists error
 set noswapfile
@@ -141,9 +175,6 @@ let g:UltiSnipsEditSplit="vertical"
 " set spacebar to leader
 let mapleader = "\<Space>"
 
-" more sensible remap to get into terminal normal mode
-tnoremap <ESC><ESC> <C-\><C-n>
-
 " enable matching blocks using visual mode
 runtime macros/matchit.vim
 
@@ -151,11 +182,18 @@ runtime macros/matchit.vim
 " without yanking it
 vnoremap p "_dP
 
+vnoremap S3" <esc>`<O<esc>S"""<esc>`>o<esc>S"""<esc>k$
+
+vnoremap <leader>bl y :'<,'>s/<c-r>"/\[\[\0\]\]/g<cr>
+vnoremap <leader>ml y :'<,'>s/<c-r>"/\[\0\](LINK)/g<cr>/LINK<cr>ciw
+vnoremap <leader>cml y :'<,'>s/<c-r>"/\[\0\](LINK)/g<cr>/LINK<cr>viwp
+
 " I am used to CTRL-p so use it, additionally allow for some extra
 " help in normal/visual mode
 nmap <leader>h <plug>(fzf-maps-n)
 xmap <leader>h <plug>(fzf-maps-x)
 nmap <C-p> :Files<cr>
+nmap <C-h> :%s/
 nmap <leader>h :History<cr>
 nmap <leader><leader> :BTags<cr>
 nmap <leader>gs :GFiles?<cr>
@@ -201,11 +239,9 @@ nmap <leader>Rp ^]p
 vmap rs ^]s
 vmap re ^]e
 vmap rp ^]p
-nmap rs ^]s
-nmap re ^]e
-nmap rp ^]p
 nmap rn ]m
 nmap rm [m
+vnoremap <leader>sd :s# \+# #g<cr>==
 
 " leader + d deletes without copying t" C-w lo clipboard
 nnoremap <!-- <leader> -->d "_d
@@ -358,14 +394,14 @@ function! s:GithubLink(line1, line2, optionalSha)
   let relative = strpart(path, strlen(root) - 1, strlen(path) - strlen(root) + 1)
 
   let repoShaN = system('cd ' . dir . ' && git rev-parse HEAD')
-  if a:optionalSha == 'master' || a:optionalSha == 'masterfile'
-    let repoSha = 'master'
+  if a:optionalSha == 'main' || a:optionalSha == 'mainfile'
+    let repoSha = 'main'
   else
     let repoSha = substitute(repoShaN, '\r\?\n\+$', '', '')
   endif
 
   let link = 'https://github.com/'. repo . '/blob/' . repoSha . relative
-  if a:optionalSha != 'file' && a:optionalSha != 'masterfile'
+  if a:optionalSha != 'file' && a:optionalSha != 'mainfile'
     let link = link . '#L'. a:line1 . '-L' . a:line2
   endif
 
@@ -374,6 +410,12 @@ function! s:GithubLink(line1, line2, optionalSha)
 
   echo link
 endfunction
+
+func! GetSelectedText()
+  normal gv"xy
+  let result = getreg("x")
+  return result
+endfunc
 
 function! s:GithubBlame()
   let path = resolve(expand('%:p'))
@@ -385,7 +427,7 @@ function! s:GithubBlame()
   let root = system('cd ' . dir . '  && git rev-parse --show-toplevel')
   let relative = strpart(path, strlen(root) - 1, strlen(path) - strlen(root) + 1)
 
-  let link = 'https://github.com/'. repo . '/blame/master' . relative
+  let link = 'https://github.com/'. repo . '/blame/main' . relative
 
   let @+ = link
   let @* = link
@@ -393,44 +435,37 @@ function! s:GithubBlame()
   echo link
 endfunction
 
-" function! s:CommitLink()
-"   " Why is this not a built-in Vim script function?!
-"       let [line_start, column_start] = getpos("'<")[1:2]
-"           let [line_end, column_end] = getpos("'>")[1:2]
-"               let lines = getline(line_start, line_end)
-"                   if len(lines) == 0
-"                             return ''
-"                                 endif
-"                                     let lines[-1] = lines[-1][: column_end -
-"                                     (&selection == 'inclusive' ? 1 : 2)]
-"                                         let lines[0] = lines[0][column_start -
-"                                         1:]
-"                                             let sel = join(lines, "\n")
+function! s:CommitLink()
+  let sha = GetSelectedText()
+  let path = resolve(expand('%:p'))
+  let dir = shellescape(fnamemodify(path, ':h'))
+  let originRepo = system('cd ' . dir . ' && git config --get remote.origin.url')
+  let repoN = substitute(split(originRepo, ':')[1], '.git', '', '')
+  let repo = substitute(repoN, '\r\?\n\+$', '', '')
+  let link = 'https://github.com/' . repo . '/commit/' . sha
+  let @+ = link
+  let @* = link
 
-"   let path = resolve(expand('%:p'))
-"   let dir = shellescape(fnamemodify(path, ':h'))
-"   let originRepo = system('cd ' . dir . ' && git config --get remote.origin.url')
-"   let repoN = substitute(split(originRepo, ':')[1], '.git', '', '')
-
-"   let repo = substitute(repoN, '\r\?\n\+$', '', '')
-"   let link = 'https://github.com/' . repo . '/commit/' . sel
-"   echo link
-" endfunction
+  echo link
+endfunction
 
 command! -bar -bang -range -nargs=* GithubLink
   \ keepjumps call <sid>GithubLink(<line1>, <line2>, 'auto')
 command! -bar -bang -range -nargs=* GithubLinkMaster
-  \ keepjumps call <sid>GithubLink(<line1>, <line2>, 'master')
+  \ keepjumps call <sid>GithubLink(<line1>, <line2>, 'main')
 command! -bar -bang -range -nargs=* GithubLinkFile
   \ keepjumps call <sid>GithubLink(<line1>, <line2>, 'file')
 command! -bar -bang -range -nargs=* GithubLinkMasterFile
-  \ keepjumps call <sid>GithubLink(<line1>, <line2>, 'masterfile')
-
+  \ keepjumps call <sid>GithubLink(<line1>, <line2>, 'mainfile')
 command! -bar -bang -range -nargs=* CommitLink
   \ keepjumps call <sid>CommitLink()
+
 command! -bar -bang -range -nargs=* GithubBlame
   \ keepjumps call <sid>GithubBlame()
 
+nmap <leader>gcl jjwwwviw::CommitLink<cr>
+vmap <leader>cl :CommitLink<cr>
+nmap <leader>gm :GitMessenger<cr>
 vmap <leader>gh :GithubLink<cr>
 nmap <leader>ghf :GithubLinkMasterFile<cr>
 nmap <leader>fip :%s/\(\d\{1,3\}[.]\)\{3\}\(\d\{1,3\}\)/9.9.9.9/g <cr>
