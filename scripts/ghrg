@@ -1,0 +1,5 @@
+#!/bin/bash
+
+selected=$(ghs code $@ --org=discourse | awk '!/ghsa/' | fzf)
+url=$(echo $selected | awk '{print $2}')
+chromium $url

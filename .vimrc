@@ -6,11 +6,6 @@ call minpac#init({ 'verbose': 2 })
 nnoremap q: <nop>
 nnoremap Q <nop>
 
-nnoremap <leader>0 vi["my<Left>dt(dt<Space><Left>"mp`[v`]
-
-let g:fzf_layout = { 'down': '40%' }
-
-call minpac#add('rhysd/git-messenger.vim')
 let g:git_messenger_close_on_cursor_moved = v:false
 let g:git_messenger_always_into_popup = v:true
 let g:git_messenger_always_into_popup = v:true
@@ -18,20 +13,25 @@ let g:git_messenger_include_diff = "current"
 let g:git_messenger_preview_mods = "botright"
 
 " slow typescript highlighting fixes
-call minpac#add('leafgarland/typescript-vim')
-call minpac#add('peitalin/vim-jsx-typescript')
-call minpac#add('othree/yajs.vim')
-au BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.typescriptreact
+" call minpac#add('leafgarland/typescript-vim')
+" call minpac#add('peitalin/vim-jsx-typescript')
+" call minpac#add('othree/yajs.vim')
+" au BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.typescriptreact
 
-call minpac#add('junegunn/fzf.vim')
+" HCL formatting, not often used
+" call minpac#add('fatih/vim-hclfmt')
 
-call minpac#add('kien/ctrlp.vim')
-call minpac#add('fatih/vim-hclfmt')
-call minpac#add('arcticicestudio/nord-vim')
+call minpac#add('chriskempson/base16-vim')
 
+" allows incrementing numbers in a visual mode column
 call minpac#add('triglav/vim-visual-increment')
 
-" use fzf for ctrl+p project-wide file search
+" use fzf for ctrl+p project-wide file search, tags in files, etc.
+call minpac#add('junegunn/fzf.vim')
+let g:fzf_layout = { 'down': '40%' }
+
+" used by git blame functionality
+call minpac#add('rhysd/git-messenger.vim')
 
 " rails tooling
 call minpac#add('tpope/vim-rails')
@@ -52,6 +52,10 @@ call minpac#add('vim-test/vim-test')
 
 " auto pairing of symbols
 call minpac#add('jiangmiao/auto-pairs')
+" call minpac#add('tmsvg/pear-tree')
+" let g:pear_tree_smart_openers = 1
+" let g:pear_tree_smart_closers = 1
+" let g:pear_tree_smart_backspace = 1
 
 " emmet HTML expansion
 call minpac#add('mattn/emmet-vim')
@@ -67,6 +71,9 @@ call minpac#add('tpope/vim-commentary')
 
 " allows surrounding with quotes and toggling quotes
 call minpac#add('tpope/vim-surround')
+
+" allows repeating surrounds
+call minpac#add('tpope/vim-repeat')
 
 " fancy status bar
 call minpac#add('vim-airline/vim-airline')
@@ -115,38 +122,11 @@ call minpac#add('rodjek/vim-puppet')
 " saves vim session state and can be restored by tmux-ressurect
 call minpac#add('tpope/vim-obsession')
 
+" rubocop issues in the editor
 call minpac#add('ngmy/vim-rubocop')
 
+" splits between single/multiple lines, little flaky
 call minpac#add('AndrewRadev/splitjoin.vim')
-
-call minpac#add('JamshedVesuna/vim-markdown-preview')
-let vim_markdown_preview_hotkey='<C-m>'
-
-let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-" let g:dracula_italic = 0
-" let g:dracula_colorterm = 0
-" colorscheme dracula
-let g:gruvbox_transparent_bg=1
-colorscheme gruvbox
-" colorscheme dark_purple
-" colorscheme nord
-" highlight Normal     ctermbg=NONE
-" highlight LineNr     ctermbg=NONE guibg=NONE
-" highlight SignColumn ctermbg=NONE guibg=NONE
-set background=dark
-set t_Co=256
-" set termguicolors
-
-" spell check for markdown files
-autocmd BufRead,BufNewFile *.md setlocal spell
-hi SpellBad    ctermfg=167      ctermbg=016     cterm=underline      guifg=#FFFFFF   guibg=#000000   gui=none
-
-" ignore swap file already exists error
-set noswapfile
-
-set colorcolumn=80
-highlight ColorColumn ctermbg=234
 
 packloadall
 
@@ -155,9 +135,38 @@ command! PackUpdate call minpac#update()
 command! PackClean call minpac#clean()
 command! PackStatus call minpac#status()
 
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+" let g:dracula_italic = 0
+" let g:dracula_colorterm = 0
+" colorscheme dracula
+let g:gruvbox_transparent_bg=1
+colorscheme gruvbox
+let base16colorspace=256
+" colorscheme base16-tomorrow-night-eighties
+" colorscheme dark_purple
+" highlight Normal     ctermbg=NONE
+" highlight LineNr     ctermbg=NONE guibg=NONE
+" highlight SignColumn ctermbg=NONE guibg=NONE
+set background=dark
+set t_Co=256
+" set termguicolors
+
+" spell check for markdown files and highlighting the mistakes
+" autocmd BufRead,BufNewFile *.md setlocal spell
+" autocmd BufRead,BufNewFile gitcommit setlocal spell
+autocmd FileType markdown setlocal spell
+autocmd FileType gitcommit setlocal spell
+highlight SpellBad    ctermfg=167      ctermbg=016     cterm=underline      guifg=#FFFFFF   guibg=#000000   gui=none
+
+" ignore swap file already exists error
+set noswapfile
+
+set colorcolumn=80
+highlight ColorColumn ctermbg=234
+
 " airline status bar customization
 let g:airline_section_b = ""
-
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
@@ -184,9 +193,12 @@ vnoremap p "_dP
 
 vnoremap S3" <esc>`<O<esc>S"""<esc>`>o<esc>S"""<esc>k$
 
+" digital garden markdown shortcuts
 vnoremap <leader>bl y :'<,'>s/<c-r>"/\[\[\0\]\]/g<cr>
 vnoremap <leader>ml y :'<,'>s/<c-r>"/\[\0\](LINK)/g<cr>/LINK<cr>ciw
 vnoremap <leader>cml y :'<,'>s/<c-r>"/\[\0\](LINK)/g<cr>/LINK<cr>viwp
+nnoremap <leader>0 vi["my<Left>dt(dt<Space><Left>"mp`[v`]
+vnoremap <leader>bq =gv:s/<blockquote>\n//g<cr>gv:s/<\/blockquote//g<cr>gv:s/<\/p>/\r>/g<cr>gv:s/<p>/> /g<cr>gv:s/<ci/> <ci/g<cr>
 
 " I am used to CTRL-p so use it, additionally allow for some extra
 " help in normal/visual mode
@@ -203,13 +215,11 @@ nmap <leader>t :Tags<cr>
 nmap <leader>cn :cn<cr>
 nmap <leader>cp :cp<cr>
 
-" delete all binding.pry instances
+" delete all binding.pry instances and debugger instances
 nmap <leader>ddd :g/binding.pry/d<cr>
 
-inoremap <expr> <C-x><C-f> fzf#vim#complete#path("git ls-files")
-
-" otherwise not all files show up...this should be the default
-" let g:ctrlp_max_files = 0
+" inoremap <expr> <C-x><C-f> fzf#vim#complete#path("git ls-files")
+inoremap <expr> <C-x><C-f> fzf#vim#complete#path("rg --files")
 
 " *---------------------------------------------------*
 " |               CUSTOM KEYBOARD MAPPINGS            |
@@ -222,6 +232,9 @@ nmap <leader>fp :let @+=expand("%:p")<CR>
 " quick select all
 nnoremap <leader>sa ggVG
 
+" paste inside
+nnoremap <leader>pi" vi"p
+
 " quick reinden
 nnoremap <leader>== ggVG=
 
@@ -229,6 +242,11 @@ nnoremap <leader>== ggVG=
 nnoremap <leader>vs :vsplit<cr><ESC>:wincmd l<cr>
 nnoremap <leader>hs :split<cr><ESC>:wincmd j<cr>
 nnoremap <leader>w :wincmd w<cr>
+
+" ruby hash block manipulation
+nnoremap <leader>hh ci{<cr><ESC>pi<cr><ESC>v2k=
+nnoremap <leader>hd ci{<cr><ESC>pi<cr><ESC>v2k=/{<cr>vl:s/{/do/g<cr>/}<cr>vl:s/}/end/g<cr>
+vnoremap <leader>hj :s/, /,\r/g<cr>`[V`]=
 
 " quick select ruby block/method
 nmap <leader>vb ^]sv]e
@@ -261,7 +279,8 @@ vnoremap J :s/\s*$//<cr>gvJgv:s/ \./\./g<cr>
 
 " i use ? for global project search so remap "
 " to reverse-search
-nnoremap ` ?
+" nnoremap ` ?
+nnoremap ~ ?
 
 " list all buffers with fzf for easier switching
 nmap <leader>b :Buffers<cr>
@@ -271,10 +290,9 @@ nmap <leader>f :Rg
 nmap ? :Rg 
 nnoremap <silent> & :Rg <C-R><C-W><CR>
 
-" vim-test bindings
+" running specs for ruby bindings
 nmap <leader>s :! clear && smarttest.sh %:p<cr>
 nmap <leader>l :execute ":! clear && smarttest.sh " . "%:p" . "\\:" . line(".")<cr>
-
 nmap <leader>ro :g/describe\|scenario\|context\|it/#<cr>
 
 " easy vimrc editing
@@ -311,14 +329,14 @@ let g:user_emmet_install_global = 0
 autocmd FileType html,css,erb EmmetInstall
 
 " expand emmet vim abbreviations on tab
-augroup emmet
-  autocmd!
-  autocmd FileType html imap <expr> <tab>emmet#expandAbbrIntelligent("\<tab>")
-  autocmd FileType handlebars imap <expr> <tab>emmet#expandAbbrIntelligent("\<tab>")
-  autocmd FileType erb imap <expr> <tab>emmet#expandAbbrIntelligent("\<tab>")
-  autocmd FileType css imap <expr> <tab>emmet#expandAbbrIntelligent("\<tab>")
-  autocmd FileType irb imap <expr> <tab>emmet#expandAbbrIntelligent("\<tab>")
-augroup END
+" augroup emmet
+"   autocmd!
+"   autocmd FileType html imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
+"   autocmd FileType handlebars imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
+"   autocmd FileType erb imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
+"   autocmd FileType css imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
+"   autocmd FileType irb imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
+" augroup END
 
 " convinient save shortcut
 map SS :w<CR>
@@ -470,7 +488,7 @@ vmap <leader>gh :GithubLink<cr>
 nmap <leader>ghf :GithubLinkMasterFile<cr>
 nmap <leader>fip :%s/\(\d\{1,3\}[.]\)\{3\}\(\d\{1,3\}\)/9.9.9.9/g <cr>
 inoremap <C-d><C-d> <C-r>=substitute(system('date +"%Y-%M-%dT%H:%M"'), '\n\+', '', '')<CR>
-
+" {'options': ['--color', 'spinner:#8ec07c,hl:#faa22f,fg:#bdae93,header:#e6e477,info:#fabd2f,pointer:#8ec07c,marker:#8ec07c,fg+:#ebdbb2,prompt:#fabd2f,hl+:#faa22f']}
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
   \   'rg --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,

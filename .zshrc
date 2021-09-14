@@ -1,9 +1,11 @@
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:/usr/local/bin:/home/mb/scripts:$HOME/.local/bin:/usr/local/go/bin:/home/mb/go/bin:$PATH
+export PATH=$HOME/bin:/usr/local/bin:/home/mb/scripts:/home/mb/repos/ops/bin:$HOME/.local/bin:/usr/local/go/bin:/home/mb/go/bin:$PATH
 
 # dolphine file manager stuff
 [ "$XDG_CURRENT_DESKTOP" = "KDE"  ] || [ "$XDG_CURRENT_DESKTOP" = "GNOME"  ] || export QT_QPA_PLATFORMTHEME="qt5ct"
 
+export _JAVA_AWT_WM_NONREPARENTING=1
+export _JAVA_AWT_WM_NONREPARTENTING=1
 export HYDRA_URL=http://127.0.0.1:4444
 export HYDRA_ADMIN_URL=http://127.0.0.1:4445
 export GOPATH=$HOME/go
@@ -13,10 +15,12 @@ export ZSH='/home/mb/.oh-my-zsh'
 export FZF_DEFAULT_COMMAND="rg --files --hidden -g '!.git'"
 export SSH_ASKPASS='/usr/bin/ksshaskpass'
 export GIT_ASKPASS='/usr/bin/ksshaskpass'
+export DISCOURSE_REPO_BASE_DIRECTORY='/home/mb/repos'
 export DOCKER_GATEWAY_HOST=172.17.0.1
 export FZF_DOCKER_PS_FORMAT="table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Ports}}"
 export FZF_DOCKER_PS_START_FORMAT="table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Image}}"
 export VIM_AUTOSPEC=1
+export BAT_THEME="gruvbox-dark"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -87,9 +91,14 @@ export RIPGREP_CONFIG_PATH="$HOME/.ripgrep"
 plugins=(git fzf-docker)
 
 source $ZSH/oh-my-zsh.sh
+source /usr/share/nvm/init-nvm.sh
 
 # https://gist.github.com/gustavohenrique/5721719
-alias gpa="git log -p -S $@"
+alias lspec="bat ~/scripts/last_spec.txt"
+alias amend="git commit --amend"
+alias bimig="bundle install && RAILS_ENV=test bundle exec rake db:migrate && RAILS_ENV=development bundle exec rake db:migrate"
+alias ddmaster="cd ~/repos/master/discourse"
+alias gpickaxe="git log -p -S $@"
 alias rrm="fzf | xargs -I '{}' rm {}"
 alias down="cd ~/Downloads"
 alias ccat="pygmentize -f terminal256 -P style=monokai -g $@"
@@ -113,12 +122,17 @@ alias imaplog="tail -f log/development.log | grep -e 'EmailSync' -e '\[IMAP\]'"
 alias imapgmail="openssl s_client -crlf -connect imap.gmail.com:993"
 alias imapoutlook="openssl s_client -crlf -connect outlook.office365.com:993"
 alias gfix="git add . && git commit"
+alias cdap="cd ~/all-the-plugins"
 alias cdr='cd "$(fd -i -I -t d -d 1 . /home/mb/repos | fzf)"'
 alias cdc='cd "$(fd -i -I -t d -d 1 . /home/mb/repos/client-work | fzf)"'
 alias cdf='cd "$(fd -i -I -t d -d 1 . /home/mb/forge | fzf)"'
 alias cdb='cd "$(fd -i -I -t d -d 1 . /home/mb/bin | fzf)"'
+alias cda='cd "$(fd -i -I -t d -d 1 . /home/mb | fzf)"'
+alias dd="cd ~/repos/discourse"
 alias escaps="setxkbmap -option caps:swapescape"
 alias vimrc="vim ~/.vimrc"
+alias debugspec="RAILS_ENABLE_TEST_LOG=true RAILS_TEST_LOG_LEVEL=debug bundle exec rspec $@"
+alias debugspecwarn="RAILS_ENABLE_TEST_LOG=true RAILS_TEST_LOG_LEVEL=warn bundle exec rspec $@"
 alias chm="git checkout master"
 alias chmp="git checkout master && git pull"
 alias chma="git checkout main && git pull"
@@ -128,6 +142,7 @@ alias masterfile="git checkout origin/master -- $@"
 alias remotelist="git remote -v"
 alias commit="git commit"
 alias gco="git commit"
+alias gk="git commit"
 alias gcb="git checkout -b $@"
 alias gcl="git checkout -"
 alias gpl="git pull"
@@ -145,19 +160,31 @@ alias bmig="be rails g migration $@"
 alias pgsql="psql postgres"
 alias brc="be rails c"
 alias mrs="bundle exec rails s -p 3001"
+alias eus="bin/ember-cli -u BETTER_ERRORS=1 RAILS_COLORIZE_LOGGING=1 RAILS_VERBOSE_QUERY_LOGS=0 DISCOURSE_DEV_LOG_LEVEL="info" UNICORN_TIMEOUT=99999 UNICORN_WORKERS=1"
+alias usnolog="NO_EMBER_CLI=1 BETTER_ERRORS=1 RAILS_COLORIZE_LOGGING=1 RAILS_VERBOSE_QUERY_LOGS=0 DISCOURSE_DEV_LOG_LEVEL=\"info\" UNICORN_TIMEOUT=99999 UNICORN_WORKERS=1 UNICORN_PORT=3000 bin/unicorn"
+alias eusnolog="BETTER_ERRORS=1 RAILS_COLORIZE_LOGGING=1 RAILS_VERBOSE_QUERY_LOGS=0 DISCOURSE_DEV_LOG_LEVEL=\"info\" UNICORN_TIMEOUT=99999 UNICORN_WORKERS=1 UNICORN_PORT=3000 bin/unicorn"
+alias us="NO_EMBER_CLI=1 RAILS_COLORIZE_LOGGING=1 RAILS_VERBOSE_QUERY_LOGS=1 UNICORN_TIMEOUT=99999 UNICORN_WORKERS=2 UNICORN_PORT=3000 bin/unicorn"
+alias drs="bundle install && RAILS_COLORIZE_LOGGING=1 RAILS_VERBOSE_QUERY_LOGS=1 UNICORN_TIMEOUT=99999 UNICORN_WORKERS=2 bundle exec rails s"
+alias drsdebug="BETTER_ERRORS=true RAILS_COLORIZE_LOGGING=1 RAILS_VERBOSE_QUERY_LOGS=1 UNICORN_TIMEOUT=99999 UNICORN_WORKERS=1 bundle exec rails s"
+alias drsq="BETTER_ERRORS=true DISABLE_MINI_PROFILER=1 RAILS_COLORIZE_LOGGING=1 UNICORN_TIMEOUT=99999 UNICORN_WORKERS=1 bundle exec rails s"
+alias drsnolog="BETTER_ERRORS=true  RAILS_COLORIZE_LOGGING=1 RAILS_VERBOSE_QUERY_LOGS=0 DISCOURSE_DEV_LOG_LEVEL=\"warn\" UNICORN_TIMEOUT=99999 UNICORN_WORKERS=2 bundle exec rails s"
+alias drsimap="BETTER_ERRORS=true DISCOURSE_DEV_LOG_LEVEL=\"debug\" DISCOURSE_ENABLE_EMAIL_SYNC_DEMON=true DEBUG_IMAP=true RAILS_VERBOSE_QUERY_LOGS=0 DISCOURSE_DEV_LOG_LEVEL=\"warn\" RAILS_COLORIZE_LOGGING=1 UNICORN_TIMEOUT=99999 UNICORN_WORKERS=1 bundle exec rails s"
 alias mig="bundle exec rake db:migrate RAILS_ENV=test && bundle exec rake db:migrate"
 alias rollback="bundle exec rake db:rollback RAILS_ENV=test && bundle exec rake db:rollback"
 alias gadd='git add "$({ git --no-pager diff --name-only; git ls-files --others --exclude-standard } | fzf)"'
+alias grest='git restore "$({ git --no-pager diff --name-only; git ls-files --others --exclude-standard } | fzf)"'
+alias gp='git add -p'
 alias gap='git add -p'
 alias gapp='git add -p "$({ git --no-pager diff --name-only; git ls-files --others --exclude-standard  } | fzf)"'
 alias chkfile='git checkout -- "$({ git --no-pager diff --name-only; git ls-files --others --exclude-standard } | fzf)"'
-alias rollback="bundle exec rake db:rollback RAILS_ENV=test && bundle exec rake db:rollback"
 alias gunstage='git reset "$(git --no-pager diff --name-only --cached | fzf)"'
+alias gu='git reset "$(git --no-pager diff --name-only --cached | fzf)"'
 alias gdiff='git --no-pager diff "$({ git --no-pager diff --name-only; } | fzf)"'
 alias gdiffc='git --no-pager diff --cached "$({ git --no-pager diff --name-only --cached; } | fzf)"'
 alias vopen='vim $(fzf)'
 alias cdiff="git diff-tree -p $@"
-alias gmm="git merge master"
+alias gmm="git merge main"
+alias gsl="git stash list"
 
 cdd() {
   cd $(fd --type directory | fzf)
@@ -215,6 +242,10 @@ newscript() {
   touch $1 && chmod +x $1
 }
 
+pasteimg() {
+  xclip -selection clipboard -t image/png -o > "$(date +%Y-%m-%d_%T).png"
+}
+
 ccu() {
   local commit=$(git log --color=always --format="%C(green bold)%H%Creset %C(yellow)[%ad]%Creset %C(white bold)%s%Creset %Cblue[%an]%Creset" --date=format:%Y-%m-%d | fzf --no-sort --ansi --multi)
   commit=(${(@s/ /)commit})
@@ -228,8 +259,53 @@ ccu() {
   fi
 }
 
+ccuc() {
+  local commit=$(git log --color=always --format="%C(green bold)%H%Creset %C(yellow)[%ad]%Creset %C(white bold)%s%Creset %Cblue[%an]%Creset" --date=format:%Y-%m-%d | fzf --no-sort --ansi --multi)
+  commit=(${(@s/ /)commit})
+  if [[ -n "${commit[1]/[ ]*\n/}" ]]
+  then
+    echo $commit[1] | xclip -selection clipboard
+    git --no-pager show --pretty=medium -s --color=always $commit[1]
+  fi
+}
+
+ccume() {
+  local commit=$(git log --author="Martin Brennan" --color=always --format="%C(green bold)%H%Creset %C(yellow)[%ad]%Creset %C(white bold)%s%Creset %Cblue[%an]%Creset" --date=format:%Y-%m-%d | fzf --no-sort --ansi --multi)
+  commit=(${(@s/ /)commit})
+  if [[ -n "${commit[1]/[ ]*\n/}" ]]
+  then
+    local url=${$(git remote get-url origin)//git@github.com:/https://github.com/}
+    url=${url//.git//}
+    final="$url""commit/""$commit[1]"
+    echo $final | xclip -selection clipboard
+    git --no-pager show --pretty=medium -s --color=always $commit[1]
+  fi
+}
+
+ccumec() {
+  local commit=$(git log --author="Martin Brennan" --color=always --format="%C(green bold)%H%Creset %C(yellow)[%ad]%Creset %C(white bold)%s%Creset %Cblue[%an]%Creset" --date=format:%Y-%m-%d | fzf --no-sort --ansi --multi)
+  commit=(${(@s/ /)commit})
+  if [[ -n "${commit[1]/[ ]*\n/}" ]]
+  then
+    echo $commit[1] | xclip -selection clipboard
+    git --no-pager show --pretty=medium -s --color=always $commit[1]
+  fi
+}
+
 dockerstop() {
   docker stop $(docker ps -aq)
+}
+
+allplugrg() {
+  rg $1 ~/all-the-plugins
+}
+
+stashm() {
+  git stash push -m $@
+}
+
+gfl() {
+  git log -p $(fzf --preview 'bat --style=numbers --color=always --line-range :500 {}')
 }
 
 # User configuration

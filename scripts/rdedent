@@ -1,0 +1,19 @@
+#!/bin/ruby
+
+require "open3"
+# require "dedent"
+
+input = ARGF.read
+# indented = input.dedent
+
+indented, status_indent = Open3.capture2(
+  "python3 -c 'import sys,textwrap; print(textwrap.dedent(sys.stdin.read()))'",
+  :stdin_data => input
+)
+
+output, status_clipboard = Open3.capture2(
+  "xsel --clipboard --input",
+  :stdin_data => indented
+)
+
+puts input
