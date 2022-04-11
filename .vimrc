@@ -190,8 +190,6 @@ command! PackClean call minpac#clean()
 command! PackStatus call minpac#status()
 
 " colour and terminal stuff
-let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 let g:gruvbox_transparent_bg=1
 colorscheme gruvbox
 let base16colorspace=256
@@ -243,6 +241,7 @@ vnoremap > >gv
 nnoremap \ :DrAll 
 
 vnoremap S3" <esc>`<O<esc>S"""<esc>`>o<esc>S"""<esc>k$
+set timeoutlen=1000 ttimeoutlen=0
 
 " digital garden markdown shortcuts
 vnoremap <leader>bl y :'<,'>s/<c-r>"/\[\[\0\]\]/g<cr>
@@ -584,5 +583,5 @@ endfunction
 
 autocmd BufWritePost * silent! call s:notify_file_change()
 
-source ~/.config/vim/arch.vim
+source ~/.config/vim/computer.vim
 source ~/.config/vim/colemak.vim
