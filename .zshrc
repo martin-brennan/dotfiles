@@ -1,7 +1,7 @@
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:/home/mb/scripts:/home/mb/repos/ops/bin:$HOME/.local/bin:/usr/local/go/bin:/home/mb/go/bin:$PATH
 
-# dolphine file manager stuff
+# dolphin file manager stuff
 [ "$XDG_CURRENT_DESKTOP" = "KDE"  ] || [ "$XDG_CURRENT_DESKTOP" = "GNOME"  ] || export QT_QPA_PLATFORMTHEME="qt5ct"
 
 export _JAVA_AWT_WM_NONREPARENTING=1
@@ -9,95 +9,38 @@ export _JAVA_AWT_WM_NONREPARTENTING=1
 export HYDRA_URL=http://127.0.0.1:4444
 export HYDRA_ADMIN_URL=http://127.0.0.1:4445
 export GOPATH=$HOME/go
-# Path to your oh-my-zsh installation.
 export PGROOT="/var/lib/postgres"
-export ZSH='/home/mb/.oh-my-zsh'
+export ZSH="$HOME/.oh-my-zsh"
 export FZF_DEFAULT_COMMAND="rg --files --hidden -g '!.git'"
 export SSH_ASKPASS='/usr/bin/ksshaskpass'
 export GIT_ASKPASS='/usr/bin/ksshaskpass'
-export DISCOURSE_REPO_BASE_DIRECTORY='/home/mb/repos'
+export REPO_BASE_DIRECTORY="$HOME/repos"
+export DISCOURSE_REPO_BASE_DIRECTORY=$REPO_BASE_DIRECTORY
 export DOCKER_GATEWAY_HOST=172.17.0.1
+export HUB_BASE_URL="http://localhost:3002/api"
 export FZF_DOCKER_PS_FORMAT="table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Ports}}"
 export FZF_DOCKER_PS_START_FORMAT="table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Image}}"
 export VIM_AUTOSPEC=1
 export BAT_THEME="gruvbox-dark"
-
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="robbyrussell"
-
 export RIPGREP_CONFIG_PATH="$HOME/.ripgrep"
 
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in ~/.oh-my-zsh/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+# Enter instead of ^M
+stty icrnl
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to automatically update without prompting.
-# DISABLE_UPDATE_PROMPT="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS=true
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in ~/.oh-my-zsh/plugins/*
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
+# zsh config
+ZSH_THEME="robbyrussell"
 plugins=(git fzf-docker)
-
 source $ZSH/oh-my-zsh.sh
 source /usr/share/nvm/init-nvm.sh
 
-# https://gist.github.com/gustavohenrique/5721719
+alias chrome="chromium"
 alias lspec="bat ~/scripts/last_spec.txt"
+alias revfix="git commit -m \"DEV: Review fixes\""
+alias specfix="git commit -m \"DEV: Test fix\""
+alias lintfix="git commit -m \"DEV: Lint\""
 alias amend="git commit --amend"
 alias bimig="bundle install && RAILS_ENV=test bundle exec rake db:migrate && RAILS_ENV=development bundle exec rake db:migrate"
-alias ddmaster="cd ~/repos/master/discourse"
+alias ddmaster="cd $REPO_BASE_DIRECTORY/master/discourse"
 alias gpickaxe="git log -p -S $@"
 alias rrm="fzf | xargs -I '{}' rm {}"
 alias down="cd ~/Downloads"
@@ -108,32 +51,19 @@ alias stcfg="forge && cd st && vim config.h"
 alias ls="ls --color=tty -lah"
 alias spotify="/usr/bin/spotify --force-device-scale-factor=1.5"
 alias chmx="chmod +x $@"
-alias mixer="ncpamixer"
 alias tt="tmux"
 alias killconsul="kill -9 $(pidof consul)"
 alias killnomad="kill -9 $(pidof nomad)"
 alias forge="cd ~/forge"
 alias ss="cd ~/scripts"
-alias sps="sudo pacman -S"
 alias irb="pry"
 alias dcu="docker-compose up"
 alias mkdir="mkdir -p "
-alias imaplog="tail -f log/development.log | grep -e 'EmailSync' -e '\[IMAP\]'"
-alias imapgmail="openssl s_client -crlf -connect imap.gmail.com:993"
-alias imapoutlook="openssl s_client -crlf -connect outlook.office365.com:993"
 alias gfix="git add . && git commit"
-alias cdap="cd ~/all-the-plugins"
-alias cdr='cd "$(fd -i -I -t d -d 1 . /home/mb/repos | fzf)"'
-alias cdc='cd "$(fd -i -I -t d -d 1 . /home/mb/repos/client-work | fzf)"'
-alias cdf='cd "$(fd -i -I -t d -d 1 . /home/mb/forge | fzf)"'
-alias cdb='cd "$(fd -i -I -t d -d 1 . /home/mb/bin | fzf)"'
-alias cda='cd "$(fd -i -I -t d -d 1 . /home/mb | fzf)"'
-alias dd="cd ~/repos/discourse"
 alias escaps="setxkbmap -option caps:swapescape"
 alias vimrc="vim ~/.vimrc"
 alias debugspec="RAILS_ENABLE_TEST_LOG=true RAILS_TEST_LOG_LEVEL=debug bundle exec rspec $@"
 alias debugspecwarn="RAILS_ENABLE_TEST_LOG=true RAILS_TEST_LOG_LEVEL=warn bundle exec rspec $@"
-alias chm="git checkout master"
 alias chmp="git checkout master && git pull"
 alias chma="git checkout main && git pull"
 alias annotatemodels="bundle exec annotate"
@@ -145,31 +75,27 @@ alias gco="git commit"
 alias gk="git commit"
 alias gcb="git checkout -b $@"
 alias gcl="git checkout -"
+alias gll="git checkout -"
 alias gpl="git pull"
+alias gvv="git pull"
+alias gg="git status"
 alias lefthooklint="npx lefthook run lints"
 alias zshreload="source ~/.zshrc"
-alias zz="zshreload"
+alias cc="cdr"
 alias v="vim"
 alias zshconfig="vim ~/.zshrc; zshreload"
 alias tmuxconfig="vim ~/.tmux.conf"
 alias it="git"
-alias rsearch="be rake routes | rg $@"
+alias rsearch="be rails routes | rg $@"
 alias be="bundle exec"
 alias bi="bundle install"
+alias bb="bundle install"
 alias bmig="be rails g migration $@"
 alias pgsql="psql postgres"
 alias brc="be rails c"
 alias mrs="bundle exec rails s -p 3001"
-alias eus="bin/ember-cli -u BETTER_ERRORS=1 RAILS_COLORIZE_LOGGING=1 RAILS_VERBOSE_QUERY_LOGS=0 DISCOURSE_DEV_LOG_LEVEL="info" UNICORN_TIMEOUT=99999 UNICORN_WORKERS=1"
-alias usnolog="NO_EMBER_CLI=1 BETTER_ERRORS=1 RAILS_COLORIZE_LOGGING=1 RAILS_VERBOSE_QUERY_LOGS=0 DISCOURSE_DEV_LOG_LEVEL=\"info\" UNICORN_TIMEOUT=99999 UNICORN_WORKERS=1 UNICORN_PORT=3000 bin/unicorn"
-alias eusnolog="BETTER_ERRORS=1 RAILS_COLORIZE_LOGGING=1 RAILS_VERBOSE_QUERY_LOGS=0 DISCOURSE_DEV_LOG_LEVEL=\"info\" UNICORN_TIMEOUT=99999 UNICORN_WORKERS=1 UNICORN_PORT=3000 bin/unicorn"
-alias us="NO_EMBER_CLI=1 RAILS_COLORIZE_LOGGING=1 RAILS_VERBOSE_QUERY_LOGS=1 UNICORN_TIMEOUT=99999 UNICORN_WORKERS=2 UNICORN_PORT=3000 bin/unicorn"
-alias drs="bundle install && RAILS_COLORIZE_LOGGING=1 RAILS_VERBOSE_QUERY_LOGS=1 UNICORN_TIMEOUT=99999 UNICORN_WORKERS=2 bundle exec rails s"
-alias drsdebug="BETTER_ERRORS=true RAILS_COLORIZE_LOGGING=1 RAILS_VERBOSE_QUERY_LOGS=1 UNICORN_TIMEOUT=99999 UNICORN_WORKERS=1 bundle exec rails s"
-alias drsq="BETTER_ERRORS=true DISABLE_MINI_PROFILER=1 RAILS_COLORIZE_LOGGING=1 UNICORN_TIMEOUT=99999 UNICORN_WORKERS=1 bundle exec rails s"
-alias drsnolog="BETTER_ERRORS=true  RAILS_COLORIZE_LOGGING=1 RAILS_VERBOSE_QUERY_LOGS=0 DISCOURSE_DEV_LOG_LEVEL=\"warn\" UNICORN_TIMEOUT=99999 UNICORN_WORKERS=2 bundle exec rails s"
-alias drsimap="BETTER_ERRORS=true DISCOURSE_DEV_LOG_LEVEL=\"debug\" DISCOURSE_ENABLE_EMAIL_SYNC_DEMON=true DEBUG_IMAP=true RAILS_VERBOSE_QUERY_LOGS=0 DISCOURSE_DEV_LOG_LEVEL=\"warn\" RAILS_COLORIZE_LOGGING=1 UNICORN_TIMEOUT=99999 UNICORN_WORKERS=1 bundle exec rails s"
 alias mig="bundle exec rake db:migrate RAILS_ENV=test && bundle exec rake db:migrate"
+alias mm="bundle exec rake db:migrate RAILS_ENV=test && bundle exec rake db:migrate"
 alias rollback="bundle exec rake db:rollback RAILS_ENV=test && bundle exec rake db:rollback"
 alias gadd='git add "$({ git --no-pager diff --name-only; git ls-files --others --exclude-standard } | fzf)"'
 alias grest='git restore "$({ git --no-pager diff --name-only; git ls-files --others --exclude-standard } | fzf)"'
@@ -185,9 +111,30 @@ alias vopen='vim $(fzf)'
 alias cdiff="git diff-tree -p $@"
 alias gmm="git merge main"
 alias gsl="git stash list"
+alias fzcp="fzf | tr -d '\n' | xclip -selection clipboard"
 
 cdd() {
   cd $(fd --type directory | fzf)
+}
+
+cdr() {
+  cd $(fd -i -I -t d -d 1 . $HOME/repos | fzf)
+}
+
+cdc() {
+  cd $(fd -i -I -t d -d 1 . $HOME/repos/client-work | fzf)
+}
+
+cdf() {
+  cd $(fd -i -I -t d -d 1 . $HOME/forge | fzf)
+}
+
+cdb() {
+  cd $(fd -i -I -t d -d 1 . $HOME/bin | fzf)
+}
+
+cda() {
+  cd $(fd -i -I -t d -d 1 . $HOME | fzf)
 }
 
 lastcommitmsg() {
@@ -221,21 +168,16 @@ gpush() {
   git push --set-upstream origin "$(git branch | grep \* | cut -d ' ' -f2)"
 }
 
+gbb() {
+  git push --set-upstream origin "$(git branch | grep \* | cut -d ' ' -f2)"
+}
+
 gblameline() {
   git blame -L$1,$1 -- $2
 }
 
 scratchfile() {
   vim ~/scratch/$(echo $(date +%Y-%m-%d-%H-%M-))$@.md
-}
-
-mdeploys() {
-  while [ 1 ]
-  do
-    m deploy-status
-    sleep 10
-    clear
-  done
 }
 
 newscript() {
@@ -297,48 +239,31 @@ dockerstop() {
 }
 
 allplugrg() {
-  rg $1 ~/all-the-plugins
+  rg $1 ~/allthe/all-the-plugins
 }
 
 stashm() {
   git stash push -m $@
 }
 
+stm() {
+  git add . && git stash push -m $@
+}
+
 gfl() {
   git log -p $(fzf --preview 'bat --style=numbers --color=always --line-range :500 {}')
 }
 
-# User configuration
+gclone() {
+  git clone "$1" && cd "$(basename $1)";
+}
 
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
 export EDITOR='vim'
 
 if [ -S $SSH_AUTH_SOCK ]; then
-    ssh-add -l | grep "The agent has no identities" && ssh-add
+  ssh-add -l | grep "The agent has no identities" && ssh-add
 fi
 
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-#
 if [ -n "$BASH_VERSION" ] || [ -n "$ZSH_VERSION" ]; then
   source /usr/share/fzf/key-bindings.zsh
   source /usr/share/fzf/completion.zsh
@@ -346,21 +271,15 @@ if [ -n "$BASH_VERSION" ] || [ -n "$ZSH_VERSION" ]; then
   source /usr/local/share/chruby/auto.sh
   chruby ruby-2.7.1
 fi
-# if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
-#         source /etc/profile.d/vte.sh
-# fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-if [[ $PWD == "/home/mb" ]]
-then
-  cd ~/repos
-fi
 
-if [[ -z $DISPLAY ]] && [[ $(tty) = /dev/tty1 ]]; then
-  exec startx
-fi
+# Load seperated config files
+for conf in "$HOME/.config/zsh/"*.zsh; do
+  source "${conf}"
+done
+unset conf
 
-if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-  tmux
-fi
-
+# Remove ctrl-t binding fzf
+bindkey -r "^T"
+bindkey -r "^[T"
