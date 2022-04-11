@@ -12,6 +12,43 @@ let g:git_messenger_always_into_popup = v:true
 let g:git_messenger_include_diff = "current"
 let g:git_messenger_preview_mods = "botright"
 
+call minpac#add('neoclide/coc.nvim', {'branch': 'release'})
+call minpac#add('antoinemadec/coc-fzf')
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+let g:coc_fzf_preview = 'right:50%'
+
+" Symbol renaming.
+nmap <leader>rr <Plug>(coc-rename)
+
+" remap $ to go to the last non-whitespace character in line in visual mode,
+" rarely do i want to select the rest of the line with the blank \n at the
+" end, usually this is used for replacing the rest of the line
+vnoremap $ g_
+
+" call minpac#add('prabirshrestha/vim-lsp')
+" call minpac#add('mattn/vim-lsp-settings')
+
 " slow typescript highlighting fixes
 " call minpac#add('leafgarland/typescript-vim')
 " call minpac#add('peitalin/vim-jsx-typescript')
@@ -21,7 +58,8 @@ let g:git_messenger_preview_mods = "botright"
 " HCL formatting, not often used
 " call minpac#add('fatih/vim-hclfmt')
 
-call minpac#add('chriskempson/base16-vim')
+" file operations (Delete, Rename etc.)
+call minpac#add('tpope/vim-eunuch')
 
 " allows incrementing numbers in a visual mode column
 call minpac#add('triglav/vim-visual-increment')
@@ -42,20 +80,11 @@ call minpac#add('tpope/vim-fugitive')
 " allows fugitive to browse with github
 call minpac#add('tpope/vim-rhubarb')
 
-" call minpac#add('dracula/vim', {'name': 'dracula'})
-" packadd! dracula
-
-call minpac#add('shapeoflambda/dark-purple.vim')
-
 " run rspec from vim
 call minpac#add('vim-test/vim-test')
 
 " auto pairing of symbols
 call minpac#add('jiangmiao/auto-pairs')
-" call minpac#add('tmsvg/pear-tree')
-" let g:pear_tree_smart_openers = 1
-" let g:pear_tree_smart_closers = 1
-" let g:pear_tree_smart_backspace = 1
 
 " emmet HTML expansion
 call minpac#add('mattn/emmet-vim')
@@ -112,6 +141,9 @@ call minpac#add('vim-scripts/taglist.vim')
 " shows yaml structure in status bar
 call minpac#add('Einenlum/yaml-revealer')
 
+" ale for linting, eslint etc.
+" call minpac#add('dense-analysis/ale')
+
 " find and replace multiple variants of a word (Subvert)
 " e.g. Address/address/addresses replace with Location/location/locations
 call minpac#add('tpope/vim-abolish')
@@ -128,6 +160,28 @@ call minpac#add('ngmy/vim-rubocop')
 " splits between single/multiple lines, little flaky
 call minpac#add('AndrewRadev/splitjoin.vim')
 
+" python autocomplete
+call minpac#add('davidhalter/jedi-vim')
+
+" golang tooling for vim
+call minpac#add('fatih/vim-go')
+let g:go_imports_autosave = 0
+let g:go_fmt_autosave = 0
+let g:go_highlight_extra_types = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_function_calls = 1
+let g:go_highlight_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_variable_declarations = 1
+let g:go_highlight_variable_assignments = 1
+
+" js auto import variable
+call minpac#add('kristijanhusak/vim-js-file-import')
+
+" replace word under cursor
+call minpac#add('chiedo/vim-dr-replace')
+
 packloadall
 
 command! PackInstall call minpac#update()
@@ -135,35 +189,25 @@ command! PackUpdate call minpac#update()
 command! PackClean call minpac#clean()
 command! PackStatus call minpac#status()
 
+" colour and terminal stuff
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-" let g:dracula_italic = 0
-" let g:dracula_colorterm = 0
-" colorscheme dracula
 let g:gruvbox_transparent_bg=1
 colorscheme gruvbox
 let base16colorspace=256
-" colorscheme base16-tomorrow-night-eighties
-" colorscheme dark_purple
-" highlight Normal     ctermbg=NONE
-" highlight LineNr     ctermbg=NONE guibg=NONE
-" highlight SignColumn ctermbg=NONE guibg=NONE
 set background=dark
 set t_Co=256
-" set termguicolors
+set scrolloff=5
+set colorcolumn=80
+highlight ColorColumn ctermbg=234
 
 " spell check for markdown files and highlighting the mistakes
-" autocmd BufRead,BufNewFile *.md setlocal spell
-" autocmd BufRead,BufNewFile gitcommit setlocal spell
 autocmd FileType markdown setlocal spell
 autocmd FileType gitcommit setlocal spell
 highlight SpellBad    ctermfg=167      ctermbg=016     cterm=underline      guifg=#FFFFFF   guibg=#000000   gui=none
 
 " ignore swap file already exists error
 set noswapfile
-
-set colorcolumn=80
-highlight ColorColumn ctermbg=234
 
 " airline status bar customization
 let g:airline_section_b = ""
@@ -191,6 +235,13 @@ runtime macros/matchit.vim
 " without yanking it
 vnoremap p "_dP
 
+" re-select after indenting
+vnoremap < <gv 
+vnoremap > >gv 
+
+" replace all under cursor
+nnoremap \ :DrAll 
+
 vnoremap S3" <esc>`<O<esc>S"""<esc>`>o<esc>S"""<esc>k$
 
 " digital garden markdown shortcuts
@@ -202,24 +253,27 @@ vnoremap <leader>bq =gv:s/<blockquote>\n//g<cr>gv:s/<\/blockquote//g<cr>gv:s/<\/
 
 " I am used to CTRL-p so use it, additionally allow for some extra
 " help in normal/visual mode
+nmap <C-p> :Files<cr>
 nmap <leader>h <plug>(fzf-maps-n)
 xmap <leader>h <plug>(fzf-maps-x)
-nmap <C-p> :Files<cr>
+nmap <leader>t :Files<cr>
 nmap <C-h> :%s/
 nmap <leader>h :History<cr>
 nmap <leader><leader> :BTags<cr>
-nmap <leader>gs :GFiles?<cr>
+nmap <leader>gg :GFiles?<cr>
 nmap <leader>Fb ]sv]e=<cr>
 nmap <leader><Tab> ?<Up><cr>
-nmap <leader>t :Tags<cr>
 nmap <leader>cn :cn<cr>
 nmap <leader>cp :cp<cr>
 
 " delete all binding.pry instances and debugger instances
-nmap <leader>ddd :g/binding.pry/d<cr>
+nmap <leader>ddd :g/binding.pry/d<cr> :g/debugger/d<cr>
 
-" inoremap <expr> <C-x><C-f> fzf#vim#complete#path("git ls-files")
+" remap down key in autocomplete
+inoremap <C-o> <C-n>
+
 inoremap <expr> <C-x><C-f> fzf#vim#complete#path("rg --files")
+inoremap <expr> <C-p>     pumvisible() ? "\<C-n>" : "\<Down>"
 
 " *---------------------------------------------------*
 " |               CUSTOM KEYBOARD MAPPINGS            |
@@ -228,6 +282,9 @@ inoremap <expr> <C-x><C-f> fzf#vim#complete#path("rg --files")
 " file name and path copying
 nmap <leader>fn :let @+=expand("%")<CR>
 nmap <leader>fp :let @+=expand("%:p")<CR>
+
+" add frozen string
+nmap <leader>zs ggI# frozen_string_literal: true<CR><CR><ESC>
 
 " quick select all
 nnoremap <leader>sa ggVG
@@ -281,6 +338,7 @@ vnoremap J :s/\s*$//<cr>gvJgv:s/ \./\./g<cr>
 " to reverse-search
 " nnoremap ` ?
 nnoremap ~ ?
+nnoremap " ?
 
 " list all buffers with fzf for easier switching
 nmap <leader>b :Buffers<cr>
@@ -299,6 +357,10 @@ nmap <leader>ro :g/describe\|scenario\|context\|it/#<cr>
 nmap <leader>vr :so $MYVIMRC<cr>
 nmap <leader>vc :e $MYVIMRC<cr>
 
+" vim-surround helpers/quick actions for words
+nmap '" viwS"
+nmap '' viwS'
+
 autocmd BufNewFile,BufRead *.hcl set filetype=hcl
 autocmd BufNewFile,BufRead *.hcl.erb set filetype=hcl
 autocmd BufNewFile,BufRead *.hcl set syntax=hcl
@@ -308,8 +370,6 @@ autocmd BufNewFile,BufRead *.nomad.erb set filetype=hcl
 autocmd BufNewFile,BufRead *.nomad set syntax=hcl
 autocmd BufNewFile,BufRead *.nomad.erb set syntax=hcl
 
-autocmd BufWritePost ~/forge/dwmblocks/config.h !cd ~/forge/dwmblocks/; sudo make install && { killall -q dwmblocks;setsid dwmblocks & }
-
 " F9 to format file
 noremap <F9> :Autoformat<CR>
 augroup formatting
@@ -318,11 +378,16 @@ augroup formatting
   autocmd FileType scss noremap <buffer> <F9> :Prettier<CR>
   autocmd FileType ruby noremap <buffer> <F9> :Autoformat<CR>
   autocmd FileType hcl noremap <buffer> <F9> :HclFmt<CR>
+  autocmd FileType go noremap <buffer> <F9> :GoFmt<CR>:GoImports<CR>
 augroup END
 
 augroup tabs
   autocmd Filetype go setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
 augroup END
+
+" prettier auto format on save
+let g:prettier#autoformat = 0
+autocmd BufWritePre *.js,*.json,*.css,*.scss,*.less,*.graphql PrettierAsync
 
 " only enable emmet for file types that make sense
 let g:user_emmet_install_global = 0
@@ -372,7 +437,19 @@ filetype plugin indent on
 
 " fix cursor disappearing on lines which have warnings e.g.
 " rubocop or lint errors
-let g:ale_echo_cursor = 0
+" let g:ale_echo_cursor = 0
+
+" only lint ale on save
+" let g:ale_open_list = 'on_save'
+" let g:ale_lint_on_text_changed = 0
+" let g:ale_lint_on_enter = 0
+" let g:ale_lint_on_save = 1
+" let g:ale_fix_on_save = 1
+" let g:ale_linters = {'javascript': ['eslint']}
+" let g:ale_fixers = {'javascript': ['prettier'], 'css': ['prettier']}
+" let g:ale_linters_explicit = 1
+" let g:ale_sign_error = '!!'
+" let g:ale_sign_warning = '~~'
 
 " makes it so when copying using
 " yy etc we copy to the system
@@ -394,7 +471,6 @@ set redrawtime=10000
 " or checking them in by mistake when forcing an add
 set directory=$HOME/.vim/swapfiles/
 set backupdir=$HOME/.vim/backupdir/
-
 
 " stolen from sam saffron...modified to always use origin remote
 "
@@ -481,14 +557,13 @@ command! -bar -bang -range -nargs=* CommitLink
 command! -bar -bang -range -nargs=* GithubBlame
   \ keepjumps call <sid>GithubBlame()
 
-nmap <leader>gcl jjwwwviw::CommitLink<cr>
+nmap <leader>gcl eewwwvjw::CommitLink<cr>
 vmap <leader>cl :CommitLink<cr>
 nmap <leader>gm :GitMessenger<cr>
 vmap <leader>gh :GithubLink<cr>
 nmap <leader>ghf :GithubLinkMasterFile<cr>
 nmap <leader>fip :%s/\(\d\{1,3\}[.]\)\{3\}\(\d\{1,3\}\)/9.9.9.9/g <cr>
 inoremap <C-d><C-d> <C-r>=substitute(system('date +"%Y-%M-%dT%H:%M"'), '\n\+', '', '')<CR>
-" {'options': ['--color', 'spinner:#8ec07c,hl:#faa22f,fg:#bdae93,header:#e6e477,info:#fabd2f,pointer:#8ec07c,marker:#8ec07c,fg+:#ebdbb2,prompt:#fabd2f,hl+:#faa22f']}
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
   \   'rg --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
@@ -508,3 +583,6 @@ function! s:notify_file_change_discourse()
 endfunction
 
 autocmd BufWritePost * silent! call s:notify_file_change()
+
+source ~/.config/vim/arch.vim
+source ~/.config/vim/colemak.vim
