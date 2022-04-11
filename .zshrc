@@ -31,7 +31,6 @@ stty icrnl
 ZSH_THEME="robbyrussell"
 plugins=(git fzf-docker)
 source $ZSH/oh-my-zsh.sh
-source /usr/share/nvm/init-nvm.sh
 
 alias chrome="chromium"
 alias lspec="bat ~/scripts/last_spec.txt"
@@ -262,14 +261,6 @@ export EDITOR='vim'
 
 if [ -S $SSH_AUTH_SOCK ]; then
   ssh-add -l | grep "The agent has no identities" && ssh-add
-fi
-
-if [ -n "$BASH_VERSION" ] || [ -n "$ZSH_VERSION" ]; then
-  source /usr/share/fzf/key-bindings.zsh
-  source /usr/share/fzf/completion.zsh
-  source /usr/local/share/chruby/chruby.sh
-  source /usr/local/share/chruby/auto.sh
-  chruby ruby-2.7.1
 fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
