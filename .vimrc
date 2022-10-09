@@ -12,9 +12,11 @@ let g:git_messenger_always_into_popup = v:true
 let g:git_messenger_include_diff = "current"
 let g:git_messenger_preview_mods = "botright"
 
-call minpac#add('neoclide/coc.nvim', {'branch': 'release'})
+" call minpac#add('neoclide/coc.nvim', {'rev': '1c4c2ab082b8e73a453c97356ab98bab31483a5b', 'do': 'yarn install --frozen-lockfile'})
+call minpac#add('neoclide/coc.nvim', {'rev': '4a7b75a07a1c551f7b0568f646fdfc6ca4ef9c51', 'do': 'yarn install --frozen-lockfile'})
+" call minpac#add('neoclide/coc.nvim', {'rev': 'release'})
 call minpac#add('antoinemadec/coc-fzf')
-
+"
 " Use K to show documentation in preview window.
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
@@ -39,7 +41,15 @@ nmap <silent> ]g <Plug>(coc-diagnostic-next)
 let g:coc_fzf_preview = 'right:50%'
 
 " Symbol renaming.
-nmap <leader>rr <Plug>(coc-rename)
+" nmap <leader>rr <Plug>(coc-rename)
+
+" call minpac#add('prabirshrestha/vim-lsp')
+" call minpac#add('mattn/vim-lsp-settings')
+" call minpac#add('prabirshrestha/asyncomplete.vim')
+" call minpac#add('prabirshrestha/asyncomplete-lsp.vim')
+let g:lsp_diagnostics_enabled = 0
+
+" nmap <silent> gd :LspDefinition<cr>
 
 " remap $ to go to the last non-whitespace character in line in visual mode,
 " rarely do i want to select the rest of the line with the blank \n at the
@@ -93,7 +103,7 @@ call minpac#add('mattn/emmet-vim')
 call minpac#add('vim-scripts/camelcasemotion')
 
 " hashicorp HCL syntax
-call minpac#add('jvirtanen/vim-hcl')
+" call minpac#add('jvirtanen/vim-hcl')
 
 " allows easy block commenting
 call minpac#add('tpope/vim-commentary')
@@ -176,6 +186,8 @@ let g:go_highlight_fields = 1
 let g:go_highlight_variable_declarations = 1
 let g:go_highlight_variable_assignments = 1
 
+set timeoutlen=1000 ttimeoutlen=0
+
 " js auto import variable
 call minpac#add('kristijanhusak/vim-js-file-import')
 
@@ -217,6 +229,10 @@ let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
 " change Autoformat behaviour for rubocop
+" let g:formatdef_my_custom_rubocop = "'rubocop -A -o /dev/null -s '.bufname('%').' \| sed -n 2,\\$p'"
+" let g:formatters_ruby = ['my_custom_rubocop']
+"
+" change Autoformat behaviour for ruby-syntax-tree
 let g:formatdef_my_custom_rubocop = "'rubocop -A -o /dev/null -s '.bufname('%').' \| sed -n 2,\\$p'"
 let g:formatters_ruby = ['my_custom_rubocop']
 
@@ -241,7 +257,6 @@ vnoremap > >gv
 nnoremap \ :DrAll 
 
 vnoremap S3" <esc>`<O<esc>S"""<esc>`>o<esc>S"""<esc>k$
-set timeoutlen=1000 ttimeoutlen=0
 
 " digital garden markdown shortcuts
 vnoremap <leader>bl y :'<,'>s/<c-r>"/\[\[\0\]\]/g<cr>
@@ -310,6 +325,9 @@ nmap <leader>vib ^]sjv]ek
 nmap <leader>Rs ^]s
 nmap <leader>Re ^]e
 nmap <leader>Rp ^]p
+nmap rs ^]s
+nmap re ^]e
+nmap rp ^]p
 vmap rs ^]s
 vmap re ^]e
 vmap rp ^]p
@@ -380,13 +398,79 @@ augroup formatting
   autocmd FileType go noremap <buffer> <F9> :GoFmt<CR>:GoImports<CR>
 augroup END
 
+nmap <leader><F9> :call SyntaxTreeRubyFormat()<cr>
+command! STRubyFormat execute ':silent ! clear && syntaxtreeruby.sh ' . expand("%:p") | execute ':e' | execute ':redraw!'
+
+" with help from https://github.com/prettier/vim-prettier/blob/master/autoload/prettier/utils/buffer.vim
+function SyntaxTreeRubyFormat()
+
+  let l:contents = join(getline(1, '$'), "\n")
+  let l:path = fnamemodify(expand('%:p'), ':h')
+  let l:found = 0
+
+  while len(l:path) > 2
+    if filereadable(l:path . '/Gemfile')
+
+      let l:gemfile = join(readfile(l:path . '/Gemfile'), "\n")
+
+      if stridx(l:gemfile, 'syntax_tree') > 0
+        let l:found = 1
+        break
+      endif
+    endif
+
+    let l:path = fnamemodify(l:path, ':h')
+  endwhile
+
+  if l:found == 0
+    execute "Autoformat"
+    return
+  endif
+
+  let l:command = "bundle exec stree format --print-width=100 --plugins=plugin/trailing_comma"
+
+  let l:old_path = chdir(l:path)
+
+  let l:old_ruby_opt = $RUBYOPT
+  let $RUBYOPT = "-W0"
+  let l:formatted = system(l:command, l:contents)
+
+  let $RUBYOPT = l:old_ruby_opt
+  call chdir(l:old_path)
+
+  let l:winview = winsaveview()
+
+  " https://vim.fandom.com/wiki/Restore_the_cursor_position_after_undoing_text_change_made_by_a_script
+  " create a fake change entry and merge with undo stack prior to do formating
+  execute "normal! i "
+  execute "normal! a\<BS>"
+  try | silent undojoin | catch | endtry
+
+   " delete all lines on the current buffer
+  silent! execute 'lockmarks %delete _'
+
+  " replace all lines from the current buffer with output from prettier
+  let l:idx = 0
+  for l:line in split(l:formatted, "\n")
+    silent! lockmarks call append(l:idx, l:line)
+    let l:idx += 1
+  endfor
+
+  " delete trailing newline introduced by the above append procedure
+  silent! lockmarks execute '$delete _'
+
+  " Restore view
+  call winrestview(l:winview)
+
+endfunction
+
 augroup tabs
   autocmd Filetype go setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
 augroup END
 
 " prettier auto format on save
-let g:prettier#autoformat = 0
-autocmd BufWritePre *.js,*.json,*.css,*.scss,*.less,*.graphql PrettierAsync
+" let g:prettier#autoformat = 0
+" autocmd BufWritePre *.js,*.json,*.css,*.scss,*.less,*.graphql PrettierAsync
 
 " only enable emmet for file types that make sense
 let g:user_emmet_install_global = 0
@@ -426,6 +510,7 @@ set nocompatible
 set tabstop=2
 set softtabstop=2
 set shiftwidth=2
+set cursorline
 
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
@@ -528,6 +613,24 @@ function! s:GithubBlame()
   echo link
 endfunction
 
+function! s:GithubHistory()
+  let path = resolve(expand('%:p'))
+  let dir = shellescape(fnamemodify(path, ':h'))
+  let originRepo = system('cd ' . dir . ' && git config --get remote.origin.url')
+  let repoN = substitute(split(originRepo, ':')[1], '.git', '', '')
+
+  let repo = substitute(repoN, '\r\?\n\+$', '', '')
+  let root = system('cd ' . dir . '  && git rev-parse --show-toplevel')
+  let relative = strpart(path, strlen(root) - 1, strlen(path) - strlen(root) + 1)
+
+  let link = 'https://github.com/'. repo . '/commits/main' . relative
+
+  let @+ = link
+  let @* = link
+
+  echo link
+endfunction
+
 function! s:CommitLink()
   let sha = GetSelectedText()
   let path = resolve(expand('%:p'))
@@ -555,8 +658,10 @@ command! -bar -bang -range -nargs=* CommitLink
 
 command! -bar -bang -range -nargs=* GithubBlame
   \ keepjumps call <sid>GithubBlame()
+command! -bar -bang -range -nargs=* GithubHistory
+  \ keepjumps call <sid>GithubHistory()
 
-nmap <leader>gcl eewwwvjw::CommitLink<cr>
+nmap <leader>gcl eewwwwwviw::CommitLink<cr>
 vmap <leader>cl :CommitLink<cr>
 nmap <leader>gm :GitMessenger<cr>
 vmap <leader>gh :GithubLink<cr>
