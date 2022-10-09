@@ -17,12 +17,16 @@ export GIT_ASKPASS='/usr/bin/ksshaskpass'
 export REPO_BASE_DIRECTORY="$HOME/repos"
 export DISCOURSE_REPO_BASE_DIRECTORY=$REPO_BASE_DIRECTORY
 export DOCKER_GATEWAY_HOST=172.17.0.1
-export HUB_BASE_URL="http://localhost:3002/api"
+export HUB_BASE_URL="http://localhost:4001/api"
 export FZF_DOCKER_PS_FORMAT="table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Ports}}"
 export FZF_DOCKER_PS_START_FORMAT="table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Image}}"
 export VIM_AUTOSPEC=1
 export BAT_THEME="gruvbox-dark"
 export RIPGREP_CONFIG_PATH="$HOME/.ripgrep"
+export DISCOURSE_ALLOW_UNSECURE_CHAT_UPLOADS=1
+export ANDROID_SDK_ROOT=$HOME/Android/Sdk
+export PATH=$PATH:$ANDROID_SDK_ROOT/emulator
+export PATH=$PATH:$ANDROID_SDK_ROOT/platform-tools
 
 # Enter instead of ^M
 stty icrnl
@@ -32,12 +36,15 @@ ZSH_THEME="robbyrussell"
 plugins=(git fzf-docker)
 source $ZSH/oh-my-zsh.sh
 
+alias rubyst="RUBYOPT=\"-W0\" bundle exec stree write --print-width=100 --plugins=plugin/trailing_comma $@"
 alias chrome="chromium"
 alias lspec="bat ~/scripts/last_spec.txt"
 alias revfix="git commit -m \"DEV: Review fixes\""
 alias specfix="git commit -m \"DEV: Test fix\""
 alias lintfix="git commit -m \"DEV: Lint\""
 alias amend="git commit --amend"
+alias amendno="git commit --amend --no-edit"
+alias amendpush="git commit --amend --no-edit && git push -f"
 alias bimig="bundle install && RAILS_ENV=test bundle exec rake db:migrate && RAILS_ENV=development bundle exec rake db:migrate"
 alias ddmaster="cd $REPO_BASE_DIRECTORY/master/discourse"
 alias gpickaxe="git log -p -S $@"
@@ -67,7 +74,7 @@ alias chmp="git checkout master && git pull"
 alias chma="git checkout main && git pull"
 alias annotatemodels="bundle exec annotate"
 alias plugspec="IMPROVED_SPEC_DEBUGGING=1 LOAD_PLUGINS=1 be rspec $@"
-alias masterfile="git checkout origin/master -- $@"
+alias mainfile="git checkout origin/main -- $@"
 alias remotelist="git remote -v"
 alias commit="git commit"
 alias gco="git commit"
@@ -80,7 +87,6 @@ alias gvv="git pull"
 alias gg="git status"
 alias lefthooklint="npx lefthook run lints"
 alias zshreload="source ~/.zshrc"
-alias cc="cdr"
 alias v="vim"
 alias zshconfig="vim ~/.zshrc; zshreload"
 alias tmuxconfig="vim ~/.tmux.conf"
@@ -111,9 +117,22 @@ alias cdiff="git diff-tree -p $@"
 alias gmm="git merge main"
 alias gsl="git stash list"
 alias fzcp="fzf | tr -d '\n' | xclip -selection clipboard"
+alias dc="cd ~/repos/discourse-chat"
+alias ms="cd ~/repos/mothership"
+alias ops="cd ~/repos/ops"
+alias ws="cd ~/repos/website"
+alias hs="cd ~/repos/hosted-site"
 
 cdd() {
   cd $(fd --type directory | fzf)
+}
+
+cc() {
+  cd $(fd -i -I -t d -d 1 . $HOME/repos | fzf)
+}
+
+cdgems() {
+  cd $(fd -i -I -t d -d 1 . $HOME/.gem/ruby/2.7.5/gems | fzf)
 }
 
 cdr() {
@@ -185,6 +204,18 @@ newscript() {
 
 pasteimg() {
   xclip -selection clipboard -t image/png -o > "$(date +%Y-%m-%d_%T).png"
+}
+
+cdgem() {
+  gempath=$(bundle show $@)
+  cd $gempath
+}
+
+commurl() {
+  local url=${$(git remote get-url origin)//git@github.com:/https://github.com/}
+  url=${url//.git//}
+  final="$url""commit/""$@"
+  echo $final | xclip -selection clipboard
 }
 
 ccu() {
