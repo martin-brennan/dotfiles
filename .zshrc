@@ -117,11 +117,6 @@ alias cdiff="git diff-tree -p $@"
 alias gmm="git merge main"
 alias gsl="git stash list"
 alias fzcp="fzf | tr -d '\n' | xclip -selection clipboard"
-alias dc="cd ~/repos/discourse-chat"
-alias ms="cd ~/repos/mothership"
-alias ops="cd ~/repos/ops"
-alias ws="cd ~/repos/website"
-alias hs="cd ~/repos/hosted-site"
 
 cdd() {
   cd $(fd --type directory | fzf)
