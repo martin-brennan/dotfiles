@@ -1,0 +1,124 @@
+snippet dd "debugger"
+binding.pry
+endsnippet
+
+snippet pt "pause test"
+pause_test
+endsnippet
+
+snippet clog "puts"
+puts $1
+endsnippet
+
+snippet dsc "spec describe"
+describe "$1" do
+	$2
+end
+endsnippet
+
+snippet ctx "spec context"
+context "$1" do
+	$2
+end
+endsnippet
+
+snippet itsh "spec it"
+it "$1" do
+	$2
+end
+endsnippet
+
+snippet befdo "spec before do"
+before do
+	$2
+end
+endsnippet
+
+snippet exin "spec expect to include"
+expect($1).to include($2)
+endsnippet
+
+snippet exeq "spec expect to eq"
+expect($1).to eq($2)
+endsnippet
+
+snippet exs "spec expect subject to"
+expect(subject).to $1
+endsnippet
+
+snippet exrec "spec expect subject to receive"
+expect(subject).to receive(:$1)$2
+endsnippet
+
+snippet taskspec "spec shell for tasks"
+# frozen_string_literal: true
+
+RSpec.describe "$1" do
+  $2
+end
+endsnippet
+
+snippet thr "thread new"
+Thread.new { $1 }
+endsnippet
+
+snippet blk "ruby block"
+$1 do
+  $2
+end
+endsnippet
+
+snippet blkarg "ruby block arg"
+$1 do |$2|
+  $3
+end
+endsnippet
+
+snippet classspec "spec shell for class"
+# frozen_string_literal: true
+
+RSpec.describe $1 do
+  $2
+end
+endsnippet
+
+snippet fzs "frozen string literal"
+# frozen_string_literal: true
+endsnippet
+
+snippet irrev "irreversible migration"
+raise ActiveRecord::IrreversibleMigration
+endsnippet
+
+snippet let "let"
+let(:$1) { $2 }
+endsnippet
+
+snippet letbl "let block"
+let(:$1) do
+	$2
+end
+endsnippet
+
+snippet td "me todo"
+# TODO (martin) 
+endsnippet
+
+snippet sql "sql"
+sql_query = <<~SQL
+  $1
+SQL
+DB.exec(sql_query, $2)
+endsnippet
+
+snippet sysspec "system spec"
+# frozen_string_literal: true
+
+describe "$1", type: :system, js: true do
+  fab!(:current_user) { Fabricate(:user) }
+
+	before do
+	  sign_in(current_user)
+	end
+end
+endsnippet

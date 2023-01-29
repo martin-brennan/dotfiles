@@ -36,6 +36,7 @@ ZSH_THEME="robbyrussell"
 plugins=(git fzf-docker)
 source $ZSH/oh-my-zsh.sh
 
+alias rr="cd ~/repos"
 alias rubyst="RUBYOPT=\"-W0\" bundle exec stree write --print-width=100 --plugins=plugin/trailing_comma $@"
 alias chrome="chromium"
 alias lspec="bat ~/scripts/last_spec.txt"
@@ -89,15 +90,16 @@ alias lefthooklint="npx lefthook run lints"
 alias zshreload="source ~/.zshrc"
 alias v="vim"
 alias zshconfig="vim ~/.zshrc; zshreload"
+alias zshall="vim ~/.config/zsh; zshreload"
 alias tmuxconfig="vim ~/.tmux.conf"
 alias it="git"
 alias rsearch="be rails routes | rg $@"
 alias be="bundle exec"
 alias bi="bundle install"
 alias bb="bundle install"
-alias bmig="be rails g migration $@"
+alias bmig="bin/rails rails g migration $@"
 alias pgsql="psql postgres"
-alias brc="be rails c"
+alias brc="bin/rails c"
 alias mrs="bundle exec rails s -p 3001"
 alias mig="bundle exec rake db:migrate RAILS_ENV=test && bundle exec rake db:migrate"
 alias mm="bundle exec rake db:migrate RAILS_ENV=test && bundle exec rake db:migrate"
@@ -114,7 +116,7 @@ alias gdiff='git --no-pager diff "$({ git --no-pager diff --name-only; } | fzf)"
 alias gdiffc='git --no-pager diff --cached "$({ git --no-pager diff --name-only --cached; } | fzf)"'
 alias vopen='vim $(fzf)'
 alias cdiff="git diff-tree -p $@"
-alias gmm="git merge main"
+alias gmm="git merge main --no-edit"
 alias gsl="git stash list"
 alias fzcp="fzf | tr -d '\n' | xclip -selection clipboard"
 alias dc="cd ~/repos/discourse-chat"
@@ -122,6 +124,9 @@ alias ms="cd ~/repos/mothership"
 alias ops="cd ~/repos/ops"
 alias ws="cd ~/repos/website"
 alias hs="cd ~/repos/hosted-site"
+alias ddmain="cd ~/repos/main/discourse"
+alias ddbeta="cd ~/repos/main/discourse-beta"
+alias ddstable="cd ~/repos/main/discourse-stable"
 
 cdd() {
   cd $(fd --type directory | fzf)
@@ -286,6 +291,17 @@ gfl() {
 
 gclone() {
   git clone "$1" && cd "$(basename $1)";
+}
+
+dumptestdb() {
+  RAILS_ENV=test bin/rake db:drop db:create db:migrate
+}
+dumpparatestdb() {
+  RAILS_ENV=test bin/rake parallel:drop parallel:create parallel:migrate
+}
+
+cdgem() {
+  cd $(bundle show $1)
 }
 
 export EDITOR='vim'

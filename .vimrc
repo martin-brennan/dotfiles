@@ -11,12 +11,11 @@ let g:git_messenger_always_into_popup = v:true
 let g:git_messenger_always_into_popup = v:true
 let g:git_messenger_include_diff = "current"
 let g:git_messenger_preview_mods = "botright"
+let g:ale_disable_lsp = 1
 
-" call minpac#add('neoclide/coc.nvim', {'rev': '1c4c2ab082b8e73a453c97356ab98bab31483a5b', 'do': 'yarn install --frozen-lockfile'})
-call minpac#add('neoclide/coc.nvim', {'rev': '4a7b75a07a1c551f7b0568f646fdfc6ca4ef9c51', 'do': 'yarn install --frozen-lockfile'})
-" call minpac#add('neoclide/coc.nvim', {'rev': 'release'})
+call minpac#add('neoclide/coc.nvim', {'rev': 'release'})
 call minpac#add('antoinemadec/coc-fzf')
-"
+
 " Use K to show documentation in preview window.
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
@@ -38,26 +37,13 @@ nmap <silent> gr <Plug>(coc-references)
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
-let g:coc_fzf_preview = 'right:50%'
-
-" Symbol renaming.
-" nmap <leader>rr <Plug>(coc-rename)
-
-" call minpac#add('prabirshrestha/vim-lsp')
-" call minpac#add('mattn/vim-lsp-settings')
-" call minpac#add('prabirshrestha/asyncomplete.vim')
-" call minpac#add('prabirshrestha/asyncomplete-lsp.vim')
-let g:lsp_diagnostics_enabled = 0
-
-" nmap <silent> gd :LspDefinition<cr>
+" Make vim backspace behave sensibly https://til.hashrocket.com/posts/f5531b6da0-backspace-options
+set backspace=indent,eol,start
 
 " remap $ to go to the last non-whitespace character in line in visual mode,
 " rarely do i want to select the rest of the line with the blank \n at the
 " end, usually this is used for replacing the rest of the line
 vnoremap $ g_
-
-" call minpac#add('prabirshrestha/vim-lsp')
-" call minpac#add('mattn/vim-lsp-settings')
 
 " slow typescript highlighting fixes
 " call minpac#add('leafgarland/typescript-vim')
@@ -75,6 +61,7 @@ call minpac#add('tpope/vim-eunuch')
 call minpac#add('triglav/vim-visual-increment')
 
 " use fzf for ctrl+p project-wide file search, tags in files, etc.
+call minpac#add('junegunn/fzf', { 'do': { -> fzf#install() } })
 call minpac#add('junegunn/fzf.vim')
 let g:fzf_layout = { 'down': '40%' }
 
@@ -102,9 +89,6 @@ call minpac#add('mattn/emmet-vim')
 " word motions for moving through camel case and underscores
 call minpac#add('vim-scripts/camelcasemotion')
 
-" hashicorp HCL syntax
-" call minpac#add('jvirtanen/vim-hcl')
-
 " allows easy block commenting
 call minpac#add('tpope/vim-commentary')
 
@@ -125,7 +109,6 @@ call minpac#add('morhetz/gruvbox')
 
 " snippets
 call minpac#add('SirVer/ultisnips')
-call minpac#add('honza/vim-snippets')
 
 " allows calling Autoformat which hooks into e.g. rubocop
 call minpac#add('Chiel92/vim-autoformat')
@@ -152,7 +135,7 @@ call minpac#add('vim-scripts/taglist.vim')
 call minpac#add('Einenlum/yaml-revealer')
 
 " ale for linting, eslint etc.
-" call minpac#add('dense-analysis/ale')
+call minpac#add('dense-analysis/ale')
 
 " find and replace multiple variants of a word (Subvert)
 " e.g. Address/address/addresses replace with Location/location/locations
@@ -202,6 +185,8 @@ command! PackClean call minpac#clean()
 command! PackStatus call minpac#status()
 
 " colour and terminal stuff
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 let g:gruvbox_transparent_bg=1
 colorscheme gruvbox
 let base16colorspace=256
@@ -228,14 +213,6 @@ let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
-" change Autoformat behaviour for rubocop
-" let g:formatdef_my_custom_rubocop = "'rubocop -A -o /dev/null -s '.bufname('%').' \| sed -n 2,\\$p'"
-" let g:formatters_ruby = ['my_custom_rubocop']
-"
-" change Autoformat behaviour for ruby-syntax-tree
-let g:formatdef_my_custom_rubocop = "'rubocop -A -o /dev/null -s '.bufname('%').' \| sed -n 2,\\$p'"
-let g:formatters_ruby = ['my_custom_rubocop']
-
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
 
@@ -245,20 +222,23 @@ let mapleader = "\<Space>"
 " enable matching blocks using visual mode
 runtime macros/matchit.vim
 
+" *---------------------------------------------------*
+" |               CUSTOM KEYBOARD MAPPINGS            |
+" ----------------------------------------------------
+
 " replace currently selected text with default register
 " without yanking it
 vnoremap p "_dP
 
 " re-select after indenting
-vnoremap < <gv 
-vnoremap > >gv 
+vnoremap < <gv
+vnoremap > >gv
 
 " replace all under cursor
-nnoremap \ :DrAll 
-
-vnoremap S3" <esc>`<O<esc>S"""<esc>`>o<esc>S"""<esc>k$
+nnoremap \ :DrAll
 
 " digital garden markdown shortcuts
+vnoremap S3" <esc>`<O<esc>S"""<esc>`>o<esc>S"""<esc>k$
 vnoremap <leader>bl y :'<,'>s/<c-r>"/\[\[\0\]\]/g<cr>
 vnoremap <leader>ml y :'<,'>s/<c-r>"/\[\0\](LINK)/g<cr>/LINK<cr>ciw
 vnoremap <leader>cml y :'<,'>s/<c-r>"/\[\0\](LINK)/g<cr>/LINK<cr>viwp
@@ -266,17 +246,28 @@ nnoremap <leader>0 vi["my<Left>dt(dt<Space><Left>"mp`[v`]
 vnoremap <leader>bq =gv:s/<blockquote>\n//g<cr>gv:s/<\/blockquote//g<cr>gv:s/<\/p>/\r>/g<cr>gv:s/<p>/> /g<cr>gv:s/<ci/> <ci/g<cr>
 
 " I am used to CTRL-p so use it, additionally allow for some extra
-" help in normal/visual mode
+" help in normal/visual mode, also add alternate ways of triggering
+" it, you can never have too much file access
 nmap <C-p> :Files<cr>
-nmap <leader>h <plug>(fzf-maps-n)
-xmap <leader>h <plug>(fzf-maps-x)
+nmap <leader>m :Files<cr>
 nmap <leader>t :Files<cr>
-nmap <C-h> :%s/
+nmap ff :Files<cr>
+
+" replace quick shortcuts
+nmap <C-h> :%s/ 
+vnoremap <C-h> s/ 
 nmap <leader>h :History<cr>
+
+" ctags for the file listed using fzf
 nmap <leader><leader> :BTags<cr>
+
+" list of all currently changed git files listed with fzf
 nmap <leader>gg :GFiles?<cr>
-nmap <leader>Fb ]sv]e=<cr>
+
+" search last ? search used
 nmap <leader><Tab> ?<Up><cr>
+
+" navigate quickfix list
 nmap <leader>cn :cn<cr>
 nmap <leader>cp :cp<cr>
 
@@ -285,20 +276,14 @@ nmap <leader>ddd :g/binding.pry/d<cr> :g/debugger/d<cr>
 
 " remap down key in autocomplete
 inoremap <C-o> <C-n>
-
-inoremap <expr> <C-x><C-f> fzf#vim#complete#path("rg --files")
 inoremap <expr> <C-p>     pumvisible() ? "\<C-n>" : "\<Down>"
 
-" *---------------------------------------------------*
-" |               CUSTOM KEYBOARD MAPPINGS            |
-" ----------------------------------------------------
+" make enter work coc-nvim
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 
 " file name and path copying
 nmap <leader>fn :let @+=expand("%")<CR>
 nmap <leader>fp :let @+=expand("%:p")<CR>
-
-" add frozen string
-nmap <leader>zs ggI# frozen_string_literal: true<CR><CR><ESC>
 
 " quick select all
 nnoremap <leader>sa ggVG
@@ -306,7 +291,7 @@ nnoremap <leader>sa ggVG
 " paste inside
 nnoremap <leader>pi" vi"p
 
-" quick reinden
+" quick reindent
 nnoremap <leader>== ggVG=
 
 " quick split and switch to new split window
@@ -314,10 +299,13 @@ nnoremap <leader>vs :vsplit<cr><ESC>:wincmd l<cr>
 nnoremap <leader>hs :split<cr><ESC>:wincmd j<cr>
 nnoremap <leader>w :wincmd w<cr>
 
-" ruby hash block manipulation
+" ruby hash block manipulation (not needed with syntax_tree)
 nnoremap <leader>hh ci{<cr><ESC>pi<cr><ESC>v2k=
 nnoremap <leader>hd ci{<cr><ESC>pi<cr><ESC>v2k=/{<cr>vl:s/{/do/g<cr>/}<cr>vl:s/}/end/g<cr>
 vnoremap <leader>hj :s/, /,\r/g<cr>`[V`]=
+
+" ruby format block (not needed with syntax_tree)
+nmap <leader>Fb ]sv]e=<cr>
 
 " quick select ruby block/method
 nmap <leader>vb ^]sv]e
@@ -333,12 +321,6 @@ vmap re ^]e
 vmap rp ^]p
 nmap rn ]m
 nmap rm [m
-vnoremap <leader>sd :s# \+# #g<cr>==
-
-" leader + d deletes without copying t" C-w lo clipboard
-nnoremap <!-- <leader> -->d "_d
-xnoremap <leader>d "_d
-xnoremap <leader>p "_dP
 
 " navigate between git changes
 nmap <leader>gj <plug>(signify-next-hunk)
@@ -348,7 +330,7 @@ nmap <leader>gk <plug>(signify-prev-hunk)
 " lets me use visual block mode
 nnoremap <c-v> <c-s-v>
 
-vnoremap J :s/\s*$//<cr>gvJgv:s/ \./\./g<cr>
+" vnoremap J :s/\s*$//<cr>gvJgv:s/ \./\./g<cr>
 " vmap <leader>J gJ<cr>kV:s/\s*$//<cr>
 
 " i use ? for global project search so remap "
@@ -360,17 +342,26 @@ nnoremap " ?
 " list all buffers with fzf for easier switching
 nmap <leader>b :Buffers<cr>
 
-" search entire project using ag
-nmap <leader>f :Rg 
-nmap ? :Rg 
+" search entire project using ripgrep
+nmap <leader>f :Rg
+nmap ? :Rg
+
+" ripgrep configuration
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(), <bang>0)
+
+" search entire project for word under cursor using ripgrep
 nnoremap <silent> & :Rg <C-R><C-W><CR>
 
 " running specs for ruby bindings
 nmap <leader>s :! clear && smarttest.sh %:p<cr>
+nmap <leader>x :! clear && smarttest.sh %:p noheadless<cr>
+nmap <leader>k :! clear && smarttest.sh %:p last<cr>
 nmap <leader>l :execute ":! clear && smarttest.sh " . "%:p" . "\\:" . line(".")<cr>
-nmap <leader>ro :g/describe\|scenario\|context\|it/#<cr>
 
-" easy vimrc editing
+" easy vimrc editing, first is reload, second is opening config
 nmap <leader>vr :so $MYVIMRC<cr>
 nmap <leader>vc :e $MYVIMRC<cr>
 
@@ -387,104 +378,25 @@ autocmd BufNewFile,BufRead *.nomad.erb set filetype=hcl
 autocmd BufNewFile,BufRead *.nomad set syntax=hcl
 autocmd BufNewFile,BufRead *.nomad.erb set syntax=hcl
 
-" F9 to format file
+" F9 to format file with the appropeiate tool based on filetype
 noremap <F9> :Autoformat<CR>
 augroup formatting
   autocmd!
-  autocmd FileType javascript noremap <buffer> <F9> :Prettier<CR>
-  autocmd FileType scss noremap <buffer> <F9> :Prettier<CR>
-  autocmd FileType ruby noremap <buffer> <F9> :Autoformat<CR>
+  autocmd FileType javascript noremap <buffer> <F9> :ALEFix<CR>
+  autocmd FileType scss noremap <buffer> <F9> :ALEFix<CR>
+  autocmd FileType ruby noremap <buffer> <F9> :ALEFix<CR>
   autocmd FileType hcl noremap <buffer> <F9> :HclFmt<CR>
   autocmd FileType go noremap <buffer> <F9> :GoFmt<CR>:GoImports<CR>
 augroup END
 
-nmap <leader><F9> :call SyntaxTreeRubyFormat()<cr>
-command! STRubyFormat execute ':silent ! clear && syntaxtreeruby.sh ' . expand("%:p") | execute ':e' | execute ':redraw!'
-
-" with help from https://github.com/prettier/vim-prettier/blob/master/autoload/prettier/utils/buffer.vim
-function SyntaxTreeRubyFormat()
-
-  let l:contents = join(getline(1, '$'), "\n")
-  let l:path = fnamemodify(expand('%:p'), ':h')
-  let l:found = 0
-
-  while len(l:path) > 2
-    if filereadable(l:path . '/Gemfile')
-
-      let l:gemfile = join(readfile(l:path . '/Gemfile'), "\n")
-
-      if stridx(l:gemfile, 'syntax_tree') > 0
-        let l:found = 1
-        break
-      endif
-    endif
-
-    let l:path = fnamemodify(l:path, ':h')
-  endwhile
-
-  if l:found == 0
-    execute "Autoformat"
-    return
-  endif
-
-  let l:command = "bundle exec stree format --print-width=100 --plugins=plugin/trailing_comma"
-
-  let l:old_path = chdir(l:path)
-
-  let l:old_ruby_opt = $RUBYOPT
-  let $RUBYOPT = "-W0"
-  let l:formatted = system(l:command, l:contents)
-
-  let $RUBYOPT = l:old_ruby_opt
-  call chdir(l:old_path)
-
-  let l:winview = winsaveview()
-
-  " https://vim.fandom.com/wiki/Restore_the_cursor_position_after_undoing_text_change_made_by_a_script
-  " create a fake change entry and merge with undo stack prior to do formating
-  execute "normal! i "
-  execute "normal! a\<BS>"
-  try | silent undojoin | catch | endtry
-
-   " delete all lines on the current buffer
-  silent! execute 'lockmarks %delete _'
-
-  " replace all lines from the current buffer with output from prettier
-  let l:idx = 0
-  for l:line in split(l:formatted, "\n")
-    silent! lockmarks call append(l:idx, l:line)
-    let l:idx += 1
-  endfor
-
-  " delete trailing newline introduced by the above append procedure
-  silent! lockmarks execute '$delete _'
-
-  " Restore view
-  call winrestview(l:winview)
-
-endfunction
-
+" go always uses 4 spaces for indentation
 augroup tabs
   autocmd Filetype go setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
 augroup END
 
-" prettier auto format on save
-" let g:prettier#autoformat = 0
-" autocmd BufWritePre *.js,*.json,*.css,*.scss,*.less,*.graphql PrettierAsync
-
 " only enable emmet for file types that make sense
 let g:user_emmet_install_global = 0
-autocmd FileType html,css,erb EmmetInstall
-
-" expand emmet vim abbreviations on tab
-" augroup emmet
-"   autocmd!
-"   autocmd FileType html imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
-"   autocmd FileType handlebars imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
-"   autocmd FileType erb imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
-"   autocmd FileType css imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
-"   autocmd FileType irb imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
-" augroup END
+autocmd FileType html,css,erb,hbs EmmetInstall
 
 " convinient save shortcut
 map SS :w<CR>
@@ -499,6 +411,10 @@ nmap <leader>] :bnext<CR>
 
 " quicker update time, used by gitgutter mainly
 set updatetime=100
+
+" case based on either lowercase or uppercase for search to avoid \c
+set ignorecase
+set smartcase
 
 " set tabs/spaces and line numbering
 set expandtab
@@ -519,21 +435,17 @@ match ExtraWhitespace /\s\+$/
 set hidden
 filetype plugin indent on
 
-" fix cursor disappearing on lines which have warnings e.g.
-" rubocop or lint errors
-" let g:ale_echo_cursor = 0
-
-" only lint ale on save
+" ALE config, only relevant one is the fixers really
 " let g:ale_open_list = 'on_save'
 " let g:ale_lint_on_text_changed = 0
 " let g:ale_lint_on_enter = 0
 " let g:ale_lint_on_save = 1
 " let g:ale_fix_on_save = 1
 " let g:ale_linters = {'javascript': ['eslint']}
-" let g:ale_fixers = {'javascript': ['prettier'], 'css': ['prettier']}
 " let g:ale_linters_explicit = 1
 " let g:ale_sign_error = '!!'
 " let g:ale_sign_warning = '~~'
+let g:ale_fixers = {'javascript': ['prettier'], 'css': ['prettier'], 'scss': ['prettier'], 'ruby': ['syntax_tree']}
 
 " makes it so when copying using
 " yy etc we copy to the system
@@ -595,6 +507,7 @@ func! GetSelectedText()
   return result
 endfunc
 
+" open the current file in github's blame UI
 function! s:GithubBlame()
   let path = resolve(expand('%:p'))
   let dir = shellescape(fnamemodify(path, ':h'))
@@ -613,6 +526,7 @@ function! s:GithubBlame()
   echo link
 endfunction
 
+" open the current file in github's history UI
 function! s:GithubHistory()
   let path = resolve(expand('%:p'))
   let dir = shellescape(fnamemodify(path, ':h'))
@@ -631,6 +545,7 @@ function! s:GithubHistory()
   echo link
 endfunction
 
+" get the github link with line numbers for the current selection in visual mode
 function! s:CommitLink()
   let sha = GetSelectedText()
   let path = resolve(expand('%:p'))
@@ -647,11 +562,11 @@ endfunction
 
 command! -bar -bang -range -nargs=* GithubLink
   \ keepjumps call <sid>GithubLink(<line1>, <line2>, 'auto')
-command! -bar -bang -range -nargs=* GithubLinkMaster
+command! -bar -bang -range -nargs=* GithubLinkMain
   \ keepjumps call <sid>GithubLink(<line1>, <line2>, 'main')
 command! -bar -bang -range -nargs=* GithubLinkFile
   \ keepjumps call <sid>GithubLink(<line1>, <line2>, 'file')
-command! -bar -bang -range -nargs=* GithubLinkMasterFile
+command! -bar -bang -range -nargs=* GithubLinkMainFile
   \ keepjumps call <sid>GithubLink(<line1>, <line2>, 'mainfile')
 command! -bar -bang -range -nargs=* CommitLink
   \ keepjumps call <sid>CommitLink()
@@ -661,17 +576,13 @@ command! -bar -bang -range -nargs=* GithubBlame
 command! -bar -bang -range -nargs=* GithubHistory
   \ keepjumps call <sid>GithubHistory()
 
+" cryptic, gets the github commit link for a commit opened with git-messenger
 nmap <leader>gcl eewwwwwviw::CommitLink<cr>
 vmap <leader>cl :CommitLink<cr>
 nmap <leader>gm :GitMessenger<cr>
 vmap <leader>gh :GithubLink<cr>
+nmap <leader>gl :! clear && bgb %:p<cr>
 nmap <leader>ghf :GithubLinkMasterFile<cr>
-nmap <leader>fip :%s/\(\d\{1,3\}[.]\)\{3\}\(\d\{1,3\}\)/9.9.9.9/g <cr>
-inoremap <C-d><C-d> <C-r>=substitute(system('date +"%Y-%M-%dT%H:%M"'), '\n\+', '', '')<CR>
-command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
-  \   fzf#vim#with_preview(), <bang>0)
 
 function! s:notify_file_change_discourse()
   let notify = getcwd() . "/bin/notify_file_change"
@@ -688,5 +599,4 @@ endfunction
 
 autocmd BufWritePost * silent! call s:notify_file_change()
 
-source ~/.config/vim/computer.vim
-source ~/.config/vim/colemak.vim
+source ~/.config/vim/local.vim
