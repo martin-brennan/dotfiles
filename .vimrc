@@ -343,8 +343,8 @@ nnoremap " ?
 nmap <leader>b :Buffers<cr>
 
 " search entire project using ripgrep
-nmap <leader>f :Rg
-nmap ? :Rg
+nmap <leader>f :Rg 
+nmap ? :Rg 
 
 " ripgrep configuration
 command! -bang -nargs=* Rg
