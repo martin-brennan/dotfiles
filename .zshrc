@@ -119,14 +119,6 @@ alias cdiff="git diff-tree -p $@"
 alias gmm="git merge main --no-edit"
 alias gsl="git stash list"
 alias fzcp="fzf | tr -d '\n' | xclip -selection clipboard"
-alias dc="cd ~/repos/discourse-chat"
-alias ms="cd ~/repos/mothership"
-alias ops="cd ~/repos/ops"
-alias ws="cd ~/repos/website"
-alias hs="cd ~/repos/hosted-site"
-alias ddmain="cd ~/repos/main/discourse"
-alias ddbeta="cd ~/repos/main/discourse-beta"
-alias ddstable="cd ~/repos/main/discourse-stable"
 
 cdd() {
   cd $(fd --type directory | fzf)
