@@ -382,14 +382,21 @@ autocmd BufNewFile,BufRead *.nomad.erb set syntax=hcl
 
 " F9 to format file with the appropeiate tool based on filetype
 noremap <F9> :Autoformat<CR>
+noremap rr :Autoformat<CR>
 augroup formatting
   autocmd!
   autocmd FileType javascript noremap <buffer> <F9> :ALEFix<CR>
   autocmd FileType scss noremap <buffer> <F9> :ALEFix<CR>
   autocmd FileType ruby noremap <buffer> <F9> :ALEFix<CR>
-  autocmd FileType html.handlebars noremap <buffer> <F9> :ALEFix<CR>
   autocmd FileType hcl noremap <buffer> <F9> :HclFmt<CR>
   autocmd FileType go noremap <buffer> <F9> :GoFmt<CR>:GoImports<CR>
+  autocmd FileType html.handlebars noremap <buffer> <F9> :ALEFix<CR>
+  autocmd FileType javascript noremap <buffer> rr :ALEFix<CR>
+  autocmd FileType scss noremap <buffer> rr :ALEFix<CR>
+  autocmd FileType ruby noremap <buffer> rr :ALEFix<CR>
+  autocmd FileType hcl noremap <buffer> rr :HclFmt<CR>
+  autocmd FileType go noremap <buffer> rr :GoFmt<CR>:GoImports<CR>
+  autocmd FileType html.handlebars noremap <buffer> rr :ALEFix<CR>
 augroup END
 
 " go always uses 4 spaces for indentation
@@ -448,6 +455,7 @@ filetype plugin indent on
 " let g:ale_linters_explicit = 1
 " let g:ale_sign_error = '!!'
 " let g:ale_sign_warning = '~~'
+let g:ale_virtualtext_cursor = 0
 autocmd FileType html.handlebars let b:ale_javascript_prettier_options = '--parser=glimmer'
 let g:ale_fixers = {'javascript': ['prettier'], 'css': ['prettier'], 'scss': ['prettier'], 'ruby': ['syntax_tree'], 'handlebars': ['prettier']}
 
@@ -456,7 +464,9 @@ let g:ale_fixers = {'javascript': ['prettier'], 'css': ['prettier'], 'scss': ['p
 " clipboard as well, this means we
 " can copy between different vims
 " as well. needs vim-gtk on KDE
-set clipboard=unnamedplus
+" set clipboard=unnamedplus
+" set in local.vim, OSX uses unnamed, linux uses unnamedplus
+
 set showcmd
 
 " history is ridiculously low out of the box set at 20
