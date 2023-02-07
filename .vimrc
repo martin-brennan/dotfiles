@@ -201,6 +201,8 @@ autocmd FileType markdown setlocal spell
 autocmd FileType gitcommit setlocal spell
 highlight SpellBad    ctermfg=167      ctermbg=016     cterm=underline      guifg=#FFFFFF   guibg=#000000   gui=none
 
+autocmd FileType html.handlebars setlocal noeol binary
+
 " ignore swap file already exists error
 set noswapfile
 
@@ -385,6 +387,7 @@ augroup formatting
   autocmd FileType javascript noremap <buffer> <F9> :ALEFix<CR>
   autocmd FileType scss noremap <buffer> <F9> :ALEFix<CR>
   autocmd FileType ruby noremap <buffer> <F9> :ALEFix<CR>
+  autocmd FileType html.handlebars noremap <buffer> <F9> :ALEFix<CR>
   autocmd FileType hcl noremap <buffer> <F9> :HclFmt<CR>
   autocmd FileType go noremap <buffer> <F9> :GoFmt<CR>:GoImports<CR>
 augroup END
@@ -445,7 +448,8 @@ filetype plugin indent on
 " let g:ale_linters_explicit = 1
 " let g:ale_sign_error = '!!'
 " let g:ale_sign_warning = '~~'
-let g:ale_fixers = {'javascript': ['prettier'], 'css': ['prettier'], 'scss': ['prettier'], 'ruby': ['syntax_tree']}
+autocmd FileType html.handlebars let b:ale_javascript_prettier_options = '--parser=glimmer'
+let g:ale_fixers = {'javascript': ['prettier'], 'css': ['prettier'], 'scss': ['prettier'], 'ruby': ['syntax_tree'], 'handlebars': ['prettier']}
 
 " makes it so when copying using
 " yy etc we copy to the system
