@@ -77,6 +77,10 @@ call minpac#add('tpope/vim-fugitive')
 " allows fugitive to browse with github
 call minpac#add('tpope/vim-rhubarb')
 
+" db gui postgres
+call minpac#add('tpope/vim-dadbod')
+call minpac#add(('kristijanhusak/vim-dadbod-ui'))
+
 " run rspec from vim
 call minpac#add('vim-test/vim-test')
 
@@ -201,6 +205,7 @@ autocmd FileType markdown setlocal spell
 autocmd FileType gitcommit setlocal spell
 highlight SpellBad    ctermfg=167      ctermbg=016     cterm=underline      guifg=#FFFFFF   guibg=#000000   gui=none
 
+" deal with newlines at end of file formatting handlebars
 autocmd FileType html.handlebars setlocal noeol binary
 
 " ignore swap file already exists error
@@ -351,7 +356,7 @@ nmap ? :Rg
 " ripgrep configuration
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
+  \   'rg -g "!documentation/chat" --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
   \   fzf#vim#with_preview(), <bang>0)
 
 " search entire project for word under cursor using ripgrep
@@ -450,12 +455,14 @@ filetype plugin indent on
 " let g:ale_lint_on_text_changed = 0
 " let g:ale_lint_on_enter = 0
 " let g:ale_lint_on_save = 1
-" let g:ale_fix_on_save = 1
+let g:ale_fix_on_save = 1
 " let g:ale_linters = {'javascript': ['eslint']}
 " let g:ale_linters_explicit = 1
 " let g:ale_sign_error = '!!'
 " let g:ale_sign_warning = '~~'
 let g:ale_virtualtext_cursor = 0
+
+" use glimmer parser for handlebar files
 autocmd FileType html.handlebars let b:ale_javascript_prettier_options = '--parser=glimmer'
 let g:ale_fixers = {'javascript': ['prettier'], 'css': ['prettier'], 'scss': ['prettier'], 'ruby': ['syntax_tree'], 'handlebars': ['prettier']}
 
@@ -513,6 +520,17 @@ function! s:GithubLink(line1, line2, optionalSha)
   let @* = link
 
   echo link
+endfunction
+
+function! s:SystemSpecRun(line1, line2)
+  let path = resolve(expand('%:p'))
+  let dir = shellescape(fnamemodify(path, ':h'))
+
+  let cmd = "sysspecrun " . path . ":" . a:line1
+  let @+ = cmd
+  let @* = cmd
+
+  echo cmd
 endfunction
 
 func! GetSelectedText()
@@ -574,6 +592,8 @@ function! s:CommitLink()
   echo link
 endfunction
 
+command! -bar -bang -range -nargs=* SystemSpecRun
+  \ keepjumps call <sid>SystemSpecRun(<line1>, <line2>)
 command! -bar -bang -range -nargs=* GithubLink
   \ keepjumps call <sid>GithubLink(<line1>, <line2>, 'auto')
 command! -bar -bang -range -nargs=* GithubLinkMain
@@ -595,6 +615,7 @@ nmap <leader>gcl eewwwwwviw::CommitLink<cr>
 vmap <leader>cl :CommitLink<cr>
 nmap <leader>gm :GitMessenger<cr>
 vmap <leader>gh :GithubLink<cr>
+vmap <leader>ys :SystemSpecRun<cr>
 nmap <leader>gl :! clear && bgb %:p<cr>
 nmap <leader>ghf :GithubLinkMasterFile<cr>
 

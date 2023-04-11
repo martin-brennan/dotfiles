@@ -5,13 +5,12 @@ export PATH=$HOME/bin:/usr/local/bin:/home/mb/scripts:/home/mb/repos/ops/bin:$HO
 [ "$XDG_CURRENT_DESKTOP" = "KDE"  ] || [ "$XDG_CURRENT_DESKTOP" = "GNOME"  ] || export QT_QPA_PLATFORMTHEME="qt5ct"
 
 export _JAVA_AWT_WM_NONREPARENTING=1
-export _JAVA_AWT_WM_NONREPARTENTING=1
 export HYDRA_URL=http://127.0.0.1:4444
 export HYDRA_ADMIN_URL=http://127.0.0.1:4445
 export GOPATH=$HOME/go
 export PGROOT="/var/lib/postgres"
 export ZSH="$HOME/.oh-my-zsh"
-export FZF_DEFAULT_COMMAND="rg --files --hidden -g '!.git'"
+export FZF_DEFAULT_COMMAND="rg --files --hidden -g '!.git' -g '!documentation/chat'"
 export SSH_ASKPASS='/usr/bin/ksshaskpass'
 export GIT_ASKPASS='/usr/bin/ksshaskpass'
 export REPO_BASE_DIRECTORY="$HOME/repos"
@@ -81,6 +80,9 @@ alias commit="git commit"
 alias gco="git commit"
 alias gk="git commit"
 alias gcb="git checkout -b $@"
+alias gcbi="git checkout -b issue/$1"
+alias gcbf="git checkout -b feature/$1"
+alias gcbd="git checkout -b dev/$1"
 alias gcl="git checkout -"
 alias gll="git checkout -"
 alias gpl="git pull"
@@ -183,8 +185,12 @@ gpush() {
   git push --set-upstream origin "$(git branch | grep \* | cut -d ' ' -f2)"
 }
 
-gbb() {
-  git push --set-upstream origin "$(git branch | grep \* | cut -d ' ' -f2)"
+gpushr() {
+  gpush && gh pr create -w -f
+}
+
+ghprc() {
+  gh pr create -w -f
 }
 
 gblameline() {
@@ -294,6 +300,10 @@ dumpparatestdb() {
 
 cdgem() {
   cd $(bundle show $1)
+}
+
+streefixer() {
+  bundle exec stree write $(git --no-pager diff --name-only --cached -- '*.rb')
 }
 
 export EDITOR='vim'
