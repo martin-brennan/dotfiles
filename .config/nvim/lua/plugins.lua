@@ -106,7 +106,7 @@ return require("packer").startup(function(use)
 	use({
 		"ibhagwan/fzf-lua",
 		config = function()
-			require("fzf-lua").setup({})
+			require("fzf-lua").setup("default", { winopts = { fullscreen = true } })
 			vim.cmd("FzfLua setup_fzfvim_cmds")
 		end,
 	})

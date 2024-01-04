@@ -99,10 +99,14 @@ return {
       # frozen_string_literal: true
 
       describe "{}", type: :system, js: true do
-        fab!(:current_user) { Fabricate(:user) }
+        fab!(:current_user) {{ Fabricate(:user) }}
 
         before do
           sign_in(current_user)
+        end
+
+        it "works" do
+          {}
         end
       end
     ]],
@@ -128,7 +132,6 @@ return {
     ]],
 			{
 				i(1),
-				i(2),
 			}
 		)
 	),

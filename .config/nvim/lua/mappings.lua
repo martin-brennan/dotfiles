@@ -1,5 +1,3 @@
--- vim.api.nvim_set_keymap("i", "<C-i>", "<C-i>", { noremap = true, silent = true })
-
 -- leader key as spacebar
 vim.g.mapleader = " "
 
@@ -30,7 +28,7 @@ end)
 
 -- nvim conf reload and open
 vim.keymap.set("n", "<Leader>lr", function()
-	vim.cmd(":luafile /home/mb/.config/nvim/init.lua")
+	vim.cmd(":luafile ~/.config/nvim/init.lua")
 	require("luasnip.loaders.from_lua").load({ paths = "~/.config/nvim/lua/snippets" })
 	vim.cmd("echo 'Config reloaded!'")
 end)
@@ -40,6 +38,12 @@ local ls = require("luasnip")
 vim.api.nvim_set_keymap(
 	"i",
 	"<C-;>",
+	'<cmd>lua require"luasnip".expand_or_jump()<CR>',
+	{ noremap = true, silent = true }
+)
+vim.api.nvim_set_keymap(
+	"i",
+	"<C-i>",
 	'<cmd>lua require"luasnip".expand_or_jump()<CR>',
 	{ noremap = true, silent = true }
 )

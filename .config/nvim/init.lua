@@ -1,8 +1,6 @@
 require("plugins")
 
 -- additional plugin setup
--- require("fzf-lua").setup({ "fzf-vim" })
-
 require("nvim-treesitter.configs").setup({
 	ensure_installed = {
 		-- Web Languages
@@ -78,6 +76,9 @@ vim.g.gruvbox_transparent_bg = 1
 
 -- terminal
 vim.opt.colorcolumn = "120"
+
+-- go away annoying swapfiles
+vim.opt.swapfile = false
 
 -- scroll cursor with mousewheel and set offset
 vim.opt.scrolloff = 5
