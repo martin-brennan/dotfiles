@@ -17,9 +17,6 @@ return require("packer").startup(function(use)
 	-- allows fugitive to browse with github
 	use({ "tpope/vim-rhubarb" })
 
-	-- run rspec from vim
-	use({ "vim-test/vim-test" })
-
 	-- auto pairing of symbols
 	use({ "jiangmiao/auto-pairs" })
 
@@ -106,7 +103,6 @@ return require("packer").startup(function(use)
 	use({
 		"ibhagwan/fzf-lua",
 		config = function()
-			require("fzf-lua").setup("default", { winopts = { fullscreen = true } })
 			vim.cmd("FzfLua setup_fzfvim_cmds")
 		end,
 	})
@@ -129,9 +125,11 @@ return require("packer").startup(function(use)
 		tag = "v2.*",
 		-- install jsregexp (optional!:).
 		run = "make install_jsregexp",
-    config = function()
-      require("luasnip").log.set_loglevel("debug")
-      require("luasnip.loaders.from_lua").load({paths = "~/.config/nvim/lua/snippets"})
-    end
+		config = function()
+			require("luasnip").log.set_loglevel("debug")
+			require("luasnip.loaders.from_lua").load({ paths = "~/.config/nvim/lua/snippets" })
+		end,
 	})
+
+	use({ "voldikss/vim-floaterm" })
 end)

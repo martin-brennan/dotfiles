@@ -1,3 +1,8 @@
+-- Mapping with lua:
+-- https://neovim.io/doc/user/lua-guide.html#lua-guide-mappings
+
+require("github_utils")
+
 -- leader key as spacebar
 vim.g.mapleader = " "
 
@@ -14,24 +19,49 @@ vim.keymap.set("n", "<Leader><Leader>", ":BTags<cr>")
 -- i use ? for global project search so remap to reverse-search
 vim.keymap.set("n", "~", "?")
 vim.keymap.set("n", '"', "?")
-vim.keymap.set("n", "<Leader>f", ":Rg<cr>")
 vim.keymap.set("n", "?", ":Rg<cr>")
+
+-- spawn a basic floating terminal in current dir
+vim.keymap.set("n", "<Leader>ft", ":FloatermNew! --height=0.85 --width=0.85 --title=~Terminal~<cr>")
 
 -- search entire project for word under cursor using ripgrep
 vim.keymap.set("n", "&", ":Rg <C-R><C-W><cr>", { silent = true })
 
--- testing
-vim.keymap.set("n", "<Leader>s", ":! clear && smarttest.sh %:p<cr>")
+-- navigate quickfix list
+vim.keymap.set("n", "<leader>cn", ":cn<cr>")
+vim.keymap.set("n", "<leader>cp", ":cp<cr>")
+
+-- go into normal mode from terminal popover window
+vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
+
+-- running rspec tests in floating terminal
+vim.keymap.set("n", "<Leader>s", function()
+	vim.cmd(":FloatermNew --height=0.9 --width=0.9 --title=Running\\ specs... --autoclose=0 smarttest.sh %:p")
+end)
 vim.keymap.set("n", "<Leader>l", function()
-	vim.cmd(":! clear && smarttest.sh " .. vim.fn.expand("%:p") .. ":" .. vim.fn.line("."))
+	vim.cmd(
+		":FloatermNew --height=0.9 --width=0.9 --title=Running\\ specs... --autoclose=0 smarttest.sh "
+			.. vim.fn.expand("%:p")
+			.. ":"
+			.. vim.fn.line(".")
+	)
 end)
 
 -- nvim conf reload and open
 vim.keymap.set("n", "<Leader>lr", function()
 	vim.cmd(":luafile ~/.config/nvim/init.lua")
+	vim.cmd(":luafile ~/.config/nvim/lua/mappings.lua")
 	require("luasnip.loaders.from_lua").load({ paths = "~/.config/nvim/lua/snippets" })
 	vim.cmd("echo 'Config reloaded!'")
 end)
+
+
+-- git bindings
+vim.api.nvim_create_user_command("GithubLink", function(opts)
+	GithubLink(opts, "auto")
+end, { nargs = "*", range = true })
+vim.keymap.set("v", "<leader>gh", ":GithubLink<cr>")
+vim.keymap.set("n", "<leader>gg", ":GFiles?<cr>")
 
 -- snippets
 local ls = require("luasnip")
@@ -47,6 +77,10 @@ vim.api.nvim_set_keymap(
 	'<cmd>lua require"luasnip".expand_or_jump()<CR>',
 	{ noremap = true, silent = true }
 )
+
+-- re-select after indenting
+vim.keymap.set("v", "<", "<gv")
+vim.keymap.set("v", ">", ">gv")
 
 -- quick split and switch to new split window
 vim.keymap.set("n", "<leader>vs", ":vsplit<cr><ESC>:wincmd l<cr>")
@@ -78,6 +112,6 @@ vim.api.nvim_create_autocmd(
 	{ pattern = "go", group = formatting_group, command = "noremap <buffer> <F9> :GoFmr<cr>:GoImports<cr>" }
 )
 vim.api.nvim_create_autocmd(
-	{ "FileType" },
-	{ pattern = "html.handlebars", group = formatting_group, command = "noremap <buffer> <F9> :ALEFix<cr>" }
+  { "FileType" },
+  { pattern = "html.handlebars", group = formatting_group, command = "noremap <buffer> <F9> :ALEFix<cr>" }
 )
