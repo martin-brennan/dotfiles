@@ -1,7 +1,9 @@
 return {
 	s("dd", t("debugger")),
 
-	s("clog", fmt('console.log("{}")', i(1))),
+	s("pt", t("pauseTest()")),
+
+	s("clog", fmt('console.log({})', i(1))),
 
 	s("td", fmt("TODO (martin) {} {}", {  i(1), i(2) })),
 

@@ -56,5 +56,10 @@ vim.g.ale_fix_on_save = 1
 vim.g.ale_linters = { javascript = { "eslint" } }
 vim.g.ale_virtualtext_cursor = 0
 
+vim.g.git_messenger_close_on_cursor_moved = false
+vim.g.git_messenger_always_into_popup = true
+vim.g.git_messenger_include_diff = "current"
+vim.g.git_messenger_preview_mods = "botright"
+
 -- +++++++++++++++++++++++ --
 -- /additional plugin setup --

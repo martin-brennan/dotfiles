@@ -36,7 +36,7 @@ return require("packer").startup(function(use)
 	use({ "tpope/vim-repeat" })
 
 	-- fancy status bar
-	use({ "vim-airline/vim-airline" })
+	use({ "itchyny/lightline.vim" })
 
 	-- js formatting and snippets
 	use({ "pangloss/vim-javascript" })

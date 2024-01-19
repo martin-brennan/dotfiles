@@ -37,6 +37,9 @@ vim.opt.colorcolumn = "120"
 -- go away annoying swapfiles
 vim.opt.swapfile = false
 
+-- no need to show mode because lightline shows it
+vim.opt.showmode = false
+
 -- scroll cursor with mousewheel and set offset
 vim.opt.scrolloff = 5
 vim.keymap.set("", "<ScrollWheelUp>", "k")
@@ -55,3 +58,9 @@ local list_snips = function()
 	print(vim.inspect(ft_snips))
 end
 vim.api.nvim_create_user_command("SnipList", list_snips, {})
+
+-- highlighting colours for search
+vim.cmd([[
+  hi IncSearch guifg=#fabd2f guibg=#3c3836
+  hi Search cterm=undercurl gui=undercurl guisp=#8ec07c
+]])

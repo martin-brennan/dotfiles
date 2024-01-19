@@ -8,7 +8,7 @@ function GithubLink(opts, optionalSha)
 	local originRepo = vim.fn.system("cd " .. dir .. " && git config --get remote.origin.url")
 	local repoN = vim.fn.substitute(vim.fn.split(originRepo, ":")[2], ".git", "", "")
 
-	local repo = vim.fn.substitute(repoN, "\r?\n+$", "", "")
+	local repo = repoN:gsub("[\r\n]", "")
 	local root = trim(vim.fn.system("cd " .. dir .. "  && git rev-parse --show-toplevel"))
 	local relative = string.sub(path, string.len(root) + 1, string.len(path))
 
@@ -17,7 +17,7 @@ function GithubLink(opts, optionalSha)
 	if optionalSha == "main" or optionalSha == "mainfile" then
 		repoSha = "main"
 	else
-		repoSha = vim.fn.substitute(repoShaN, "\r?\n+$", "", "")
+		repoSha = repoShaN:gsub("[\r\n]", "")
 	end
 
 	local link = "https://github.com/" .. repo .. "/blob/" .. repoSha .. relative

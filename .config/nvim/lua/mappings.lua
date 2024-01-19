@@ -49,12 +49,12 @@ end)
 
 -- nvim conf reload and open
 vim.keymap.set("n", "<Leader>lr", function()
-	vim.cmd(":luafile ~/.config/nvim/init.lua")
+	vim.cmd(":luafile ~/.config/nvim/lua/plugins_setup.lua")
 	vim.cmd(":luafile ~/.config/nvim/lua/mappings.lua")
+	vim.cmd(":luafile ~/.config/nvim/init.lua")
 	require("luasnip.loaders.from_lua").load({ paths = "~/.config/nvim/lua/snippets" })
 	vim.cmd("echo 'Config reloaded!'")
 end)
-
 
 -- git bindings
 vim.api.nvim_create_user_command("GithubLink", function(opts)
@@ -62,6 +62,8 @@ vim.api.nvim_create_user_command("GithubLink", function(opts)
 end, { nargs = "*", range = true })
 vim.keymap.set("v", "<leader>gh", ":GithubLink<cr>")
 vim.keymap.set("n", "<leader>gg", ":GFiles?<cr>")
+vim.keymap.set("n", "<leader>gj", "<plug>(signify-next-hunk)")
+vim.keymap.set("n", "<leader>gk", "<plug>(signify-prev-hunk)")
 
 -- snippets
 local ls = require("luasnip")
@@ -112,6 +114,6 @@ vim.api.nvim_create_autocmd(
 	{ pattern = "go", group = formatting_group, command = "noremap <buffer> <F9> :GoFmr<cr>:GoImports<cr>" }
 )
 vim.api.nvim_create_autocmd(
-  { "FileType" },
-  { pattern = "html.handlebars", group = formatting_group, command = "noremap <buffer> <F9> :ALEFix<cr>" }
+	{ "FileType" },
+	{ pattern = "html.handlebars", group = formatting_group, command = "noremap <buffer> <F9> :ALEFix<cr>" }
 )
