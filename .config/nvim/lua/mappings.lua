@@ -8,7 +8,7 @@ vim.g.mapleader = " "
 
 -- save and selection shortcuts
 vim.keymap.set("", "SS", ":w<CR>")
-vim.keymap.set("n", "sa", "ggVG")
+vim.keymap.set("n", "<leader>sa", "ggVG")
 
 -- fzf bindings
 vim.keymap.set("n", "<C-p>", ":Files<cr>")
@@ -47,6 +47,23 @@ vim.keymap.set("n", "<Leader>l", function()
 	)
 end)
 
+-- copy system spec command to clipboard
+function SystemSpecRun(opts)
+  local path = vim.fn.resolve(vim.fn.expand('%:p'))
+  local dir = vim.fn.shellescape(vim.fn.fnamemodify(path, ':h'))
+
+  local cmd = "sysspecrun " .. path .. ":" .. opts.line1
+  vim.fn.setreg('+', cmd)
+  vim.fn.setreg('*', cmd)
+
+  vim.notify(cmd)
+end
+vim.api.nvim_create_user_command("SystemSpecRun", function(opts)
+	SystemSpecRun(opts)
+end, { nargs = "*", range = true })
+vim.keymap.set("n", "<leader>ys", ":SystemSpecRun<cr>")
+vim.keymap.set("v", "<leader>ys", ":SystemSpecRun<cr>")
+
 -- nvim conf reload and open
 vim.keymap.set("n", "<Leader>lr", function()
 	vim.cmd(":luafile ~/.config/nvim/lua/plugins_setup.lua")
@@ -60,10 +77,19 @@ end)
 vim.api.nvim_create_user_command("GithubLink", function(opts)
 	GithubLink(opts, "auto")
 end, { nargs = "*", range = true })
+vim.api.nvim_create_user_command("CommitLink", function(opts)
+	CommitLink(opts)
+end, { nargs = "*", range = true })
+vim.api.nvim_create_user_command("GithubBlameLine", function(opts)
+	GithubBlameLine(opts)
+end, { nargs = "*", range = true })
+
 vim.keymap.set("v", "<leader>gh", ":GithubLink<cr>")
 vim.keymap.set("n", "<leader>gg", ":GFiles?<cr>")
 vim.keymap.set("n", "<leader>gj", "<plug>(signify-next-hunk)")
 vim.keymap.set("n", "<leader>gk", "<plug>(signify-prev-hunk)")
+vim.keymap.set("n", "<leader>gcl", ":g/Commit:<cr><cr>wwwviwy:CommitLink<cr>")
+vim.keymap.set("v", "<leader>gbl", ":GithubBlameLine<cr>")
 
 -- snippets
 local ls = require("luasnip")

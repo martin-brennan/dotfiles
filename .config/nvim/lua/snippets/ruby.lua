@@ -5,11 +5,11 @@ return {
 
 	s("clog", fmt('puts "{}"', i(1))),
 
-	s("fzs", t("# frozen_string_literal")),
+	s("fzs", t("# frozen_string_literal: true")),
 
 	s("irrev", t("raise ActiveRecord::IrreversibleMigration")),
 
-	s("fzs", { t("# TODO (martin) "), i(1) }),
+	s("td", { t("# TODO (martin) "), i(1) }),
 
 	s(
 		"itsh",
@@ -65,7 +65,7 @@ return {
 			[[
       # frozen_string_literal: true
 
-      RSpec.describe "{}" do
+      RSpec.describe {} do
         {}
       end
     ]],

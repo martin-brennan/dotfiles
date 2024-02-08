@@ -97,7 +97,25 @@ return require("packer").startup(function(use)
 	use({ "chiedo/vim-dr-replace" })
 
 	-- github copilot
-	use({ "github/copilot.vim" })
+	use({
+		"zbirenbaum/copilot.lua",
+		cmd = "Copilot",
+		event = "InsertEnter",
+		config = function()
+			require("copilot").setup({
+				panel = {
+					auto_refresh = true,
+				},
+				suggestion = {
+					auto_trigger = true,
+					debounce = 50,
+					keymap = {
+						accept = "<Tab>",
+					},
+				},
+			})
+		end,
+	})
 
 	-- fzf
 	use({

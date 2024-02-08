@@ -69,6 +69,7 @@ vim.g.git_messenger_close_on_cursor_moved = false
 vim.g.git_messenger_always_into_popup = true
 vim.g.git_messenger_include_diff = "current"
 vim.g.git_messenger_preview_mods = "botright"
+vim.g.git_messenger_extra_blame_args = "--ignore-revs-file=.git-blame-ignore-revs"
 
 -- Set up nvim-cmp.
 local cmp = require("cmp")
@@ -89,6 +90,21 @@ cmp.setup({
 		["<C-Space>"] = cmp.mapping.complete(),
 		["<C-e>"] = cmp.mapping.abort(),
 		["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+		-- https://github.com/zbirenbaum/copilot.lua/issues/91#issuecomment-1345190310
+		["<Tab>"] = cmp.mapping(function(fallback)
+			luasnip = require("luasnip")
+			if require("copilot.suggestion").is_visible() then
+				require("copilot.suggestion").accept()
+			elseif luasnip.expand_or_jumpable() then
+				luasnip.expand_or_jump()
+			elseif cmp.visible() then
+				cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
+			elseif has_words_before() then
+				cmp.complete()
+			else
+				fallback()
+			end
+		end, { "i", "s" }),
 	}),
 	sources = cmp.config.sources({
 		{ name = "nvim_lsp" },
