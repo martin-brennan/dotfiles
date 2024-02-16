@@ -18,7 +18,7 @@ return require("packer").startup(function(use)
 	use({ "tpope/vim-rhubarb" })
 
 	-- auto pairing of symbols
-	use({ "jiangmiao/auto-pairs" })
+	-- use({ "jiangmiao/auto-pairs" })
 
 	-- emmet HTML expansion
 	use({ "mattn/emmet-vim" })

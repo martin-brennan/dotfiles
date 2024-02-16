@@ -15,6 +15,7 @@ vim.keymap.set("n", "<C-p>", ":Files<cr>")
 vim.keymap.set("n", "ff", ":Files<cr>")
 vim.keymap.set("n", "<Leader>b", ":Buffers<cr>")
 vim.keymap.set("n", "<Leader><Leader>", ":BTags<cr>")
+vim.keymap.set("n", "<Esc><Esc>", ":noh<cr>")
 
 -- i use ? for global project search so remap to reverse-search
 vim.keymap.set("n", "~", "?")
