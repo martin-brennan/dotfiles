@@ -18,7 +18,7 @@ return require("packer").startup(function(use)
 	use({ "tpope/vim-rhubarb" })
 
 	-- auto pairing of symbols
-	-- use({ "jiangmiao/auto-pairs" })
+	use({ "jiangmiao/auto-pairs" })
 
 	-- emmet HTML expansion
 	use({ "mattn/emmet-vim" })
@@ -160,4 +160,7 @@ return require("packer").startup(function(use)
 	use({ "hrsh7th/cmp-cmdline" })
 	use({ "hrsh7th/nvim-cmp" })
 	use({ "saadparwaiz1/cmp_luasnip" })
+
+  -- indentation guides
+  use({ "lukas-reineke/indent-blankline.nvim"})
 end)

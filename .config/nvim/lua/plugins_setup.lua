@@ -21,7 +21,7 @@ require("nvim-treesitter.configs").setup({
 		-- Configuration Languages
 		"toml",
 		"jsonc",
- 		"dockerfile",
+		"dockerfile",
 		"lua",
 		"vim",
 		-- Scripting Languages
@@ -46,14 +46,13 @@ require("nvim-treesitter.configs").setup({
 })
 
 vim.g.ale_fixers = {
-	javascript = { "eslint", "prettier" },
-  ["javascript.glimmer"]  = { "eslint", "prettier" },
+	javascript = { "prettier", "eslint" },
 	css = { "prettier" },
 	scss = { "prettier" },
 	ruby = { "syntax_tree" },
 	handlebars = { "prettier" },
 }
-vim.g.ale_fix_on_save = 0
+vim.g.ale_fix_on_save = 1
 vim.g.ale_linters = { javascript = { "eslint" } }
 vim.g.ale_virtualtext_cursor = 0
 
@@ -151,6 +150,9 @@ local lspconfig = require("lspconfig")
 -- lspconfig.tsserver.setup({ capabilities = capabilities })
 lspconfig.ember.setup({ capabilities = capabilities })
 lspconfig.solargraph.setup({ capabilities = capabilities })
+
+-- set up indentation guides
+require("ibl").setup()
 
 -- +++++++++++++++++++++++ --
 -- /additional plugin setup --
