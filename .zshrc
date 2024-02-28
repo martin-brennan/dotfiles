@@ -35,6 +35,8 @@ ZSH_THEME="robbyrussell"
 plugins=(git fzf-docker)
 source $ZSH/oh-my-zsh.sh
 
+alias gosrc="cd $GOPATH/src"
+alias gcdd="git checkout ."
 alias rr="cd ~/repos"
 alias rubyst="RUBYOPT=\"-W0\" bundle exec stree write --print-width=100 --plugins=plugin/trailing_comma $@"
 alias chrome="chromium"
@@ -54,6 +56,7 @@ alias ccat="pygmentize -f terminal256 -P style=monokai -g $@"
 alias dwmcfg="forge && cd dwm && vim config.h"
 alias dmenucfg="forge && cd dmenu && vim config.h"
 alias stcfg="forge && cd st && vim config.h"
+alias lsraw="/usr/bin/ls"
 alias ls="ls --color=tty -lah"
 alias spotify="/usr/bin/spotify --force-device-scale-factor=1.5"
 alias chmx="chmod +x $@"
@@ -68,6 +71,7 @@ alias mkdir="mkdir -p "
 alias gfix="git add . && git commit"
 alias escaps="setxkbmap -option caps:swapescape"
 alias vimrc="vim ~/.vimrc"
+alias nvimrc="cd ~/.config/nvim && nvim ."
 alias debugspec="RAILS_ENABLE_TEST_LOG=true RAILS_TEST_LOG_LEVEL=debug bundle exec rspec $@"
 alias debugspecwarn="RAILS_ENABLE_TEST_LOG=true RAILS_TEST_LOG_LEVEL=warn bundle exec rspec $@"
 alias chmp="git checkout master && git pull"
@@ -80,9 +84,6 @@ alias commit="git commit"
 alias gco="git commit"
 alias gk="git commit"
 alias gcb="git checkout -b $@"
-alias gcbi="git checkout -b issue/$1"
-alias gcbf="git checkout -b feature/$1"
-alias gcbd="git checkout -b dev/$1"
 alias gcl="git checkout -"
 alias gll="git checkout -"
 alias gpl="git pull"
@@ -91,6 +92,8 @@ alias gg="git status"
 alias lefthooklint="npx lefthook run lints"
 alias zshreload="source ~/.zshrc"
 alias v="vim"
+alias vimold="/usr/local/bin/vim"
+alias vim="nvim"
 alias zshconfig="vim ~/.zshrc; zshreload"
 alias zshall="vim ~/.config/zsh; zshreload"
 alias tmuxconfig="vim ~/.tmux.conf"
@@ -304,6 +307,21 @@ cdgem() {
 
 streefixer() {
   bundle exec stree write $(git --no-pager diff --name-only --cached -- '*.rb')
+}
+
+comurl() {
+  echo "$(git config --get remote.origin.url | sed -e 's/\.git$//g' | sed -e 's/:/\//g' | sed -e 's/git@/https:\/\//g')/commit/$1"
+}
+
+
+gcbi() {
+  git checkout -b issue/$1
+}
+gcbf() {
+  git checkout -b feature/$1
+}
+gcbd() {
+  git checkout -b dev/$1
 }
 
 export EDITOR='vim'
