@@ -70,19 +70,21 @@ return require("packer").startup(function(use)
 		"stevearc/conform.nvim",
 		config = function()
 			require("conform").setup({
+				log_level = vim.log.levels.DEBUG,
 				formatters_by_ft = {
 					-- Use a sub-list to run only the first available formatter
 					javascript = { { "prettierd", "prettier" } },
 					["javascript.glimmer"] = { { "prettierd", "prettier" } },
 					css = { { "prettierd", "prettier" } },
 					scss = { { "prettierd", "prettier" } },
-					ruby = { "stree" },
+					ruby = { "syntax_tree" },
 					lua = { "stylua" },
 					handlebars = { { "prettierd", "prettier" } },
 					go = { "gofmt" },
 				},
 				format_on_save = {
-					timeout_ms = 100,
+					-- syntax_tree can take ~500ms! so we need to set this to something higher
+					timeout_ms = 1000,
 					lsp_fallback = true,
 				},
 				notify_on_error = false,
@@ -92,6 +94,13 @@ return require("packer").startup(function(use)
 					},
 					prettier = {
 						require_cwd = true,
+					},
+					syntax_tree = {
+						inherit = false,
+						command = "stree",
+						args = { "format" },
+						require_cwd = false,
+						stdin = true,
 					},
 				},
 			})
