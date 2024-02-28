@@ -17,9 +17,6 @@ return require("packer").startup(function(use)
 	-- allows fugitive to browse with github
 	use({ "tpope/vim-rhubarb" })
 
-	-- auto pairing of symbols
-	use({ "jiangmiao/auto-pairs" })
-
 	-- emmet HTML expansion
 	use({ "mattn/emmet-vim" })
 
@@ -62,17 +59,44 @@ return require("packer").startup(function(use)
 	-- ember syntax
 	use({ "joukevandermaas/vim-ember-hbs" })
 
-	-- run :Prettier to format JS
-	use({ "prettier/vim-prettier" })
-
 	-- generates tags for jumping to definitions in source
 	use({ "vim-scripts/taglist.vim" })
 
 	-- shows yaml structure in status bar
 	use({ "Einenlum/yaml-revealer" })
 
-	-- ale for linting, eslint etc.
-	use({ "dense-analysis/ale" })
+	-- autoformatter
+	use({
+		"stevearc/conform.nvim",
+		config = function()
+			require("conform").setup({
+				formatters_by_ft = {
+					-- Use a sub-list to run only the first available formatter
+					javascript = { { "prettierd", "prettier" } },
+					["javascript.glimmer"] = { { "prettierd", "prettier" } },
+					css = { { "prettierd", "prettier" } },
+					scss = { { "prettierd", "prettier" } },
+					ruby = { "stree" },
+					lua = { "stylua" },
+					handlebars = { { "prettierd", "prettier" } },
+					go = { "gofmt" },
+				},
+				format_on_save = {
+					timeout_ms = 100,
+					lsp_fallback = true,
+				},
+				notify_on_error = false,
+				formatters = {
+					prettierd = {
+						require_cwd = true,
+					},
+					prettier = {
+						require_cwd = true,
+					},
+				},
+			})
+		end,
+	})
 
 	-- find and replace multiple variants of a word (Subvert)
 	-- e.g. Address/address/addresses replace with Location/location/locations
@@ -137,6 +161,7 @@ return require("packer").startup(function(use)
 		end,
 	})
 
+	-- code snippets, also integrates with autocomplete cmp-nvim
 	use({
 		"L3MON4D3/LuaSnip",
 		-- follow latest release.
@@ -149,11 +174,17 @@ return require("packer").startup(function(use)
 		end,
 	})
 
+	-- manager for lsps, linters, and formatter
+	use({
+		"williamboman/mason.nvim",
+		"williamboman/mason-lspconfig.nvim",
+		"neovim/nvim-lspconfig",
+	})
+
 	-- floating terminal overlay for spec runs etc
 	use({ "voldikss/vim-floaterm" })
 
 	-- LSP and autocomplete plugins
-	use({ "neovim/nvim-lspconfig" })
 	use({ "hrsh7th/cmp-nvim-lsp" })
 	use({ "hrsh7th/cmp-buffer" })
 	use({ "hrsh7th/cmp-path" })
@@ -161,6 +192,6 @@ return require("packer").startup(function(use)
 	use({ "hrsh7th/nvim-cmp" })
 	use({ "saadparwaiz1/cmp_luasnip" })
 
-  -- indentation guides
-  use({ "lukas-reineke/indent-blankline.nvim"})
+	-- indentation guides
+	use({ "lukas-reineke/indent-blankline.nvim" })
 end)

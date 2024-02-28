@@ -50,14 +50,14 @@ end)
 
 -- copy system spec command to clipboard
 function SystemSpecRun(opts)
-  local path = vim.fn.resolve(vim.fn.expand('%:p'))
-  local dir = vim.fn.shellescape(vim.fn.fnamemodify(path, ':h'))
+	local path = vim.fn.resolve(vim.fn.expand("%:p"))
+	local dir = vim.fn.shellescape(vim.fn.fnamemodify(path, ":h"))
 
-  local cmd = "sysspecrun " .. path .. ":" .. opts.line1
-  vim.fn.setreg('+', cmd)
-  vim.fn.setreg('*', cmd)
+	local cmd = "sysspecrun " .. path .. ":" .. opts.line1
+	vim.fn.setreg("+", cmd)
+	vim.fn.setreg("*", cmd)
 
-  vim.notify(cmd)
+	vim.notify(cmd)
 end
 vim.api.nvim_create_user_command("SystemSpecRun", function(opts)
 	SystemSpecRun(opts)
@@ -78,11 +78,17 @@ end)
 vim.api.nvim_create_user_command("GithubLink", function(opts)
 	GithubLink(opts, "auto")
 end, { nargs = "*", range = true })
+vim.api.nvim_create_user_command("GithubLinkFile", function(opts)
+	GithubLinkFile(opts, "auto")
+end, { nargs = "*", range = true })
 vim.api.nvim_create_user_command("CommitLink", function(opts)
 	CommitLink(opts)
 end, { nargs = "*", range = true })
 vim.api.nvim_create_user_command("GithubBlameLine", function(opts)
 	GithubBlameLine(opts)
+end, { nargs = "*", range = true })
+vim.api.nvim_create_user_command("GithubHistory", function(opts)
+	GithubHistory(opts)
 end, { nargs = "*", range = true })
 
 vim.keymap.set("v", "<leader>gh", ":GithubLink<cr>")
@@ -116,31 +122,5 @@ vim.keymap.set("n", "<leader>vs", ":vsplit<cr><ESC>:wincmd l<cr>")
 vim.keymap.set("n", "<leader>hs", ":split<cr><ESC>:wincmd j<cr>")
 vim.keymap.set("n", "<leader>w", ":wincmd w<cr>")
 
--- F9 to format file with the appropeiate tool based on filetype
-vim.keymap.set("n", "<F9>", ":Autoformat<CR>")
-local formatting_group = vim.api.nvim_create_augroup("formatting", { clear = true })
-vim.api.nvim_create_autocmd(
-	{ "FileType" },
-	{ pattern = "javascript", group = formatting_group, command = "noremap <buffer> <F9> :ALEFix<cr>" }
-)
-vim.api.nvim_create_autocmd({ "FileType" }, {
-	pattern = "lua",
-	group = formatting_group,
-	command = 'noremap <buffer> <F9> <cmd>lua require("stylua-nvim").format_file()<CR>',
-})
-vim.api.nvim_create_autocmd(
-	{ "FileType" },
-	{ pattern = "scss", group = formatting_group, command = "noremap <buffer> <F9> :ALEFix<cr>" }
-)
-vim.api.nvim_create_autocmd(
-	{ "FileType" },
-	{ pattern = "ruby", group = formatting_group, command = "noremap <buffer> <F9> :ALEFix<cr>" }
-)
-vim.api.nvim_create_autocmd(
-	{ "FileType" },
-	{ pattern = "go", group = formatting_group, command = "noremap <buffer> <F9> :GoFmr<cr>:GoImports<cr>" }
-)
-vim.api.nvim_create_autocmd(
-	{ "FileType" },
-	{ pattern = "html.handlebars", group = formatting_group, command = "noremap <buffer> <F9> :ALEFix<cr>" }
-)
+-- get nvim diagnostics from lsp into quickfix list
+vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist)

@@ -5,6 +5,7 @@ require("fzf-lua").setup({
 	btags = { ctags_autogen = true, ctags_file = "~/.ctags" },
 })
 
+-- May need to reinstall these sometimes after updates with TSInstall!
 require("nvim-treesitter.configs").setup({
 	ensure_installed = {
 		-- Web Languages
@@ -45,33 +46,13 @@ require("nvim-treesitter.configs").setup({
 	},
 })
 
-vim.g.ale_fixers = {
-	javascript = { "prettier", "eslint" },
-	css = { "prettier" },
-	scss = { "prettier" },
-	ruby = { "syntax_tree" },
-	handlebars = { "prettier" },
-}
-vim.g.ale_fix_on_save = 1
-vim.g.ale_linters = { javascript = { "eslint" } }
-vim.g.ale_virtualtext_cursor = 0
-
-vim.api.nvim_create_autocmd(
-	{ "FileType" },
-	{ pattern = "html.handlebars", command = "let b:ale_javascript_prettier_options = '--parser=glimmer'" }
-)
-vim.api.nvim_create_autocmd(
-	{ "FileType" },
-	{ pattern = "javascript.glimmer", command = "let b:ale_javascript_prettier_options = '--parser=glimmer'" }
-)
-
 vim.g.git_messenger_close_on_cursor_moved = false
 vim.g.git_messenger_always_into_popup = true
 vim.g.git_messenger_include_diff = "current"
 vim.g.git_messenger_preview_mods = "botright"
-vim.g.git_messenger_extra_blame_args = "--ignore-revs-file=.git-blame-ignore-revs"
+-- vim.g.git_messenger_extra_blame_args = "--ignore-revs-file=.git-blame-ignore-revs"
 
--- Set up nvim-cmp.
+-- Set up nvim-cmp for autocompletion.
 local cmp = require("cmp")
 
 cmp.setup({
@@ -142,17 +123,41 @@ cmp.setup.cmdline(":", {
 	}),
 })
 
+require("mason").setup()
+
 -- Set up lspconfig.
-local capabilities = require("cmp_nvim_lsp").default_capabilities()
+local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 -- Setup language servers.
 local lspconfig = require("lspconfig")
--- lspconfig.tsserver.setup({ capabilities = capabilities })
 lspconfig.ember.setup({ capabilities = capabilities })
 lspconfig.solargraph.setup({ capabilities = capabilities })
+lspconfig.rubocop.setup({ capabilities = capabilities })
+lspconfig.syntax_tree.setup({ capabilities = capabilities })
+lspconfig.eslint.setup({
+	capabilities = capabilities,
+	filetypes = {
+		"javascript",
+		"typescript",
+		"typescript.glimmer",
+		"javascript.glimmer",
+		"json",
+		"markdown",
+	},
+	on_attach = function(client, bufnr)
+		vim.api.nvim_create_autocmd("BufWritePre", {
+			buffer = bufnr,
+			command = "EslintFixAll",
+		})
+	end,
+})
 
 -- set up indentation guides
-require("ibl").setup()
+local highlight = {
+	"CursorColumn",
+	"Whitespace",
+}
+require("ibl").setup({ scope = { enabled = false } })
 
 -- +++++++++++++++++++++++ --
 -- /additional plugin setup --
