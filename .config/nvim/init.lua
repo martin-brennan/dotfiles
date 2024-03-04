@@ -80,3 +80,5 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 
 vim.opt.regexpengine = 0
+vim.opt.smartcase = true
+vim.opt.ignorecase = true
