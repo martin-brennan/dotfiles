@@ -1,7 +1,11 @@
 -- additional plugin setup --
 -- +++++++++++++++++++++++ --
 require("fzf-lua").setup({
-	winopts = { fullscreen = true, title = "Searching...", preview = { horizontal = "right:50%" } },
+	winopts = {
+		fullscreen = true,
+		title = "Searching...",
+		preview = { horizontal = "right:50%", layout = "horizontal" },
+	},
 	btags = { ctags_autogen = true, ctags_file = "~/.ctags" },
 })
 
@@ -70,7 +74,7 @@ cmp.setup({
 		["<C-f>"] = cmp.mapping.scroll_docs(4),
 		["<C-Space>"] = cmp.mapping.complete(),
 		["<C-e>"] = cmp.mapping.abort(),
-		["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+		["<CR>"] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
 		-- https://github.com/zbirenbaum/copilot.lua/issues/91#issuecomment-1345190310
 		["<Tab>"] = cmp.mapping(function(fallback)
 			luasnip = require("luasnip")
@@ -134,6 +138,7 @@ lspconfig.ember.setup({ capabilities = capabilities })
 lspconfig.solargraph.setup({ capabilities = capabilities })
 lspconfig.rubocop.setup({ capabilities = capabilities })
 lspconfig.syntax_tree.setup({ capabilities = capabilities })
+lspconfig.gopls.setup({ capabilities = capabilities })
 lspconfig.eslint.setup({
 	capabilities = capabilities,
 	filetypes = {
@@ -158,6 +163,16 @@ local highlight = {
 	"Whitespace",
 }
 require("ibl").setup({ scope = { enabled = false } })
+
+-- Set Lightline configuration in Lua for Neovim
+vim.g.lightline = {
+	active = {
+		left = { { "mode", "paste" }, { "readonly", "relativepath", "modified" } },
+	},
+	inactive = {
+		left = { { "mode", "paste" }, { "readonly", "relativepath", "modified" } },
+	},
+}
 
 -- +++++++++++++++++++++++ --
 -- /additional plugin setup --

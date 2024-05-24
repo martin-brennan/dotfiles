@@ -28,7 +28,8 @@ vim.opt.cursorline = true
 vim.opt.clipboard = "unnamedplus"
 
 -- set colour schme
-vim.cmd("colorscheme gruvbox")
+vim.cmd("colorscheme kanagawa-wave")
+-- vim.cmd("colorscheme gruvbox")
 vim.g.gruvbox_transparent_bg = 1
 
 -- terminal

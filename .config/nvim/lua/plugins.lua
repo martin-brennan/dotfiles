@@ -73,14 +73,14 @@ return require("packer").startup(function(use)
 				log_level = vim.log.levels.DEBUG,
 				formatters_by_ft = {
 					-- Use a sub-list to run only the first available formatter
-					javascript = { { "prettierd", "prettier" } },
+					javascript = { { "prettier" } },
 					["javascript.glimmer"] = { { "prettierd", "prettier" } },
 					css = { { "prettierd", "prettier" } },
 					scss = { { "prettierd", "prettier" } },
 					ruby = { "syntax_tree" },
 					lua = { "stylua" },
-					handlebars = { { "prettierd", "prettier" } },
-					go = { "gofmt" },
+					handlebars = { { "prettier" } },
+					go = { "gofmt", "goimports" },
 				},
 				format_on_save = {
 					-- syntax_tree can take ~500ms! so we need to set this to something higher
@@ -154,7 +154,11 @@ return require("packer").startup(function(use)
 	use({
 		"ibhagwan/fzf-lua",
 		config = function()
-			vim.cmd("FzfLua setup_fzfvim_cmds")
+			-- For some reason I had to do this (which is what FzfLua setup_fzfvim_cmds does
+			-- internally), because no matter what I did I got "FzfLua is not an editor command"
+			-- errors...
+			loadstring("return require'fzf-lua.profiles.fzf-vim'.fn_load")()()
+			-- vim.cmd("FzfLua setup_fzfvim_cmds")
 		end,
 	})
 
@@ -203,4 +207,7 @@ return require("packer").startup(function(use)
 
 	-- indentation guides
 	use({ "lukas-reineke/indent-blankline.nvim" })
+
+	-- colour scheme kanagawa
+	use({ "rebelot/kanagawa.nvim" })
 end)

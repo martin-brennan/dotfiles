@@ -25,4 +25,16 @@ export default class {} extends Component {{
 			{ i(1), i(2) }
 		)
 	),
+
+	s(
+		"ts",
+		fmt(
+			[[
+       test("{}", async function (assert) {{
+         {}
+       }});
+       ]],
+			{ i(1), i(2) }
+		)
+	),
 }
