@@ -24,6 +24,9 @@ vim.opt.softtabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.cursorline = true
 
+-- do not mess with line endings
+vim.opt.fixeol = false
+
 -- makes it so when copying using yy etc we copy to the system clipboard as well
 vim.opt.clipboard = "unnamedplus"
 
