@@ -81,6 +81,8 @@ return require("packer").startup(function(use)
 					lua = { "stylua" },
 					handlebars = { { "prettier" } },
 					go = { "gofmt", "goimports" },
+          cpp = { "clang-format-mp-15" },
+          c = { "clang-format-mp-15" },
 				},
 				format_on_save = {
 					-- syntax_tree can take ~500ms! so we need to set this to something higher
