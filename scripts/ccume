@@ -1,0 +1,26 @@
+#!/bin/bash
+
+commit=$(git log --author="Martin Brennan" --color=always \
+  --format="%C(green bold)%H%Creset %C(yellow)[%ad]%Creset %C(white bold)%s%Creset %Cblue[%an]%Creset" \
+  --date=format:%Y-%m-%d | fzf --no-sort --ansi --multi)
+
+if [[ -n "$commit" ]]; then
+  commit_hash=$(echo "$commit" | awk '{print $1}')
+  
+  url=$(git remote get-url origin)
+  url=${url//git@github.com:/https:\/\/github.com\/}
+  url=${url//.git/}
+  final="${url}/commit/${commit_hash}"
+  
+  # Use pbcopy if available, otherwise use xclip
+  if command -v pbcopy &> /dev/null; then
+    echo "$final" | pbcopy
+  elif command -v xclip &> /dev/null; then
+    echo "$final" | xclip -selection clipboard
+  else
+    echo "No clipboard utility found. Please install pbcopy or xclip."
+    exit 1
+  fi
+
+  git --no-pager show --pretty=medium -s --color=always "$commit_hash"
+fi

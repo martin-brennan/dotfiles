@@ -34,7 +34,9 @@ stty icrnl
 ZSH_THEME="robbyrussell"
 plugins=(git fzf-docker)
 source $ZSH/oh-my-zsh.sh
+source $HOME/scripts/fzf-kill.plugin.zsh
 
+alias kk="kill -9 **"
 alias gosrc="cd $GOPATH/src"
 alias gcdd="git checkout ."
 alias rr="cd ~/repos"
@@ -224,52 +226,6 @@ commurl() {
   echo $final | xclip -selection clipboard
 }
 
-ccu() {
-  local commit=$(git log --color=always --format="%C(green bold)%H%Creset %C(yellow)[%ad]%Creset %C(white bold)%s%Creset %Cblue[%an]%Creset" --date=format:%Y-%m-%d | fzf --no-sort --ansi --multi)
-  commit=(${(@s/ /)commit})
-  if [[ -n "${commit[1]/[ ]*\n/}" ]]
-  then
-    local url=${$(git remote get-url origin)//git@github.com:/https://github.com/}
-    url=${url//.git//}
-    final="$url""commit/""$commit[1]"
-    echo $final | xclip -selection clipboard
-    git --no-pager show --pretty=medium -s --color=always $commit[1]
-  fi
-}
-
-ccuc() {
-  local commit=$(git log --color=always --format="%C(green bold)%H%Creset %C(yellow)[%ad]%Creset %C(white bold)%s%Creset %Cblue[%an]%Creset" --date=format:%Y-%m-%d | fzf --no-sort --ansi --multi)
-  commit=(${(@s/ /)commit})
-  if [[ -n "${commit[1]/[ ]*\n/}" ]]
-  then
-    echo $commit[1] | xclip -selection clipboard
-    git --no-pager show --pretty=medium -s --color=always $commit[1]
-  fi
-}
-
-ccume() {
-  local commit=$(git log --author="Martin Brennan" --color=always --format="%C(green bold)%H%Creset %C(yellow)[%ad]%Creset %C(white bold)%s%Creset %Cblue[%an]%Creset" --date=format:%Y-%m-%d | fzf --no-sort --ansi --multi)
-  commit=(${(@s/ /)commit})
-  if [[ -n "${commit[1]/[ ]*\n/}" ]]
-  then
-    local url=${$(git remote get-url origin)//git@github.com:/https://github.com/}
-    url=${url//.git//}
-    final="$url""commit/""$commit[1]"
-    echo $final | xclip -selection clipboard
-    git --no-pager show --pretty=medium -s --color=always $commit[1]
-  fi
-}
-
-ccumec() {
-  local commit=$(git log --author="Martin Brennan" --color=always --format="%C(green bold)%H%Creset %C(yellow)[%ad]%Creset %C(white bold)%s%Creset %Cblue[%an]%Creset" --date=format:%Y-%m-%d | fzf --no-sort --ansi --multi)
-  commit=(${(@s/ /)commit})
-  if [[ -n "${commit[1]/[ ]*\n/}" ]]
-  then
-    echo $commit[1] | xclip -selection clipboard
-    git --no-pager show --pretty=medium -s --color=always $commit[1]
-  fi
-}
-
 dockerstop() {
   docker stop $(docker ps -aq)
 }
@@ -292,6 +248,10 @@ gfl() {
 
 gclone() {
   git clone "$1" && cd "$(basename $1)";
+}
+
+gclonerepo() {
+  git clone "git@github.com:$1"
 }
 
 dumptestdb() {
