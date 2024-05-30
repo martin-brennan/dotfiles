@@ -98,7 +98,7 @@ return {
 			[[
       # frozen_string_literal: true
 
-      describe "{}", type: :system, js: true do
+      describe "{}", type: :system do
         fab!(:current_user) {{ Fabricate(:user) }}
 
         before do
