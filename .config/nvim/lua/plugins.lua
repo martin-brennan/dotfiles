@@ -141,7 +141,7 @@ return require("packer").startup(function(use)
 					auto_refresh = true,
 				},
 				suggestion = {
-					auto_trigger = true,
+					auto_trigger = false,
 					debounce = 50,
 					keymap = {
 						accept = "<Tab>",
@@ -203,11 +203,12 @@ return require("packer").startup(function(use)
 	use({ "hrsh7th/cmp-buffer" })
 	use({ "hrsh7th/cmp-path" })
 	use({ "hrsh7th/cmp-cmdline" })
+	use({ "petertriho/cmp-git", requires = "nvim-lua/plenary.nvim" })
 	use({ "hrsh7th/nvim-cmp" })
 	use({ "saadparwaiz1/cmp_luasnip" })
 
 	-- indentation guides
-	use({ "lukas-reineke/indent-blankline.nvim" })
+	-- use({ "lukas-reineke/indent-blankline.nvim" })
 
 	-- colour scheme kanagawa
 	use({ "rebelot/kanagawa.nvim" })

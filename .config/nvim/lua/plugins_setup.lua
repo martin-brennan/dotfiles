@@ -19,6 +19,7 @@ require("nvim-treesitter.configs").setup({
 		"css",
 		"regex",
 		"glimmer",
+		"glimmer_javascript",
 		-- Documentation Languages
 		"markdown",
 		"markdown_inline",
@@ -92,7 +93,8 @@ cmp.setup({
 		end, { "i", "s" }),
 	}),
 	sources = cmp.config.sources({
-		{ name = "nvim_lsp" },
+		-- { name = "nvim_lsp" },
+		-- { name = "ccumec_cmp_source" },
 		{ name = "luasnip" }, -- For luasnip users.
 		{ name = "path" },
 	}, {
@@ -101,13 +103,22 @@ cmp.setup({
 })
 
 -- Set configuration for specific filetype.
-cmp.setup.filetype("gitcommit", {
-	sources = cmp.config.sources({
-		{ name = "git" }, -- You can specify the `git` source if [you were installed it](https://github.com/petertriho/cmp-git).
-	}, {
-		{ name = "buffer" },
-	}),
-})
+-- cmp.setup.filetype("gitcommit", {
+-- 	sources = cmp.config.sources({
+-- 		{ name = "git" }, -- You can specify the `git` source if [you were installed it](https://github.com/petertriho/cmp-git).
+-- 	}, {
+-- 		{ name = "buffer" },
+-- 	}),
+-- })
+-- cmp.setup.filetype("gitcommit", {
+-- 	sources = cmp.config.sources({
+-- 		{ name = "ccumec_cmp" },
+-- 	}, {
+-- 		{ name = "buffer" },
+-- 	}),
+-- })
+
+-- require("cmp_git").setup()
 
 -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
 cmp.setup.cmdline({ "/", "?" }, {
@@ -134,6 +145,7 @@ local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protoc
 
 -- Setup language servers.
 local lspconfig = require("lspconfig")
+lspconfig.yamlls.setup({ capabilities = capabilities })
 lspconfig.clangd.setup({ capabilities = capabilities })
 lspconfig.ember.setup({ capabilities = capabilities })
 lspconfig.solargraph.setup({ capabilities = capabilities })
@@ -163,7 +175,7 @@ local highlight = {
 	"CursorColumn",
 	"Whitespace",
 }
-require("ibl").setup({ scope = { enabled = false } })
+-- require("ibl").setup({ scope = { enabled = false } })
 
 -- Set Lightline configuration in Lua for Neovim
 vim.g.lightline = {
@@ -174,6 +186,14 @@ vim.g.lightline = {
 		left = { { "mode", "paste" }, { "readonly", "relativepath", "modified" } },
 	},
 }
+
+-- Convert dot-separated keys to '>'-separated keys and call SearchYamlKey
+function SearchYamlKeyDotSeparated(key)
+	-- Replace '.' with '>'
+	local formatted_key = key:gsub("%.", ">")
+	-- Call the SearchYamlKey function with the formatted key
+	vim.fn.SearchYamlKey(formatted_key)
+end
 
 -- +++++++++++++++++++++++ --
 -- /additional plugin setup --

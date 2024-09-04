@@ -32,6 +32,9 @@ vim.keymap.set("n", "&", ":Rg <C-R><C-W><cr>", { silent = true })
 vim.keymap.set("n", "<leader>cn", ":cn<cr>")
 vim.keymap.set("n", "<leader>cp", ":cp<cr>")
 
+-- toggle copilot
+vim.keymap.set("n", "<leader>ai", ":Copilot toggle<cr>")
+
 -- go into normal mode from terminal popover window
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
 
@@ -46,6 +49,10 @@ vim.keymap.set("n", "<Leader>l", function()
 			.. ":"
 			.. vim.fn.line(".")
 	)
+end)
+
+vim.keymap.set("n", "<Leader>cc", function()
+	vim.cmd(":FloatermNew --height=0.9 --width=0.9 --title=MyCommits --autoclose=0 ccumec")
 end)
 
 -- copy system spec command to clipboard
@@ -124,3 +131,14 @@ vim.keymap.set("n", "<leader>w", ":wincmd w<cr>")
 
 -- get nvim diagnostics from lsp into quickfix list
 vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist)
+
+-- open diagnostics in floating window so you can see the full message
+vim.keymap.set("n", "<space>?", vim.diagnostic.open_float, bufopts)
+
+-- Map the key sequence <leader>sy to search for YAML keys using the dot-separated format
+vim.api.nvim_set_keymap(
+	"n",
+	"<leader>sy",
+	':lua SearchYamlKeyDotSeparated(vim.fn.input("YAML Key: "))<CR>',
+	{ noremap = true, silent = true }
+)
