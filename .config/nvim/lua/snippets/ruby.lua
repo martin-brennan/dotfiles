@@ -135,4 +135,55 @@ return {
 			}
 		)
 	),
+
+	s(
+		"pop",
+		fmt(
+			[[
+  # frozen_string_literal: true
+
+module PageObjects
+  module Pages
+    class {} < PageObjects::Pages::Base
+    end
+  end
+end
+]],
+			{ i(1) }
+		)
+	),
+
+	s(
+		"poc",
+		fmt(
+			[[
+  # frozen_string_literal: true
+
+module PageObjects
+  module Components
+    class {} < PageObjects::Components::Base
+    end
+  end
+end
+]],
+			{ i(1) }
+		)
+	),
+
+	s(
+		"pom",
+		fmt(
+			[[
+  # frozen_string_literal: true
+
+module PageObjects
+  module Modals
+    class {} < PageObjects::Modals::Base
+    end
+  end
+end
+]],
+			{ i(1) }
+		)
+	),
 }

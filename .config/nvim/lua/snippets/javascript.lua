@@ -12,7 +12,7 @@ return {
 		fmt(
 			[[
 import Component from "@glimmer/component";
-import {{ inject as service }} from "@ember/service";
+import {{ service }} from "@ember/service";
 
 export default class {} extends Component {{
   @service currentUser;
@@ -23,6 +23,20 @@ export default class {} extends Component {{
 }}
   ]],
 			{ i(1), i(2) }
+		)
+	),
+
+	s(
+		"gjsct",
+		fmt(
+			[[
+const {} = <template>
+    {}
+  </template>;
+
+  export default {};
+  ]],
+			{ i(1), i(2), i(3) }
 		)
 	),
 
