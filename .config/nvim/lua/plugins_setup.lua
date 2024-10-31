@@ -146,6 +146,7 @@ local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protoc
 -- Setup language servers.
 local lspconfig = require("lspconfig")
 lspconfig.yamlls.setup({ capabilities = capabilities })
+lspconfig.glint.setup({ capabilities = capabilities })
 lspconfig.clangd.setup({ capabilities = capabilities })
 lspconfig.ember.setup({ capabilities = capabilities })
 lspconfig.solargraph.setup({ capabilities = capabilities })

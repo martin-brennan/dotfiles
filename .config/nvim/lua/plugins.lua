@@ -73,13 +73,13 @@ return require("packer").startup(function(use)
 				log_level = vim.log.levels.DEBUG,
 				formatters_by_ft = {
 					-- Use a sub-list to run only the first available formatter
-					javascript = { { "prettier" } },
-					["javascript.glimmer"] = { { "prettierd", "prettier" } },
-					css = { { "prettierd", "prettier" } },
-					scss = { { "prettierd", "prettier" } },
+					javascript = { "prettier" },
+					["javascript.glimmer"] = { "prettierd", "prettier", stop_after_first = true },
+					css = { "prettierd", "prettier", stop_after_first = true },
+					scss = { "prettierd", "prettier", stop_after_first = true },
 					ruby = { "syntax_tree" },
 					lua = { "stylua" },
-					handlebars = { { "prettier" } },
+					handlebars = { "prettier" },
 					cpp = { "clang-format-mp-15" },
 					c = { "clang-format-mp-15" },
 				},
