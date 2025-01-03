@@ -1,17 +1,6 @@
-require("plugins")
-require("plugins_setup")
+require("lazy_setup")
+require("additional_plugin_setup")
 require("mappings")
-
--- auto-compile after plugins config is changed
-vim.cmd([[
-  augroup packer_user_config
-    autocmd!
-    autocmd BufWritePost plugins.lua source <afile> | PackerCompile
-    autocmd BufWritePost init.lua source <afile>
-    autocmd BufWritePost lua/mappings.lua source <afile>
-    autocmd BufWritePost lua/plugins_setup.lua source <afile>
-  augroup end
-]])
 
 -- set tabs/spaces and line numbering
 vim.opt.expandtab = true
@@ -79,6 +68,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		local opts = { buffer = ev.buf }
 		vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
 		vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+		vim.keymap.set("n", "gp", "<cmd>lua require('goto-preview').goto_preview_definition()<CR>", opts)
 		vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
 	end,
 })

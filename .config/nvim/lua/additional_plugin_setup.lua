@@ -11,7 +11,7 @@ require("fzf-lua").setup({
 	btags = { ctags_autogen = true, ctags_file = "~/.ctags" },
 })
 
--- May need to reinstall these sometimes after updates with TSInstall!
+-- -- May need to reinstall these sometimes after updates with TSInstall!
 require("nvim-treesitter.configs").setup({
 	ensure_installed = {
 		-- Web Languages
@@ -105,22 +105,22 @@ cmp.setup({
 })
 
 -- Set configuration for specific filetype.
--- cmp.setup.filetype("gitcommit", {
--- 	sources = cmp.config.sources({
--- 		{ name = "git" }, -- You can specify the `git` source if [you were installed it](https://github.com/petertriho/cmp-git).
--- 	}, {
--- 		{ name = "buffer" },
--- 	}),
--- })
--- cmp.setup.filetype("gitcommit", {
--- 	sources = cmp.config.sources({
--- 		{ name = "ccumec_cmp" },
--- 	}, {
--- 		{ name = "buffer" },
--- 	}),
--- })
+cmp.setup.filetype("gitcommit", {
+	sources = cmp.config.sources({
+		{ name = "git" }, -- You can specify the `git` source if [you were installed it](https://github.com/petertriho/cmp-git).
+	}, {
+		{ name = "buffer" },
+	}),
+})
+cmp.setup.filetype("gitcommit", {
+	sources = cmp.config.sources({
+		{ name = "ccumec_cmp" },
+	}, {
+		{ name = "buffer" },
+	}),
+})
 
--- require("cmp_git").setup()
+require("cmp_git").setup()
 
 -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
 cmp.setup.cmdline({ "/", "?" }, {
@@ -148,7 +148,7 @@ local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protoc
 -- Setup language servers.
 local lspconfig = require("lspconfig")
 lspconfig.yamlls.setup({ capabilities = capabilities })
-lspconfig.glint.setup({ capabilities = capabilities })
+-- lspconfig.glint.setup({ capabilities = capabilities })
 lspconfig.clangd.setup({ capabilities = capabilities })
 lspconfig.ember.setup({ capabilities = capabilities })
 lspconfig.solargraph.setup({ capabilities = capabilities })

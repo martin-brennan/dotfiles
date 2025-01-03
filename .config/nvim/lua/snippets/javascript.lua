@@ -1,11 +1,11 @@
 return {
 	s("dd", t("debugger")),
 
-	s("pt", t("pauseTest();")),
+	s("pt", t("await pauseTest();")),
 
 	s("clog", fmt("console.log({});", i(1))),
 
-	s("td", fmt("TODO (martin) {} {}", { i(1), i(2) })),
+	s("td", fmt("// TODO (martin) {} {}", { i(1), i(2) })),
 
 	s(
 		"gjsc",

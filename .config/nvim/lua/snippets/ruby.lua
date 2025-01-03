@@ -186,4 +186,22 @@ end
 			{ i(1) }
 		)
 	),
+
+	s(
+		"svc",
+		fmt(
+			[[
+  # frozen_string_literal: true
+
+class {}
+  include Service::Base
+
+  {}
+
+  private
+end
+]],
+			{ i(1), i(2) }
+		)
+	),
 }
