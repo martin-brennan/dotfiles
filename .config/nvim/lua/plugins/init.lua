@@ -213,6 +213,43 @@ return {
 		end,
 	},
 
+	{
+		"CopilotC-Nvim/CopilotChat.nvim",
+		dependencies = {
+			{ "github/copilot.vim" },
+			{ "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
+		},
+		build = "make tiktoken", -- Only on MacOS or Linux
+		opts = {
+			model = "claude-3.5-sonnet",
+		},
+		keys = {
+			{
+				"<leader>pl",
+				function()
+					local visualmode = vim.fn.mode()
+					local input = vim.fn.input("Quick Chat: ")
+					if input ~= "" then
+						local chat = require("CopilotChat")
+						local select = require("CopilotChat.select")
+
+						local selection
+						-- if we have a line in visual mode then select it
+						if visualmode == "V" or visualmode == "v" or visualmode == "\22" then
+							selection = select.visual
+						else
+							selection = select.buffer
+						end
+
+						chat.ask(input, { selection = selection })
+					end
+				end,
+				mode = { "n", "v" },
+				desc = "Start Copilot Chat",
+			},
+		},
+	},
+
 	spec = {
 		-- import your plugins
 		{ import = "plugins" },
