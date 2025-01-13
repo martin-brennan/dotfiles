@@ -181,14 +181,14 @@ local highlight = {
 -- require("ibl").setup({ scope = { enabled = false } })
 
 -- Set Lightline configuration in Lua for Neovim
-vim.g.lightline = {
-	active = {
-		left = { { "mode", "paste" }, { "readonly", "relativepath", "modified" } },
-	},
-	inactive = {
-		left = { { "mode", "paste" }, { "readonly", "relativepath", "modified" } },
-	},
-}
+-- vim.g.lightline = {
+-- 	active = {
+-- 		left = { { "mode", "paste" }, { "readonly", "relativepath", "modified" } },
+-- 	},
+-- 	inactive = {
+-- 		left = { { "mode", "paste" }, { "readonly", "relativepath", "modified" } },
+-- 	},
+-- }
 
 -- Convert dot-separated keys to '>'-separated keys and call SearchYamlKey
 function SearchYamlKeyDotSeparated(key)
@@ -197,6 +197,8 @@ function SearchYamlKeyDotSeparated(key)
 	-- Call the SearchYamlKey function with the formatted key
 	vim.fn.SearchYamlKey(formatted_key)
 end
+
+require("lualine").setup()
 
 -- +++++++++++++++++++++++ --
 -- /additional plugin setup --

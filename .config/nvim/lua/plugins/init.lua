@@ -30,7 +30,8 @@ return {
 	"tpope/vim-repeat",
 
 	-- fancy status bar
-	"itchyny/lightline.vim",
+	-- "itchyny/lightline.vim",
+	{ "nvim-lualine/lualine.nvim", dependencies = { "nvim-tree/nvim-web-devicons" } },
 
 	-- js formatting and snippets
 	"pangloss/vim-javascript",
