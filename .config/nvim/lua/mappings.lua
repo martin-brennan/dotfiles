@@ -73,13 +73,13 @@ vim.keymap.set("n", "<leader>ys", ":SystemSpecRun<cr>")
 vim.keymap.set("v", "<leader>ys", ":SystemSpecRun<cr>")
 
 -- nvim conf reload and open
--- vim.keymap.set("n", "<Leader>lr", function()
--- 	vim.cmd(":luafile ~/.config/nvim/lua/plugins_setup.lua")
--- 	vim.cmd(":luafile ~/.config/nvim/lua/mappings.lua")
--- 	vim.cmd(":luafile ~/.config/nvim/init.lua")
--- 	require("luasnip.loaders.from_lua").load({ paths = "~/.config/nvim/lua/snippets" })
--- 	vim.cmd("echo 'Config reloaded!'")
--- end)
+vim.keymap.set("n", "<Leader>lr", function()
+	vim.cmd(":luafile ~/.config/nvim/lua/plugins_setup.lua")
+	vim.cmd(":luafile ~/.config/nvim/lua/mappings.lua")
+	vim.cmd(":luafile ~/.config/nvim/init.lua")
+	require("luasnip.loaders.from_lua").load({ paths = "~/.config/nvim/lua/snippets" })
+	vim.cmd("echo 'Config reloaded!'")
+end)
 
 -- git bindings
 vim.api.nvim_create_user_command("GithubLink", function(opts)
