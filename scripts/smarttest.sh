@@ -26,6 +26,8 @@ fi
 
 no_headless=$2
 is_plugin_spec=false
+is_theme_spec=false
+is_core_spec=false
 rspec_format="--format progress"
 selenium_headless=1
 
@@ -43,8 +45,18 @@ while read plugin; do
   fi
 done < <(ls $HOME/repos/discourse/plugins)
 
-if [ $is_plugin_spec = true  ] ; then
-  cd ~/repos/discourse && RSPEC_EXCLUDE_GEMS_IN_BACKTRACE=1 RUN_S3_SYSTEM_SPECS=1 SELENIUM_HEADLESS=$selenium_headless IMPROVED_SPEC_DEBUGGING=1 LOAD_PLUGINS=1 bin/rspec $spec_file_path $rspec_format
+if [ $is_plugin_spec = false ] ; then
+  if [[ "$spec_file_path" == *"$HOME/repos/discourse/"*  ]] ; then
+    is_core_spec=true
+  fi
+fi
+
+if [ $is_core_spec = false ] && [ $is_plugin_spec = false ] ; then
+  is_theme_spec=true
+fi
+
+if [ $is_plugin_spec = true ] || [ $is_theme_spec = true ] ; then
+  cd $DISCOURSE_REPO_BASE_DIRECTORY && QUIET_SASS_DEPRECATIONS="1" RUN_S3_SYSTEM_SPECS=1 SELENIUM_HEADLESS=$selenium_headless IMPROVED_SPEC_DEBUGGING=1 LOAD_PLUGINS=1 bin/rspec $spec_file_path $rspec_format
 else
-  RSPEC_EXCLUDE_GEMS_IN_BACKTRACE=1 RUN_S3_SYSTEM_SPECS=1 MINIO_RUNNER_LOG_LEVEL=DEBUG SELENIUM_HEADLESS=$selenium_headless IMPROVED_SPEC_DEBUGGING=1 bin/rspec $spec_file_path $spec_format
+  QUIET_SASS_DEPRECATIONS="1" RUN_S3_SYSTEM_SPECS=1 MINIO_RUNNER_LOG_LEVEL=DEBUG SELENIUM_HEADLESS=$selenium_headless IMPROVED_SPEC_DEBUGGING=1 bin/rspec $spec_file_path $spec_format
 fi

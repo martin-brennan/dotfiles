@@ -11,10 +11,8 @@ export GOPATH=$HOME/go
 export PGROOT="/var/lib/postgres"
 export ZSH="$HOME/.oh-my-zsh"
 export FZF_DEFAULT_COMMAND="rg --files --hidden -g '!.git' -g '!documentation/chat'"
-export SSH_ASKPASS='/usr/bin/ksshaskpass'
-export GIT_ASKPASS='/usr/bin/ksshaskpass'
 export REPO_BASE_DIRECTORY="$HOME/repos"
-export DISCOURSE_REPO_BASE_DIRECTORY=$REPO_BASE_DIRECTORY
+export DISCOURSE_REPO_BASE_DIRECTORY="$REPO_BASE_DIRECTORY/discourse"
 export DOCKER_GATEWAY_HOST=172.17.0.1
 export HUB_BASE_URL="http://localhost:4001/api"
 export FZF_DOCKER_PS_FORMAT="table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Ports}}"
@@ -36,6 +34,7 @@ plugins=(git fzf-docker)
 source $ZSH/oh-my-zsh.sh
 source $HOME/scripts/fzf-kill.plugin.zsh
 
+alias rgno="rg --no-ignore $@"
 alias kk="kill -9 **"
 alias gosrc="cd $GOPATH/src"
 alias gcdd="git checkout ."
@@ -108,7 +107,7 @@ alias bmig="bin/rails rails g migration $@"
 alias pgsql="psql postgres"
 alias brc="bin/rails c"
 alias mrs="bundle exec rails s -p 3001"
-alias mig="bundle exec rake db:migrate RAILS_ENV=test && bundle exec rake db:migrate"
+alias mig="LOAD_PLUGINS=1 bundle exec rake db:migrate RAILS_ENV=test && LOAD_PLUGINS=1 bundle exec rake db:migrate"
 alias mm="bundle exec rake db:migrate RAILS_ENV=test && bundle exec rake db:migrate"
 alias rollback="bundle exec rake db:rollback RAILS_ENV=test && bundle exec rake db:rollback"
 alias gadd='git add "$({ git --no-pager diff --name-only; git ls-files --others --exclude-standard } | fzf)"'

@@ -154,6 +154,7 @@ lspconfig.ember.setup({ capabilities = capabilities })
 lspconfig.solargraph.setup({ capabilities = capabilities })
 lspconfig.rubocop.setup({ capabilities = capabilities })
 lspconfig.syntax_tree.setup({ capabilities = capabilities })
+lspconfig.stylelint_lsp.setup({ capabilities = capabilities })
 lspconfig.gopls.setup({ capabilities = capabilities })
 lspconfig.eslint.setup({
 	capabilities = capabilities,

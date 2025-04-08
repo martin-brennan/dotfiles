@@ -76,3 +76,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
 vim.opt.regexpengine = 0
 vim.opt.smartcase = true
 vim.opt.ignorecase = true
+
+-- Add an autocmd for text and markdown files
+vim.api.nvim_create_augroup("SpellCheck", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+	group = "SpellCheck",
+	pattern = { "txt", "markdown" }, -- Match filetypes
+	callback = function()
+		vim.opt_local.spell = true -- Enable spell checking
+		vim.opt_local.spelllang = "en" -- Set the spell check language to English
+	end,
+})

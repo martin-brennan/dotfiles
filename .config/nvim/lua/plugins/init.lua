@@ -72,9 +72,9 @@ return {
 				formatters_by_ft = {
 					-- Use a sub-list to run only the first available formatter
 					javascript = { "prettier" },
-					["javascript.glimmer"] = { "prettierd", "prettier", stop_after_first = true },
-					css = { "prettierd", "prettier", stop_after_first = true },
-					scss = { "prettierd", "prettier", stop_after_first = true },
+					["javascript.glimmer"] = { "prettier", stop_after_first = true },
+					css = { "prettier", "stylelint" },
+					scss = { "prettier", "stylelint" },
 					ruby = { "syntax_tree" },
 					lua = { "stylua" },
 					handlebars = { "prettier" },
@@ -83,8 +83,10 @@ return {
 				},
 				format_on_save = {
 					-- syntax_tree can take ~500ms! so we need to set this to something higher
+					-- timeout_ms = 1000,
+					-- lsp_fallback = true,
+					lsp_format = "fallback",
 					timeout_ms = 1000,
-					lsp_fallback = true,
 				},
 				notify_on_error = false,
 				formatters = {
@@ -222,7 +224,7 @@ return {
 		},
 		build = "make tiktoken", -- Only on MacOS or Linux
 		opts = {
-			model = "claude-3.5-sonnet",
+			model = "gpt-4o",
 		},
 		keys = {
 			{
@@ -260,4 +262,20 @@ return {
 	-- install = { colorscheme = { "kanagawa-wave" } },
 	-- automatically check for plugin updates
 	checker = { enabled = true },
+
+	{
+		"olimorris/codecompanion.nvim",
+		config = function()
+			require("codecompanion").setup({
+				strategies = {
+					chat = {
+						adapter = "anthropic",
+					},
+					inline = {
+						adapter = "anthropic",
+					},
+				},
+			})
+		end,
+	},
 }

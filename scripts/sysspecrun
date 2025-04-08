@@ -1,0 +1,40 @@
+#! /bin/bash
+
+initial_selection=$1
+linenumber=$2
+
+cd ~/repos/discourse
+
+# when there is no initial selection
+if [[ -z $initial_selection ]]; then
+  selection=$(rg --files --glob "spec/system/**/*_spec.rb" --glob "plugins/**/spec/system/**/*_spec.rb" | dmenu -l 20 -c)
+  linenumber=$1
+else
+  selection=$initial_selection
+fi
+
+# if a line number is provided
+linenumberarg=""
+if [[ -n $linenumber ]]; then
+  linenumberarg=":$linenumber"
+fi
+
+printf "\x1b[32;49mRunning spec:\x1b[0m $selection\x1b[35m$linenumberarg\n\n\x1b[0m"
+
+# if the line number arg exists (line number was provided)
+if [[ -n $linenumberarg ]]; then
+  selection="$selection$linenumberarg"
+fi
+
+rspec_args="--format=documentation --profile"
+
+if [[ -n "${RSPEC_SEED}" ]]; then
+  rspec_args="$rspec_args --seed $RSPEC_SEED"
+fi
+
+QUIET_SASS_DEPRECATIONS="1" RAILS_TEST_LOG_LEVEL="error" RSPEC_EXCLUDE_NOISE_IN_BACKTRACE=1 RUN_S3_SYSTEM_SPECS=1 MINIO_RUNNER_LOG_LEVEL=INFO CHROME_LOAD_EXTENSIONS_MANIFEST="${HOME}/Documents/system_spec_extensions_manifest.txt" CHROME_DISABLE_FORCE_DEVICE_SCALE_FACTOR="1" SELENIUM_HEADLESS=0 LOAD_PLUGINS=1 bin/rspec $selection $rspec_args
+# if [[ "$selection" =~ .*"plugins".* ]]; then
+# else
+#   RUN_S3_SYSTEM_SPECS=1 MINIO_RUNNER_LOG_LEVEL=INFO CHROME_LOAD_EXTENSIONS_MANIFEST="${HOME}/Documents/system_spec_extensions_manifest.txt" CHROME_DISABLE_FORCE_DEVICE_SCALE_FACTOR="1" CHROME_DEV_TOOLS="bottom" SELENIUM_HEADLESS=0 bin/rspec $selection $rspec_args
+# fi
+
