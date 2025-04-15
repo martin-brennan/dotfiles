@@ -24,6 +24,9 @@ vim.cmd("colorscheme kanagawa-wave")
 -- vim.cmd("colorscheme gruvbox")
 vim.g.gruvbox_transparent_bg = 1
 
+-- temporary workdown to stop flickering
+vim.g._ts_force_sync_parsing = true
+
 -- terminal
 vim.opt.colorcolumn = "120"
 
@@ -85,5 +88,13 @@ vim.api.nvim_create_autocmd("FileType", {
 	callback = function()
 		vim.opt_local.spell = true -- Enable spell checking
 		vim.opt_local.spelllang = "en" -- Set the spell check language to English
+	end,
+})
+
+-- auto comments
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "*",
+	callback = function()
+		vim.opt_local.formatoptions:append("cro")
 	end,
 })

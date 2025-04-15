@@ -131,25 +131,25 @@ return {
 	"chiedo/vim-dr-replace",
 
 	-- github copilot
-	{
-		"zbirenbaum/copilot.lua",
-		cmd = "Copilot",
-		event = "InsertEnter",
-		config = function()
-			require("copilot").setup({
-				panel = {
-					auto_refresh = true,
-				},
-				suggestion = {
-					auto_trigger = true,
-					debounce = 50,
-					keymap = {
-						accept = "<Tab>",
-					},
-				},
-			})
-		end,
-	},
+	-- {
+	-- 	"zbirenbaum/copilot.lua",
+	-- 	cmd = "Copilot",
+	-- 	event = "InsertEnter",
+	-- 	config = function()
+	-- 		require("copilot").setup({
+	-- 			panel = {
+	-- 				auto_refresh = true,
+	-- 			},
+	-- 			suggestion = {
+	-- 				auto_trigger = true,
+	-- 				debounce = 50,
+	-- 				keymap = {
+	-- 					accept = "<Tab>",
+	-- 				},
+	-- 			},
+	-- 		})
+	-- 	end,
+	-- },
 
 	-- fzf
 	{
@@ -216,47 +216,11 @@ return {
 		end,
 	},
 
-	{
-		"CopilotC-Nvim/CopilotChat.nvim",
-		dependencies = {
-			{ "github/copilot.vim" },
-			{ "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
-		},
-		build = "make tiktoken", -- Only on MacOS or Linux
-		opts = {
-			model = "gpt-4o",
-		},
-		keys = {
-			{
-				"<leader>pl",
-				function()
-					local visualmode = vim.fn.mode()
-					local input = vim.fn.input("Quick Chat: ")
-					if input ~= "" then
-						local chat = require("CopilotChat")
-						local select = require("CopilotChat.select")
-
-						local selection
-						-- if we have a line in visual mode then select it
-						if visualmode == "V" or visualmode == "v" or visualmode == "\22" then
-							selection = select.visual
-						else
-							selection = select.buffer
-						end
-
-						chat.ask(input, { selection = selection })
-					end
-				end,
-				mode = { "n", "v" },
-				desc = "Start Copilot Chat",
-			},
-		},
-	},
-
 	spec = {
 		-- import your plugins
 		{ import = "plugins" },
 	},
+
 	-- Configure any other settings here. See the documentation for more details.
 	-- colorscheme that will be used when installing plugins.
 	-- install = { colorscheme = { "kanagawa-wave" } },
@@ -278,4 +242,5 @@ return {
 			})
 		end,
 	},
+	{ "codota/tabnine-nvim", build = "./dl_binaries.sh" },
 }

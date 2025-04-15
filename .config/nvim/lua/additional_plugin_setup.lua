@@ -11,6 +11,8 @@ require("fzf-lua").setup({
 	btags = { ctags_autogen = true, ctags_file = "~/.ctags" },
 })
 
+require("fzf-lua").register_ui_select()
+
 -- -- May need to reinstall these sometimes after updates with TSInstall!
 require("nvim-treesitter.configs").setup({
 	ensure_installed = {
@@ -79,20 +81,20 @@ cmp.setup({
 		["<C-e>"] = cmp.mapping.abort(),
 		["<CR>"] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
 		-- https://github.com/zbirenbaum/copilot.lua/issues/91#issuecomment-1345190310
-		["<Tab>"] = cmp.mapping(function(fallback)
-			luasnip = require("luasnip")
-			if require("copilot.suggestion").is_visible() then
-				require("copilot.suggestion").accept()
-			elseif luasnip.expand_or_jumpable() then
-				luasnip.expand_or_jump()
-			elseif cmp.visible() then
-				cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
-			elseif has_words_before() then
-				cmp.complete()
-			else
-				fallback()
-			end
-		end, { "i", "s" }),
+		-- ["<Tab>"] = cmp.mapping(function(fallback)
+		-- 	luasnip = require("luasnip")
+		-- 	if require("copilot.suggestion").is_visible() then
+		-- 		require("copilot.suggestion").accept()
+		-- 	elseif luasnip.expand_or_jumpable() then
+		-- 		luasnip.expand_or_jump()
+		-- 	elseif cmp.visible() then
+		-- 		cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
+		-- 	elseif has_words_before() then
+		-- 		cmp.complete()
+		-- 	else
+		-- 		fallback()
+		-- 	end
+		-- end, { "i", "s" }),
 	}),
 	sources = cmp.config.sources({
 		-- { name = "nvim_lsp" },
@@ -210,6 +212,23 @@ require("lualine").setup({
 			{ "filename", path = 1 },
 		},
 	},
+})
+
+require("tabnine").setup({
+	-- disable_auto_comment = true,
+	accept_keymap = "<Tab>",
+	dismiss_keymap = "<C-]>",
+	debounce_ms = 800,
+	suggestion_color = { gui = "#808080", cterm = 244 },
+	-- exclude_filetypes = {"TelescopePrompt", "NvimTree"},
+	log_file_path = nil, -- absolute path to Tabnine log file
+	ignore_certificate_errors = false,
+	-- workspace_folders = {
+	--   paths = { "/your/project" },
+	--   get_paths = function()
+	--       return { "/your/project" }
+	--   end,
+	-- },
 })
 
 -- +++++++++++++++++++++++ --
