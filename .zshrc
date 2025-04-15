@@ -24,6 +24,10 @@ export DISCOURSE_ALLOW_UNSECURE_CHAT_UPLOADS=1
 export ANDROID_SDK_ROOT=$HOME/Android/Sdk
 export PATH=$PATH:$ANDROID_SDK_ROOT/emulator
 export PATH=$PATH:$ANDROID_SDK_ROOT/platform-tools
+export BROWSER="google-chrome-stable"
+export HISTFILE="$HOME/.zsh_history"
+export HISTSIZE=10000000
+export SAVEHIST=10000000
 
 # Enter instead of ^M
 stty icrnl
