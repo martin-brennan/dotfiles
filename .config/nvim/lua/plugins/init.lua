@@ -131,25 +131,32 @@ return {
 	"chiedo/vim-dr-replace",
 
 	-- github copilot
-	-- {
-	-- 	"zbirenbaum/copilot.lua",
-	-- 	cmd = "Copilot",
-	-- 	event = "InsertEnter",
-	-- 	config = function()
-	-- 		require("copilot").setup({
-	-- 			panel = {
-	-- 				auto_refresh = true,
-	-- 			},
-	-- 			suggestion = {
-	-- 				auto_trigger = true,
-	-- 				debounce = 50,
-	-- 				keymap = {
-	-- 					accept = "<Tab>",
-	-- 				},
-	-- 			},
-	-- 		})
-	-- 	end,
-	-- },
+	{
+		"zbirenbaum/copilot.lua",
+		cmd = "Copilot",
+		event = "InsertEnter",
+		config = function()
+			require("copilot").setup({
+				panel = {
+					auto_refresh = true,
+				},
+				suggestion = {
+					auto_trigger = true,
+					debounce = 50,
+					keymap = {
+						accept = "<Tab>",
+					},
+				},
+				filetypes = {
+					yaml = true,
+					markdown = true,
+					help = false,
+					gitcommit = true,
+					gitrebase = true,
+				},
+			})
+		end,
+	},
 
 	-- fzf
 	{

@@ -276,6 +276,16 @@ comurl() {
   echo "$(git config --get remote.origin.url | sed -e 's/\.git$//g' | sed -e 's/:/\//g' | sed -e 's/git@/https:\/\//g')/commit/$1"
 }
 
+pushsbx() {
+  local branch_name=$(git rev-parse --abbrev-ref HEAD)
+  local sandbox_branch="sandbox/$1"
+  git push -f origin $branch_name:$sandbox_branch
+}
+
+resetsbx() {
+  local sandbox_branch="sandbox/$1"
+  git push -f origin main:$sandbox_branch
+}
 
 gcbi() {
   git checkout -b issue/$1
