@@ -3,6 +3,7 @@
 -- local ccumec_cmp_source = require("ccumec_cmp_source")
 
 require("fzf-lua").setup({
+	file_icons = true,
 	winopts = {
 		fullscreen = true,
 		title = "Searching...",
