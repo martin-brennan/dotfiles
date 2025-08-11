@@ -105,6 +105,9 @@ vim.keymap.set("n", "<leader>gk", "<plug>(signify-prev-hunk)")
 vim.keymap.set("n", "<leader>gcl", ":g/Commit:<cr><cr>wwwviwy:CommitLink<cr>")
 vim.keymap.set("v", "<leader>gbl", ":GithubBlameLine<cr>")
 
+-- replace word under cursor in entire file
+vim.keymap.set("n", "<leader>cib", [[:%s/\<\(<C-r><C-w>\)\>//g<Left><Left>]], { noremap = true, silent = false })
+
 -- snippets
 local ls = require("luasnip")
 vim.api.nvim_set_keymap(
@@ -135,10 +138,13 @@ vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist)
 -- open diagnostics in floating window so you can see the full message
 vim.keymap.set("n", "<space>?", vim.diagnostic.open_float, bufopts)
 
--- Map the key sequence <leader>sy to search for YAML keys using the dot-separated format
-vim.api.nvim_set_keymap(
-	"n",
-	"<leader>sy",
-	':lua SearchYamlKeyDotSeparated(vim.fn.input("YAML Key: "))<CR>',
-	{ noremap = true, silent = true }
-)
+-- Map the key sequence <leader>yf to search for YAML keys using the dot-separated format
+vim.keymap.set("n", "<leader>yf", function()
+	-- Open command-line with prefilled text
+	vim.api.nvim_feedkeys(":FindYml ", "n", false)
+end, { desc = "Prefill :FindYml command to jump to YAML key" })
+
+-- Get YAML path and copy it to clipboard using <leader>yl
+vim.keymap.set("n", "<leader>yl", function()
+	GetYamlPath({ ignored = { "en", "js", "admin_js" } })
+end, { desc = "Copy YAML key path to clipboard" })

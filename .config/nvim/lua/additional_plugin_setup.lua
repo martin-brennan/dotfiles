@@ -154,7 +154,20 @@ lspconfig.yamlls.setup({ capabilities = capabilities })
 -- lspconfig.glint.setup({ capabilities = capabilities })
 lspconfig.clangd.setup({ capabilities = capabilities })
 lspconfig.ember.setup({ capabilities = capabilities })
-lspconfig.solargraph.setup({ capabilities = capabilities })
+lspconfig.ruby_lsp.setup({
+	capabilities = capabilities,
+	init_options = {
+		formatter = "standard",
+		linters = { "standard" },
+		indexing = {
+			excludedPatterns = {
+				"spec/**/*",
+				"plugins/spec/**/*",
+			},
+		},
+	},
+})
+-- lspconfig.solargraph.setup({ capabilities = capabilities })
 lspconfig.rubocop.setup({ capabilities = capabilities })
 lspconfig.syntax_tree.setup({ capabilities = capabilities })
 lspconfig.stylelint_lsp.setup({ capabilities = capabilities })
@@ -198,8 +211,10 @@ local highlight = {
 function SearchYamlKeyDotSeparated(key)
 	-- Replace '.' with '>'
 	local formatted_key = key:gsub("%.", ">")
-	-- Call the SearchYamlKey function with the formatted key
-	vim.fn.SearchYamlKey(formatted_key)
+	-- Escape single quotes for safe Vimscript passing
+	local escaped_key = formatted_key:gsub("'", "''")
+	-- Call the Vimscript SearchYamlKey function safely
+	vim.cmd(string.format("call SearchYamlKey('%s')", escaped_key))
 end
 
 require("lualine").setup({

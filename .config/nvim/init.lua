@@ -140,10 +140,6 @@ function GetYamlPath(opts)
 	vim.api.nvim_echo({ { final_path, "Normal" } }, false, {})
 end
 
-vim.keymap.set("n", "<leader>yl", function()
-	GetYamlPath({ ignored = { "en", "js", "admin_js" } })
-end, { desc = "Copy YAML key path to clipboard" })
-
 function FindYamlKeyPath(path_str, opts)
 	opts = opts or {}
 	local ignored_keys = opts.ignored or { "en", "js", "admin_js" }
@@ -213,8 +209,3 @@ end, {
 	nargs = 1,
 	desc = "Jump to YAML key path in dot notation",
 })
-
-vim.keymap.set("n", "<leader>yf", function()
-	-- Open command-line with prefilled text
-	vim.api.nvim_feedkeys(":FindYml ", "n", false)
-end, { desc = "Prefill :FindYml command to jump to YAML key" })
