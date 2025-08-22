@@ -148,3 +148,17 @@ end, { desc = "Prefill :FindYml command to jump to YAML key" })
 vim.keymap.set("n", "<leader>yl", function()
 	GetYamlPath({ ignored = { "en", "js", "admin_js" } })
 end, { desc = "Copy YAML key path to clipboard" })
+
+-- Run qunit tests under line
+vim.keymap.set("n", "<leader>qt", function()
+	require("qunit_test_runner").run(
+		'FloatermNew --height=0.9 --width=0.9 --title=Running\\ specs... --autoclose=0 pnpm ember exam --filter "%s" --path=./dist'
+	)
+end, { desc = "Run nearest qunit test" })
+
+-- get rid of quotes around file name in :file command
+vim.keymap.set("n", "<C-g>", function()
+	local file_info = vim.api.nvim_exec2("file", { output = true }).output
+	file_info = file_info:gsub('"', "")
+	print(file_info)
+end, { silent = true })
