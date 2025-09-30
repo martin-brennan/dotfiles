@@ -1,0 +1,171 @@
+{
+  "binding.pry": {
+    "prefix": "dd",
+    "body": ["binding.pry$0"],
+    "description": "Insert pry breakpoint"
+  },
+  "pause_test": {
+    "prefix": "pt",
+    "body": ["pause_test$0"],
+    "description": "Rails system spec pause"
+  },
+  "puts-interp": {
+    "prefix": "clog",
+    "body": ["puts \"${1}\"$0"],
+    "description": "puts with interpolation"
+  },
+  "frozen string literal": {
+    "prefix": "fzs",
+    "body": ["# frozen_string_literal: true$0"],
+    "description": "Magic comment"
+  },
+  "irreversible migration": {
+    "prefix": "irrev",
+    "body": ["raise ActiveRecord::IrreversibleMigration$0"],
+    "description": "Raise irreversible migration"
+  },
+  "todo-martin": {
+    "prefix": "td",
+    "body": ["# TODO (martin) ${1}$0"],
+    "description": "TODO comment"
+  },
+  "rspec it block (short)": {
+    "prefix": "itsh",
+    "body": ["it \"${1}\" do", "  ${2}", "end", "$0"],
+    "description": "RSpec it do … end"
+  },
+  "rspec describe block": {
+    "prefix": "dsc",
+    "body": ["describe \"${1}\" do", "  ${2}", "end", "$0"],
+    "description": "RSpec describe"
+  },
+  "rspec context block": {
+    "prefix": "ctx",
+    "body": ["context \"${1}\" do", "  ${2}", "end", "$0"],
+    "description": "RSpec context"
+  },
+  "rspec before do": {
+    "prefix": "befdo",
+    "body": ["before do", "  ${1}", "end", "$0"],
+    "description": "before hook"
+  },
+  "rspec class spec": {
+    "prefix": "classspec",
+    "body": [
+      "# frozen_string_literal: true",
+      "",
+      "RSpec.describe ${1} do",
+      "  ${2}",
+      "end",
+      "$0"
+    ],
+    "description": "Top-level class spec"
+  },
+  "sql heredoc + exec": {
+    "prefix": "sql",
+    "body": [
+      "sql_query = <<~SQL",
+      "  ${1}",
+      "SQL",
+      "DB.exec(sql_query, ${2})",
+      "$0"
+    ],
+    "description": "SQL heredoc and exec"
+  },
+  "rspec system spec": {
+    "prefix": "sysspec",
+    "body": [
+      "# frozen_string_literal: true",
+      "",
+      "describe \"${1}\", type: :system do",
+      "  fab!(:current_user) { Fabricate(:user) }",
+      "",
+      "  before do",
+      "    sign_in(current_user)",
+      "  end",
+      "",
+      "  it \"works\" do",
+      "    ${2}",
+      "  end",
+      "end",
+      "$0"
+    ],
+    "description": "System spec scaffold"
+  },
+  "discourse job class": {
+    "prefix": "job",
+    "body": [
+      "# frozen_string_literal: true",
+      "",
+      "module Jobs",
+      "  class ${1} < Jobs::Base",
+      "    def execute(args)",
+      "    end",
+      "  end",
+      "end",
+      "$0"
+    ],
+    "description": "Discourse job skeleton"
+  },
+  "PageObjects::Pages class": {
+    "prefix": "pop",
+    "body": [
+      "# frozen_string_literal: true",
+      "",
+      "module PageObjects",
+      "  module Pages",
+      "    class ${1} < PageObjects::Pages::Base",
+      "    end",
+      "  end",
+      "end",
+      "$0"
+    ],
+    "description": "PO: Pages class"
+  },
+  "PageObjects::Components class": {
+    "prefix": "poc",
+    "body": [
+      "# frozen_string_literal: true",
+      "",
+      "module PageObjects",
+      "  module Components",
+      "    class ${1} < PageObjects::Components::Base",
+      "    end",
+      "  end",
+      "end",
+      "$0"
+    ],
+    "description": "PO: Components class"
+  },
+  "PageObjects::Modals class": {
+    "prefix": "pom",
+    "body": [
+      "# frozen_string_literal: true",
+      "",
+      "module PageObjects",
+      "  module Modals",
+      "    class ${1} < PageObjects::Modals::Base",
+      "    end",
+      "  end",
+      "end",
+      "$0"
+    ],
+    "description": "PO: Modals class"
+  },
+  "Service object": {
+    "prefix": "svc",
+    "body": [
+      "# frozen_string_literal: true",
+      "",
+      "class ${1}",
+      "  include Service::Base",
+      "",
+      "  ${2}",
+      "",
+      "  private",
+      "end",
+      "$0"
+    ],
+    "description": "Service::Base skeleton"
+  }
+}

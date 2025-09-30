@@ -1,0 +1,71 @@
+{
+  "debugger": {
+    "prefix": "dd",
+    "body": ["debugger$0;"],
+    "description": "Insert debugger"
+  },
+  "pauseTest": {
+    "prefix": "pt",
+    "body": ["await pauseTest();$0"],
+    "description": "Ember test pause"
+  },
+  "console.log": {
+    "prefix": "clog",
+    "body": ["console.log(${1});$0"],
+    "description": "Log value"
+  },
+  "todo-martin": {
+    "prefix": "td",
+    "body": ["// TODO (martin) ${1} ${2}$0"],
+    "description": "TODO marker"
+  },
+  "Glimmer class component (gjs)": {
+    "prefix": "gjsc",
+    "body": [
+      "import Component from \"@glimmer/component\";",
+      "import { service } from \"@ember/service\";",
+      "",
+      "export default class ${1} extends Component {",
+      "  @service currentUser;",
+      "",
+      "  <template>",
+      "    ${2}",
+      "  </template>",
+      "}",
+      "$0"
+    ],
+    "description": "Glimmer JS class w/ template block"
+  },
+  "Glimmer template-only const (gjs)": {
+    "prefix": "gjsct",
+    "body": [
+      "const ${1} = <template>",
+      "  ${2}",
+      "</template>;",
+      "",
+      "export default ${3};",
+      "$0"
+    ],
+    "description": "Glimmer JS const + template"
+  },
+  "QUnit component test (rendering)": {
+    "prefix": "comptest",
+    "body": [
+      "import { render } from \"@ember/test-helpers\";",
+      "import { hbs } from \"ember-cli-htmlbars\";",
+      "import { module, test } from \"qunit\";",
+      "import { setupRenderingTest } from \"discourse/tests/helpers/component-test\";",
+      "",
+      "module(\"Integration | Component | ${1}\", function (hooks) {",
+      "  setupRenderingTest(hooks);",
+      "",
+      "  test(\"preview updates with markdown\", async function (assert) {",
+      "    // await render(hbs`<DEditor @value={{this.value}} />`);",
+      "    ${2}",
+      "  });",
+      "});",
+      "$0"
+    ],
+    "description": "Rendering test scaffold"
+  }
+}
