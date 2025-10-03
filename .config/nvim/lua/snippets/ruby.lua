@@ -1,5 +1,5 @@
 return {
-	s("dd", t("binding.pry")),
+	s("dd", t("debugger")),
 
 	s("pt", t("pause_test")),
 

@@ -149,12 +149,10 @@ require("mason").setup()
 local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 -- Setup language servers.
-local lspconfig = require("lspconfig")
-lspconfig.yamlls.setup({ capabilities = capabilities })
--- lspconfig.glint.setup({ capabilities = capabilities })
-lspconfig.clangd.setup({ capabilities = capabilities })
-lspconfig.ember.setup({ capabilities = capabilities })
-lspconfig.ruby_lsp.setup({
+vim.lsp.config("yamlls", { capabilities = capabilities })
+vim.lsp.config("clangd", { capabilities = capabilities })
+vim.lsp.config("ember", { capabilities = capabilities })
+vim.lsp.config("ruby_lsp", {
 	capabilities = capabilities,
 	init_options = {
 		formatter = "standard",
@@ -167,12 +165,11 @@ lspconfig.ruby_lsp.setup({
 		},
 	},
 })
--- lspconfig.solargraph.setup({ capabilities = capabilities })
-lspconfig.rubocop.setup({ capabilities = capabilities })
-lspconfig.syntax_tree.setup({ capabilities = capabilities })
-lspconfig.stylelint_lsp.setup({ capabilities = capabilities })
-lspconfig.gopls.setup({ capabilities = capabilities })
-lspconfig.eslint.setup({
+vim.lsp.config("rubocop", { capabilities = capabilities })
+vim.lsp.config("syntax_tree", { capabilities = capabilities })
+vim.lsp.config("stylelint_lsp", { capabilities = capabilities })
+vim.lsp.config("gopls", { capabilities = capabilities })
+vim.lsp.config("eslint", {
 	capabilities = capabilities,
 	filetypes = {
 		"javascript",
@@ -189,6 +186,20 @@ lspconfig.eslint.setup({
 		})
 	end,
 })
+
+for _, server in ipairs({
+	"yamlls",
+	"clangd",
+	"ember",
+	"ruby_lsp",
+	"rubocop",
+	"syntax_tree",
+	"stylelint_lsp",
+	"gopls",
+	"eslint",
+}) do
+	vim.lsp.enable(server)
+end
 
 -- set up indentation guides
 local highlight = {
