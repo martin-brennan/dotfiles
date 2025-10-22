@@ -169,6 +169,7 @@ vim.lsp.config("rubocop", { capabilities = capabilities })
 vim.lsp.config("syntax_tree", { capabilities = capabilities })
 vim.lsp.config("stylelint_lsp", { capabilities = capabilities })
 vim.lsp.config("gopls", { capabilities = capabilities })
+local base_eslint_on_attach = vim.lsp.config.eslint.on_attach
 vim.lsp.config("eslint", {
 	capabilities = capabilities,
 	filetypes = {
@@ -180,9 +181,14 @@ vim.lsp.config("eslint", {
 		"markdown",
 	},
 	on_attach = function(client, bufnr)
+		if not base_eslint_on_attach then
+			return
+		end
+
+		base_eslint_on_attach(client, bufnr)
 		vim.api.nvim_create_autocmd("BufWritePre", {
 			buffer = bufnr,
-			command = "EslintFixAll",
+			command = "LspEslintFixAll",
 		})
 	end,
 })
