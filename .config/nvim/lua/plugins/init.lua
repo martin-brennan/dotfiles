@@ -252,6 +252,51 @@ return {
 
 	{ "nvim-tree/nvim-web-devicons", opts = {} },
 
+	{
+		"nvim-neotest/neotest",
+		dependencies = {
+			"nvim-neotest/nvim-nio",
+			"nvim-lua/plenary.nvim",
+			"antoinemadec/FixCursorHold.nvim",
+			"nvim-treesitter/nvim-treesitter",
+			"olimorris/neotest-rspec",
+		},
+		config = function()
+			require("neotest").setup({
+				quickfix = {
+					enabled = true,
+				},
+				output = {
+					open_on_run = false,
+				},
+				discovery = {
+					-- Drastically improve performance in ginormous projects by
+					-- only AST-parsing the currently opened buffer.
+					enabled = false,
+					-- Number of workers to parse files concurrently.
+					-- A value of 0 automatically assigns number based on CPU.
+					-- Set to 1 if experiencing lag.
+					concurrent = 1,
+				},
+				running = {
+					-- Run tests concurrently when an adapter provides multiple commands to run.
+					concurrent = true,
+				},
+				engine_support = false,
+				adapters = {
+					require("neotest-rspec")({
+						rspec_cmd = function()
+							return vim.tbl_flatten({
+								"bin/rspec",
+							})
+						end,
+						engine_support = false,
+					}),
+				},
+			})
+		end,
+	},
+
 	-- {
 	-- 	"coder/claudecode.nvim",
 	-- 	dependencies = { "folke/snacks.nvim" },

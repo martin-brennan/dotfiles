@@ -40,9 +40,11 @@ vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
 
 -- running rspec tests in floating terminal
 vim.keymap.set("n", "<Leader>s", function()
+	-- require("neotest").run.run(vim.fn.expand("%"))
 	vim.cmd(":FloatermNew --height=0.9 --width=0.9 --title=Running\\ specs... --autoclose=0 smarttest.sh %:p")
 end)
 vim.keymap.set("n", "<Leader>l", function()
+	-- require("neotest").run.run()
 	vim.cmd(
 		":FloatermNew --height=0.9 --width=0.9 --title=Running\\ specs... --autoclose=0 smarttest.sh "
 			.. vim.fn.expand("%:p")
@@ -51,9 +53,31 @@ vim.keymap.set("n", "<Leader>l", function()
 	)
 end)
 
+-- open neotest output panel
+vim.keymap.set("n", "<Leader>o", function()
+	require("neotest").output_panel.toggle()
+end)
+
 vim.keymap.set("n", "<Leader>cc", function()
 	vim.cmd(":FloatermNew --height=0.9 --width=0.9 --title=MyCommits --autoclose=0 ccumec")
 end)
+
+function ToggleQuickFix()
+	-- Check if any quickfix window is open
+	for _, win in ipairs(vim.api.nvim_list_wins()) do
+		local buf = vim.api.nvim_win_get_buf(win)
+		if vim.api.nvim_buf_get_option(buf, "buftype") == "quickfix" then
+			vim.cmd("cclose")
+			return
+		end
+	end
+
+	-- Otherwise open it
+	vim.cmd("copen")
+end
+
+-- Map <leader>qf to the toggle function
+vim.keymap.set("n", "<leader>xx", ToggleQuickFix, { desc = "Toggle quickfix list" })
 
 -- copy system spec command to clipboard
 function SystemSpecRun(opts)
