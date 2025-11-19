@@ -5,9 +5,6 @@ return {
 	-- used by git blame functionality
 	"rhysd/git-messenger.vim",
 
-	-- rails tooling
-	"tpope/vim-rails",
-
 	-- git tooling
 	"tpope/vim-fugitive",
 

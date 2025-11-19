@@ -164,6 +164,11 @@ vim.lsp.config("ruby_lsp", {
 			},
 		},
 	},
+  settings = {
+    rubyLspRails = {
+      enablePendingMigrationsPrompt = false,
+    },
+  },
 })
 vim.lsp.config("rubocop", { capabilities = capabilities })
 vim.lsp.config("syntax_tree", { capabilities = capabilities })
