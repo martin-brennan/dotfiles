@@ -27,7 +27,7 @@ return {
 		"dsc",
 		fmt(
 			[[
-  describe "{}" do
+  RSpec.describe "{}" do
     {}
   end
   ]],
@@ -98,7 +98,7 @@ return {
 			[[
       # frozen_string_literal: true
 
-      describe "{}", type: :system do
+      RSpec.describe "{}", type: :system do
         fab!(:current_user) {{ Fabricate(:user) }}
 
         before do
