@@ -100,6 +100,7 @@ alias v="vim"
 alias vimold="/usr/local/bin/vim"
 alias vim="nvim"
 alias zshconfig="vim ~/.zshrc; zshreload"
+alias hyprconfig="vim ~/.config/hypr/hyprland.conf"
 alias zshall="vim ~/.config/zsh; zshreload"
 alias tmuxconfig="vim ~/.tmux.conf"
 alias it="git"
@@ -314,3 +315,74 @@ unset conf
 # Remove ctrl-t binding fzf
 bindkey -r "^T"
 bindkey -r "^[T"
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+# zellij_tab_name_update() {
+#     if [[ -n $ZELLIJ ]]; then
+#         local current_dir=$PWD
+#         if [[ $current_dir == $HOME ]]; then
+#             current_dir="~"
+#         else
+#             current_dir=${current_dir##*/}
+#         fi
+#         command nohup zellij action rename-tab $current_dir >/dev/null 2>&1
+#     fi
+# }
+
+# zellij_tab_name_update
+# chpwd_functions+=(zellij_tab_name_update)
+
+function current_dir() {
+    local current_dir=$PWD
+    if [[ $current_dir == $HOME ]]; then
+        current_dir="~"
+    else
+        current_dir=${current_dir##*/}
+    fi
+
+    echo $current_dir
+}
+
+function change_tab_title() {
+    local title=$1
+    command nohup zellij action rename-tab $title >/dev/null 2>&1
+}
+
+function set_tab_to_working_dir() {
+    local prefix="${1:-}"
+    local result=$?
+
+    if [[ -n $prefix ]]; then
+        change_tab_title "$prefix - $(current_dir)"
+        return
+    fi
+
+    # uncomment the following to show the exit code after a failed command
+    # if [[ $result -gt 0 ]]; then
+    #     title="$title [$result]"
+    # fi
+
+    change_tab_title "$(current_dir)"
+}
+
+function set_tab_to_command_line() {
+    local cmdline=$1
+
+    if [[ $cmdline == "nvim"* ]] || [[ $cmdline == "vim"* ]]; then
+      set_tab_to_working_dir "nvim"
+      return
+    fi
+
+    if [[ $cmdline == "claude"* ]]; then
+      set_tab_to_working_dir "claude"
+      return
+    fi
+
+    change_tab_title $cmdline
+}
+
+if [[ -n $ZELLIJ ]]; then
+    add-zsh-hook precmd set_tab_to_working_dir
+    add-zsh-hook preexec set_tab_to_command_line
+fi
