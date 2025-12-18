@@ -1,5 +1,5 @@
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:/usr/local/bin:/home/mb/scripts:/home/mb/repos/ops/bin:$HOME/.local/bin:/usr/local/go/bin:/home/mb/go/bin:$PATH
+export PATH=$HOME/bin:/usr/local/bin:$HOME/scripts:$HOME/repos/ops/bin:$HOME/.local/bin:/usr/local/go/bin:$HOME/go/bin:$PATH
 
 # dolphin file manager stuff
 [ "$XDG_CURRENT_DESKTOP" = "KDE"  ] || [ "$XDG_CURRENT_DESKTOP" = "GNOME"  ] || export QT_QPA_PLATFORMTHEME="qt5ct"
