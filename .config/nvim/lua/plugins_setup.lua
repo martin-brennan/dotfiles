@@ -22,6 +22,7 @@ require("nvim-treesitter.configs").setup({
 		"regex",
 		"glimmer",
 		"glimmer_javascript",
+    "ruby",
 		-- Documentation Languages
 		"markdown",
 		"markdown_inline",
