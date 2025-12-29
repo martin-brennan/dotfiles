@@ -316,22 +316,13 @@ unset conf
 bindkey -r "^T"
 bindkey -r "^[T"
 
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-
-# zellij_tab_name_update() {
-#     if [[ -n $ZELLIJ ]]; then
-#         local current_dir=$PWD
-#         if [[ $current_dir == $HOME ]]; then
-#             current_dir="~"
-#         else
-#             current_dir=${current_dir##*/}
-#         fi
-#         command nohup zellij action rename-tab $current_dir >/dev/null 2>&1
-#     fi
-# }
-
-# zellij_tab_name_update
-# chpwd_functions+=(zellij_tab_name_update)
+# pnpm
+export PNPM_HOME="/Users/mb/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
 
 function current_dir() {
     local current_dir=$PWD
@@ -345,8 +336,7 @@ function current_dir() {
 }
 
 function change_tab_title() {
-    local title=$1
-    command nohup zellij action rename-tab $title >/dev/null 2>&1
+    zellij action rename-tab "$1" >/dev/null 2>&1
 }
 
 function set_tab_to_working_dir() {
@@ -357,11 +347,6 @@ function set_tab_to_working_dir() {
         change_tab_title "$prefix - $(current_dir)"
         return
     fi
-
-    # uncomment the following to show the exit code after a failed command
-    # if [[ $result -gt 0 ]]; then
-    #     title="$title [$result]"
-    # fi
 
     change_tab_title "$(current_dir)"
 }
